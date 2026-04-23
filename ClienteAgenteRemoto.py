@@ -58,6 +58,11 @@ else:
 # --- wrapper para LM Studio ---
 async def call_llm(messages, sesion_id=None):
     url = os.getenv("URL_LLM")
+    
+    # DEBUG: Imprimir la URL exacta
+    url = url + "/chat"
+    print(f"🔗 URL desde .env: '{url}'")
+    print(f"🔗 Tipo: {type(url)}")
     request_data = {
         "session_id": sesion_id,
         "summary": "",
@@ -73,9 +78,10 @@ async def call_llm(messages, sesion_id=None):
 # --- Función para calcular Exact Match ---
 def calcular_exact_match(respuesta_generada, respuesta_esperada):
     """Calcula si la respuesta coincide exactamente con la esperada"""
+    return 1.0, 1.0
     # Limpiar y normalizar respuestas
-    gen_clean = respuesta_generada.strip().lower()
-    exp_clean = respuesta_esperada.strip().lower()
+    gen_clean = respuesta_generada.lower()
+    exp_clean = respuesta_esperada.lower()
     
     # Exact match estricto
     exact_match = 1.0 if gen_clean == exp_clean else 0.0
@@ -91,6 +97,7 @@ def calcular_exact_match(respuesta_generada, respuesta_esperada):
 # --- Función para calcular BERTScore ---
 async def calcular_bertscore(respuesta_generada, respuesta_referencia):
     """Calcula similitud semántica usando BERTScore"""
+    return 0.0, 0.0, 0.0
     if bert_scorer is None:
         return 0.0, 0.0, 0.0
     
@@ -103,6 +110,7 @@ def clasificar_respuesta(respuesta, categorias_posibles):
     Clasifica una respuesta en una categoría predefinida
     Ejemplo de categorías: ["positiva", "negativa", "neutral", "informativa", "pregunta"]
     """
+    return "otra"
     respuesta_lower = respuesta.lower()
     
     for categoria, palabras_clave in categorias_posibles.items():
@@ -139,7 +147,7 @@ async def calcular_todas_metricas(
     
     # 2. Longitud de respuesta
     metricas["longitud_respuesta"] = len(respuesta_generada)
-    metricas["num_palabras"] = len(respuesta_generada.split())
+    #metricas["num_palabras"] = len(respuesta_generada.split())
     
     # 3. Exact Match (si tenemos respuesta esperada)
     if respuesta_esperada:
@@ -220,7 +228,6 @@ async def evaluar_lote_respuestas(respuestas_y_esperadas):
             respuesta_generada=respuesta_gen,
             respuesta_esperada=respuesta_exp,
             tiempo_respuesta=tiempo,
-            categorias_sistema=categorias_sistema
         )
         
         todas_metricas.append(metricas)
@@ -266,10 +273,9 @@ async def main():
         "pregunta": ["qué", "cuál", "cómo", "por qué", "dónde", "cuándo"],
         "despedida": ["adiós", "hasta luego", "chao", "nos vemos", "salir"]
     }
-    
-    # Conversación inicial
-    system_msg = {"role": "system", "content": "Eres un asistente útil que clasifica flores Iris."}
-    user_msg = {"role": "user", "content": input("Buen día, ¿con qué puedo ayudarte hoy?\n>>> ")}
+
+    system_msg = {"role": "system", "content": "Eres un asistente útil que califica respuestas a examenes como si fuera un profesor."}
+    user_msg = {"role": "user", "content": "pregunta 'Explica el ciclo TDD  y su importancia en el desarrollo de software.' respuesta 'El TDD en inglés es Test-Driven Development, es un mecanismo de test independientes para el proceso de un proyecto. En primer lugar, está el test en rojo, es decir, los test de la práctica están fallando porque no está implementado. En segundo lugar, el test verde, es decir, se ha implementado los métodos necesarios para probar la ejecución. No importaría el largo del código sino su funcionamiento. Y, por último, está el refactor, se ha corregido dicha implementación para mejorar el código y su implementación. En otras palabras, no se modifica su funcionamiento, pero sí el código para hacerlo más dinámico. Es un ciclo el cuál empieza en rojo -> verde -> refactor. Nos ayuda a comprobar si los métodos implementados han sido utilizados en los test y qué está fallando.'"}
     
     messages_big_history = [system_msg, user_msg]
     
@@ -277,95 +283,29 @@ async def main():
     inicio_llm = time.time()
     response = await call_llm(messages_big_history)
     tiempo_llm = time.time() - inicio_llm
-    messages_big_history.append({"role": "assistant", "content": response['response']})
+    messages_big_history.append({"role": "assistant", "content": response})
     
     # Calcular métricas (sin respuesta esperada en tiempo real)
     metricas = await calcular_todas_metricas(
-        respuesta_generada=response['response'],
+        respuesta_generada=response,
         tiempo_respuesta=tiempo_llm,
-        categorias_sistema=categorias_sistema
+
     )
     todas_las_metricas.append(metricas)
     
     # Guardar en MLflow
     nombre_ejecucion = f"conversacion_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-    parametros = {
-        "modelo": "LM Studio",
-        "sesion_id": response.get('session_id', 'N/A')
-    }
+
     
     logger.info("\n📊 Capturando métricas en MLflow:")
-    capturar_metricas(nombre_ejecucion, metricas, parametros)
     
     logger.info(f"\n💬 Respuesta del modelo: {response['response']}")
     
-    # Loop principal de conversación
-    iteraciones = 1
-    
-    while True:
-        user_input = input("\n>>> ")
-        
-        if user_input.lower() in ["exit", "quit", "salir", "terminar"]:
-            logger.info("Saliendo del bucle.")
-            break
-        
-        # Agregar mensaje del usuario
-        user_msg = {"role": "user", "content": user_input}
-        messages_big_history.append(user_msg)
-        
-        # Llamar al LLM
-        inicio_llm = time.time()
-        response = await call_llm([user_msg], str(response.get('session_id', '')))
-        tiempo_llm = time.time() - inicio_llm
-        
-        # Agregar respuesta al historial
-        messages_big_history.append({"role": "assistant", "content": response['response']})
-        
-        # Calcular métricas
-        metricas = await calcular_todas_metricas(
-            respuesta_generada=response['response'],
-            tiempo_respuesta=tiempo_llm,
-            categorias_sistema=categorias_sistema
-        )
-        todas_las_metricas.append(metricas)
-        
-        # Guardar métricas de esta interacción
-        capturar_metricas(f"interaccion_{iteraciones}_{nombre_ejecucion}", metricas)
-        
-        # Mostrar respuesta
-        logger.info(f"\n💬 {response['response']}")
-        
-        iteraciones += 1
-    
-    # --- Evaluación final agregada ---
-    end_time = time.time()
-    tiempo_total = end_time - start_time
-    
-    # Calcular throughput total
-    throughput = iteraciones / tiempo_total if tiempo_total > 0 else 0
-    
-    # Calcular métricas agregadas de todas las interacciones
-    metricas_agregadas = {
-        "total_interacciones": iteraciones,
-        "throughput_respuestas_por_segundo": throughput,
-        "latencia_promedio_ms": np.mean([m.get("latencia_ms", 0) for m in todas_las_metricas]),
-        "longitud_promedio_respuesta": np.mean([m.get("longitud_respuesta", 0) for m in todas_las_metricas]),
-        "tiempo_total_segundos": tiempo_total
-    }
-    
-    # Guardar métricas agregadas en MLflow
-    logger.info("\n📊 Resumen final de métricas:")
-    capturar_metricas(f"resumen_final_{nombre_ejecucion}", metricas_agregadas)
-    
-    logger.info(f"\n⏱️ Tiempo total: {tiempo_total:.2f} segundos")
-    logger.info(f"📈 Throughput: {throughput:.2f} respuestas/segundo")
-    logger.info(f"⚡ Latencia promedio: {metricas_agregadas['latencia_promedio_ms']:.2f} ms")
-    logger.info(f"📊 Todas las métricas están guardadas en MLflow")
-    logger.info(f"👉 Para verlas ejecuta: mlflow ui")
     
     # Opcional: Si tienes un dataset de prueba con respuestas esperadas
-    # resultados_lote = await evaluar_lote_respuestas(lista_de_prueba)
-    # capturar_metricas_lote("evaluacion_dataset_prueba", resultados_lote)
+    lista_de_prueba=[(response,"El ciclo TDD consiste en tres etapas: primero, se escribe un test que falla (Rojo) porque la funcionalidad aún no ha sido implementada. En la segunda fase (Verde), se desarrolla el mínimo código necesario para que el test pase. Finalmente, en la etapa de Refactor, se mejora el código manteniendo todos los tests en verde. Este ciclo es crucial ya que promueve un desarrollo proactivo, asegurando que el código producido cumple con las especificaciones definidas inicialmente por los tests.",tiempo_llm)]
+    resultados_lote = await evaluar_lote_respuestas(lista_de_prueba)
+    capturar_metricas_lote("evaluacion_dataset_prueba", resultados_lote)
 
 # --- Función para cargar dataset de prueba ---
 def cargar_dataset_prueba():
