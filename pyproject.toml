@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "bert-score>=0.3.13",
+    "fastapi>=0.136.0",
     "mlflow>=3.11.1",
     "numpy>=2.4.4",
     "pandas>=2.3.3",
@@ -13,4 +14,5 @@ dependencies = [
     "requests>=2.33.1",
     "rich>=15.0.0",
     "scikit-learn>=1.8.0",
+    "uvicorn>=0.45.0",
 ]

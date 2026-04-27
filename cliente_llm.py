@@ -1,19 +1,18 @@
 import time
 import requests
 import os
+import json
 
 class ClienteLLM:
     def __init__(self):
         self.url = os.getenv("URL_LLM")
-        self.entrada = None
-        self.contextos = []
-        self.salida = None
 
-    def generar_salida(self):
+
+    def generar_salida(self, entrada, contextos):
         payload = {
             "session_id": "1",
             "summary": "",
-            "messages": self.contextos + [self.entrada]
+            "messages": [{"role": "system", "content": "Eres un asistente útil que califica respuestas a examenes como si fuera un profesor. responde unicamente con la nota numerica"},contextos, entrada]
         }
 
         inicio = time.time()
@@ -26,5 +25,5 @@ class ClienteLLM:
 
         tiempo = time.time() - inicio
 
-        self.salida = response
-        return response, tiempo
+
+        return response["response"], tiempo

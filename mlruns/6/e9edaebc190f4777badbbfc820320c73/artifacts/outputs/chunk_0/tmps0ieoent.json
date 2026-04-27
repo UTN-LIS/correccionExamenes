@@ -1,0 +1,552 @@
+[
+  {
+    "entrada": {
+      "role": "user",
+      "content": "El TDD en inglés es Test-Driven Development, es un mecanismo de test independientes para el proceso de un proyecto. En primer lugar, está el test en rojo, es decir, los test de la práctica están fallando porque no está implementado. En segundo lugar, el test verde, es decir, se ha implementado los métodos necesarios para probar la ejecución. No importaría el largo del código sino su funcionamiento. Y, por último, está el refactor, se ha corregido dicha implementación para mejorar el código y su implementación. En otras palabras, no se modifica su funcionamiento, pero sí el código para hacerlo más dinámico. Es un ciclo el cuál empieza en rojo -> verde -> refactor. Nos ayuda a comprobar si los métodos implementados han sido utilizados en los test y qué está fallando."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Explica el ciclo TDD  y su importancia en el desarrollo de software."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "El TDD nos ayuda a comprobar que la implementación de los métodos de la práctica y su uso sean correctos. Se prueba en un inicio que los test funcionan, es decir, fallan porque no hay implementación. Pasamos a implementar los métodos y comprobar su funcionamiento, es decir, pasarían a los test en verde. Corregimos el código, sin modificar su funcionamiento y logar la refactorización. Esto sería el TDD. Sin embargo, el enfoque tradicional de testing sería implementar los métodos de la práctica y al ejecutar, poder comprobar si funciona o no. Ahí sí falla, se cambiaría el método del test y se volvería a ejecutar. En este enfoque sería de muy buena práctica usar git para poder saber en qué punto de los test se encuentra la ejecución."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Compara TDD con un enfoque tradicional de testing en el desarrollo de software."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Las buenas prácticas del TDD son: \n\n* El código de cada test tiene que ser independiente de cada uno.\n\n* La implementación debe de ser clara, con comentarios explicando qué realiza cada método.\n\n* La implementación de cada test, de cada método para comprobar el test, tiene que ser independiente de los demás. \n\n* Primero se haría el test en rojo para comprobar su funcionalidad, en segundo lugar, se implementaría su funcionalidad que pasaría al test en verde. Y por último, haríamos el refactor mejorando el código y su implementación sin modificar su funcionalidad, para un buen uso del mismo y que esté mejor desarrollado.\n\nEl impacto de las buenas prácticas en el TDD causarían un impacto bueno en la calidad del software ya que vas probando si dichos test funcionan y comprobamos que esos métodos usados se ejecutan. En el caso que no se ejecute, podemos comprobar con los test en dónde en especifico está fallando."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Describe las buenas prácticas en TDD y su impacto en la calidad del software."
+    },
+    "salida": "9"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "MockMvc es una herramienta que nos sirve para comprobar las peticiones HTTP que nos da con Sprint Boot, como por ejemplo, el GET de un request. GET https://createstudent donde estás comprobado los estudiantes que hay, nos mostraría la lista de los estudiantes. Otro ejemplo, sería el POST, el cuál nos sirve para añadir un estudiante a la lista, devolveria el 200 OK, mostrando que sí se ha creado dicho estudiante. También tenemos PUT y DELETE. El PUT se usa para actualizar lo que anteriormente hayamos creado. Y DELETE, eliminar el elemento que el usuario quiera eliminar. Esta herramienta la podemos usar con Postman para comprobar dichas peticiones."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Explica el uso de MockMvc para el testing de APIs REST dentro del contexto de aplicaciones Spring."
+    },
+    "salida": "3"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Las ventajas de implementar TDD: \n\n* Se comprueba el uso de todos los test necesarios para el proyecto.\n\n* Podemos observar el funcionamiento/comportamiento de los test. \n\n* El código de cada método es para el mismo. Está bien implementado y es independiente de los demás. \n\n* Podemos ver qué métodos si han pasado el test y cuáles no. \n\nLas desventajas de implementar TDD: \n\n* No podemos comprobar si los test funcionan en su ejecución.\n\n* No podemos ver qué métodos si han pasado el test y cuáles no.\n\n* Los test implementados podrían ser de un solo test o de varios. No son independientes del resto."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Discute las ventajas y desventajas de implementar TDD en un proyecto de software."
+    },
+    "salida": "5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "La cobertura del código va unido a la relevancia del TDD porque podemos ver las línas de código que hemos implementado y su funcionamiento. Se puede comprobar en qué está fallando los test y corregirlos. Sin embargo, la definición del concepto de cobertura de código es la métrica que observa el porcentaje de acierto de los test implementados en el proyecto, cuánto más alto es el porcentaje, más test se han realizado y comprobado. Es decir, mide el porcentaje de código fuente implementado junto con los test realizados."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Define el concepto de cobertura de código y su relevancia en el contexto de TDD."
+    },
+    "salida": "85"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "En primer lugar, es importante usar el TDD para verificar el funcionamiento de los test implementados. En segundo lugar, el primer test realizado fallará porque no hay ningún test implementado para poder comprobar su funcionamiento. Es fundamental que este test falle antes de implementar para comprobar que se han realizado dichos test y se ha podido comprobar el funcionamiento de los mismos. Se quiere comprobar el funcionamiento de la implementación individual de cada test del proyecto, por lo tanto, se necesita saber si esos test sin implementar funcionan correctamente y no se ha modificado su comportamiento. Estos test nos ayudan a la evolución del sistema ya que podemos comprobar en cada punto su funcionamiento y poder mejorarlo o corregirlo dependiendo del resultado de los test. Y es importante también por la comunicación entre los miembros del proyecto ya que se puede comprobar cada test que se haga y poder corregir el fallo en dónde esté."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "En el contexto de TDD, ¿por qué es fundamental que un test falle antes de escribir cualquier código de producción? Explica cómo este principio influye en la calidad del diseño del software y en la evolución del sistema, considerando tanto aspectos técnicos como de comunicación entre equipos."
+    },
+    "salida": "8.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "La importancia de validar las entradas en el TDD es necesaria ya que implementa el código con datos verificados, es decir, si estamos comprobando los alumnos de una universidad, un alumno no puede tener años en negativo (-0 años), igual que si comprobamos el ID del estudiante, necesitamos verificar si existe ese ID, el alumno, etc. \n\nEs importante validar esos datos para realizar un buen proyecto y buen software a comprobar con el TDD ya que va a estar comprobado los test que se implementen en el código."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Explica la importancia de validar entradas en el contexto de TDD y cómo se relaciona con la robustez del software."
+    },
+    "salida": "8.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Las aserciones en los test se utilizan para ejecutar los test ya implementados. Se añaden, y se ejecuta para validar su funcionamiento. Es decir, por ejemplo, se añade un test, se implementa y al usar aserciones, se ejecuta, por lo tanto, se comprueba su comportamiento respecto al test."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes."
+    },
+    "salida": "7"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Se intalaría Maven, y se podría usar los comandos para la comprobación del funcionamiento de los test.\n\nSe usaría mvn test para ejecutar todos los test implementados. Se podría usar mvn test nombreTest para poder comprobar el test que queremos comprobar su funcionamiento. Asi se puede comprobar el comportamiento y poder ver y corregir el fallo del test. Inclsu\n\nPor otra parte, podemos usar el informe que nos muestra JaCoCo para comprobar el funcionamiento de los test."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Discute el papel de los frameworks de testing en Java y su contribución a TDD."
+    },
+    "salida": "7.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Es una metodología en el desarrolo de proyectos software que se divide en fases, la fase en rojo nos informa que los test no han sido cubiertos de forma correcta y por lo tanto han fallado, la fase verde es la que nos indica que esos test han sido satisfactorios y cubren con lo requerido, y la ultima fase llamada refactor, es la que se encarga de limpiar el codigo y su diseño, evita codigo duplicado y por lo tanto el fin de este ciclo Test Driven Development"
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Explica el ciclo TDD  y su importancia en el desarrollo de software."
+    },
+    "salida": "95"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "El Test Driven Development nos permite probar paso a paso durante el ciclo del desarrolo software a diferencia del tradicional que es mas rigido, el TDD nos permite realizar pruebas mas frecuentes y de forma mas flexible, por ejemplo, si tuvieramos que desarrollar un software, seria mas fiable una metodologia TDD antes que la tradicional para asegurar que las funcionalidades requeridas se cumplen de forma adecuada sin errores y cubriendo los test."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Compara TDD con un enfoque tradicional de testing en el desarrollo de software."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Las buenas practicas del Test Driven Development serian el hecho de realizar test de cobertura que definan lo que queremos que cubra el codigo, es una buena practica el realizar primero los test antes que el codigo para que los test diseñen el codigo y no viceversa, otras buenas practicas son el realizar pruebas y test a lo largo del ciclo del software, no solo al final, ya que si realizamos test a lo largo del proyecto nos facilitaria posibles errores graves que pudieran suceder si fueramos a arreglarlo al final del desarrolo, esta metodologia tiene un gran impacto positivo siendo mas eficiente a la hora de seguir el ciclo de vida del software."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Describe las buenas prácticas en TDD y su impacto en la calidad del software."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "El MockMvc es una herramienta que nos permite realizar peticiones HTTP sin tener que levantar servidores reales, ademas nos permite realizar pruebas con los endpoints de JUnit haciendolo mas simple, por otra parte, Spring gestiona dependencias como JUnit o JaCoCo ademas de compilar y ejecutar los test que se definan para verificar la cobertura del codigo."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Explica el uso de MockMvc para el testing de APIs REST dentro del contexto de aplicaciones Spring."
+    },
+    "salida": "8.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Lo bueno del Test Driven Development es que te aseguras bien de si existen problemas a lo largo del desarrolo del software, esto nos permite ir corrigiendo las partes que fallen o que no esten cubiertas para llegar al final del ciclo con un software mas testeado y conociendo exactamente como funciona; Sin embargo, si no usaramos el TDD y desarrollaramos el codigo de forma directa (de forma tradicional) hasta el final sin realizar pruebas, tenemos mayor probabilidad de que nuestro software sea mas critico y vulnerable con mas errores que nos costaria mas solucionar si se acumulan al final del desarrollo."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Discute las ventajas y desventajas de implementar TDD en un proyecto de software."
+    },
+    "salida": "8.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "La cobertura del codigo nos indica si el codigo cumple o no con lo definido en los test, es una buena practica realizar los test primero ya que esto significaria que los test diseñan como es el software y no al reves. Por ejemplo podemos ver si el codigo esta mas o menos cubierto con JaCoCo y sus reports en el index.html que nos miuestra el porcentaje del codigo cubierto. Si esto lo hacemos de forma recurrente a lo largo del Test Driven Development nos aseguramos de que el software sea mas fiable y este mas cubierto, esto aparecerie con una franja verde y roja en JaCoCo dependiendo si esta mas o menos cubierto."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Define el concepto de cobertura de código y su relevancia en el contexto de TDD."
+    },
+    "salida": "8.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Es una muy buena practica escribir antes los test (que fallen en rojo) por que los test deben diseñar el software, y no que los test se adapten a el, es el codigo el que se debe adaptar a los test. Es bueno realizar test de forma recurrente para obtener una mayor cobertura en el codigo y por ello obtener una mayor franja verde o porcentaje, esto es posible verlo usando la herramienta de JaCoCo en un report que genera en /target/site/jacoco/index.html."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "En el contexto de TDD, ¿por qué es fundamental que un test falle antes de escribir cualquier código de producción? Explica cómo este principio influye en la calidad del diseño del software y en la evolución del sistema, considerando tanto aspectos técnicos como de comunicación entre equipos."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Es importante validar las entradas del Test Driven Development en relacion al contexto, cuanto mas test y validaciones se realicen, y estas se cubran y se aprueben, mayor sera la fiabilidad del software, haciendolo mas estable y por ello reduciendo considerablemente errores criticos. Son buenas practicas si queremos un software seguro."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Explica la importancia de validar entradas en el contexto de TDD y cómo se relaciona con la robustez del software."
+    },
+    "salida": "95"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Las aserciones en el contexto del software, son muy relevantes para cubrir el codigo y evitar excepciones y errores que provocarian si no son revisados con este metodo asertivo."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes."
+    },
+    "salida": "7"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Los frameworks, como por ejemplo JUnit son muy utiles parta realizar test de cobertura en Java, nos ayudan a producir un software mas estable y robusto reduciendo posibles fallas; si a esto se le suma el usar la metodologia de Test Driven Development, nos estaria potenciando el producir el codigo con la mayor parte de funciones cubiertas y probarlo y corregirlo a lo largo del ciclo softwarte sin tener que espertar al final."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Discute el papel de los frameworks de testing en Java y su contribución a TDD."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "El ciclo TDD (Test-Driven Development) consiste en 3 pasos cíclicos para desarrollar un codigo por completo de manera fiable y modular. Los 3 pasos son los siguientes:\n\n1. Rojo: se hacen test que luego comprobarán el codigo del proyecto. Además, se prueban para que el test falle.\n\n2. Verde: se desarrolla el minimo codigo con el que se pueda pasar el test de esa parte del codigo. Y se prueba para que todos los test pasen.\n\n3. Refactor: se mejora el codigo manteniendo las pruebas test en verde."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Explica el ciclo TDD  y su importancia en el desarrollo de software."
+    },
+    "salida": "95"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "El enfoque tradicional de testing era que priemro se desarrollaba el codigo del proyecto y luego se hacián test para probar que el codigo fucnionase correctamente. Sin embargo, el enfoque TDD, es al contrario, primero se hacen los test y luego se desarrolla el codigo del proyacto que va a hacer que esos test los pasen.\n\n \n\nEl enfoque de desarrollo del TDD hace que el codigo sea mas limpio, fiable y modular. Ya que esta estructura junto con los frameworks de testing pueden confirmar que se ha desarrollado exclusivamente el codigo justo y necesario para cada funcionalidad."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Compara TDD con un enfoque tradicional de testing en el desarrollo de software."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Tenemos diferentes buenas prácticas en TDD:\n\n* Que tengan un nombre descriptivo: es importante que los nombres de los test tengan nombres que describan lo que van a probar, con ello se consigue claridad en cuanto a saber que hace cada test cuando, por ejemplo, otro desarrollador lea los test que tienen que pasar su codigo.\n\n* Test unitarios: es decir, es necesario que un test no dependa de ningún otro. Así, nos podemos asegurar que cada parte del codigo que se necesite probar se desarrolla modularmente."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Describe las buenas prácticas en TDD y su impacto en la calidad del software."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "El MockMvc es una herramienta framework que está dentro de SpringBoot. Esto se utiliza para poder hacer peticiones HTTP sin necesidad de tener un servidor real en funcionamiento. Por ejemplo, se pueden simular algunas peticiones de POST o GET desde MockMvc y para confirmar si los endpoints de nuestra API Rest están bien desarrollados."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Explica el uso de MockMvc para el testing de APIs REST dentro del contexto de aplicaciones Spring."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "* Ventajas:\n\n* Codigo fiable, limpio, robusto y modular.\n\n* Cada funcionalidad se desarrolla para que pueda superar el test. Esto quiere decir que si el test pasa significa que la funcionalidad estará bien implementada\n\n* Documentación continua y actualizada\n\n* Desventajas:\n\n* Curva de aprendizaje\n\n* Mayor tiempo de comienzo"
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Discute las ventajas y desventajas de implementar TDD en un proyecto de software."
+    },
+    "salida": "8.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "La cobertura de codigo es cuando se mide que porcentaje de lineas de codigo están siendo utilizadas para superar el test correspondiente. Se puede decir que si supera el 70% de cobertura, el codigo es bueno (buena calidad); si el codigo tiene una cobertura de entre un 80% y 95%, la calidad es practicamente excelente.\n\nSu relevancia en el contexto TDD es que se desarrolle única y exclusivamente el codigo necesario para que las funcionalidades sean fiables (a prueba de errores) y hagan todo lo que tienen que hacer."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Define el concepto de cobertura de código y su relevancia en el contexto de TDD."
+    },
+    "salida": "8"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Que un test falle antes de desarrollar cualquier linea de codigo dentro del proyecto es necesario para seguir extrictamente el ciclo TDD (Rojo-Verde-Refactor) y esto se hace para conseervar un codigo limpio y unitario/modular.\n\nAfecta a la calidad del software ya que el test se tiene que mantener en fallo hasta que esté el minimo codigo o por así decirlo, el codigo mas primitivo hasta que se supere el test por primera vez. Para luego, mantenerlo en verde hasta refactorizar el codigo con una mayor calidad."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "En el contexto de TDD, ¿por qué es fundamental que un test falle antes de escribir cualquier código de producción? Explica cómo este principio influye en la calidad del diseño del software y en la evolución del sistema, considerando tanto aspectos técnicos como de comunicación entre equipos."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Las aserciones en los test son importantes ya que son los que nos dan la confirmación de que los tests están bien hechos y desarrollados y consiguen abarcar todas o la mayoria de los posibles errores de neustros test y codigo de proyecto."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes."
+    },
+    "salida": "5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Los frameworks son herramientas de testing que nos permite tener un control de los test que se llevan a cabo en nuestro codigo. Algunas de estas herramientas son JUnit 5 (esta herramienta es la principal utilizada para test unitarios), Mokito (crear objetos para test), Spring Boot test (la propia herramienta de Spring Boot para realizar test)"
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Discute el papel de los frameworks de testing en Java y su contribución a TDD."
+    },
+    "salida": "85"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "El TDD es una metodologia en la que se crean unos test y posteriormente se programa las funcionalidades, tiene un ciclo iterativo el cual se basa en Rojo-Verde-Refactor:\n-Rojo: Se crean test que fallan por no tener implementadas las funcionalidades.\n-Verde: Se crean las funcionalidades para los test para que den correctos.\n-Refactor: Se mejoran las funcionalidades sin alterar el comportamiento.\n\nEl objetivo del TDD es el de guiar al diseño de software a traves de pruebas automaticas (test).\n\nGracias al TDD se pueden crear mejores diseños de software y aun que tenga un mayor tiempo de comienzo, al hacer primero los test y luego la programación consigues anteponerte a posibles errores, siempre y cuando sigas las buenas practicas del TDD."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Explica el ciclo TDD  y su importancia en el desarrollo de software."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Comparado con el testing tradicional que se basa en primero hacer la programación y luego crear los test, el TDD crea antes los test que la programación siguendo un ciclo que le permite anteponerse a errores, y mejorar las funcionalidades de los test, obteniendo asi un mejor diseño, que sea modular y un mejor mantenimiento que el testing tradicional."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Compara TDD con un enfoque tradicional de testing en el desarrollo de software."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Entre las buenas practicas destacan sobre todo las siguientes:\n- Que tengan un nombre descriptivo, con ello consigues que sea más claro y facil de ver, evitando asi el poner demasiados comentarios para describir un test.\n- Que un test no dependa del anterior, es decir, que el resultado de un test sea todalmente independiente, con ello nos aseguramos de que no haya fallas en ambos si uno sale mal.\n\n-Que las funcionalidades solo vayan a UN solo test, que cada funcionalidad vaya al test que debe ir, sino se podrian agrupar assertions."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Describe las buenas prácticas en TDD y su impacto en la calidad del software."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "El MockMvc es una clase dada por Spring Boot Test, la cual manda peticiones HTTP sin necesidad de usar un servidor web real, usa controladores REST, tambien usa las operaciones de GET, POST, PUT y DELETE, para el spring facilita el testing de APIs REST sin necesidad de dependencias externas."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Explica el uso de MockMvc para el testing de APIs REST dentro del contexto de aplicaciones Spring."
+    },
+    "salida": "95"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Entre las ventajas se encuentran un mejor diseño de software, que es modular, un buen mantenimiento, y una gran previsión ante posibles errores. Y las desventajas son la curva de aprendizaje, el mayor tiempo de comienzo, y que si no se siguen unas buenas practicas de TDD el test puede resultar fragil, compromentiendolo."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Discute las ventajas y desventajas de implementar TDD en un proyecto de software."
+    },
+    "salida": "9"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "La cobertura de codigo es la metrica que se utiliza para que saber que porcentaje de los test han sido utilizados, independientemente si son correctos o no, en el TDD es muy importante ya que por ejemplo en el segundo metodo del ciclo (VERDE) al implementar las funcionalidades para los test debes saber si estas usando todas, ya que al no decir si son correctas o no, tu no sabes si te estan faltando test para programar sus funcionalidades."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Define el concepto de cobertura de código y su relevancia en el contexto de TDD."
+    },
+    "salida": "4.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Que el test falle es primordial para luego hacer el codigo de producción, lo primero del ciclo es crear test que fallen ya que asi es mas facil para luego escribir un codigo de produccion que funcione con cada test independiente, para luego poder mejorarlos sin alterar el comportamiento, si creas una programacion y ajustas el test a esa programacion fallará en cuanto aparezca un test nuevo, en cambio si un test falla y luego haces la programacion podras prevenir cualquier test que aparezca, localizas el test que falla, creas un codigo de produccion y funciona, un ejemplo podria ser un examen, te dan el problema y resuelves el problema, pero no puedes tener una respuesta anticipada para resolver cualquier problema que te salga despues."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "En el contexto de TDD, ¿por qué es fundamental que un test falle antes de escribir cualquier código de producción? Explica cómo este principio influye en la calidad del diseño del software y en la evolución del sistema, considerando tanto aspectos técnicos como de comunicación entre equipos."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Es muy importante el validar entradas ya que comienzas con una estructura muy robusta y correcta, sino a mitad del proceso se pueden volver los test fragil."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Explica la importancia de validar entradas en el contexto de TDD y cómo se relaciona con la robustez del software."
+    },
+    "salida": "85"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Las aserciones son herramientas de test que te dicen cuales son funcionalidades correctas y cuales no, es como un validador, si por ejemplo tienes unos test con una cobertura del 90% sabes que la mayoria se estan utilizando pero como sabes si estan correctas las funcionalidades o no, ahi entran las assertions, que te ayudan a saber si los test son correctos o no."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes."
+    },
+    "salida": "95"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Los framework son herramientas que simulan el comportamiento a traves de pruebas automaticas. Entre ellos destacan: \n-JUnit 5: que ayuda al testing para comprobar si estan correctos.\n\n-Mockito: que crea objetos simulados llamados mocks que imitan el comportamiento de dependencias reales, aislando los test por unidad haciendo mas facil su tratamiento.\n\n-AssertJ: con una sintaxis mas fluida y clara para las assertions.\n\n-Spring Boot Test: que crea pruebas integradas para el funcionamiento de los test"
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Discute el papel de los frameworks de testing en Java y su contribución a TDD."
+    },
+    "salida": "95"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "El ciclo de TDD consiste en un formato de 3 pasos.\n\nEl primero consiste en el rojo, que se trata de un test que falla. Por ejemplo, has puesto una función sin definir\n\nEl segundo es el verde, que trata de implementar lo mínimo para que pase dicho test. Por ejemplo, como he dicho en el paso anterior definir esa función era lo mínimo para que pase el test\n\nY por último, refactor, que consiste en mejorar dicho código que ha pasado el test. Por ejemplo, has renombrado las variables que no tenían nombres muy significativos o has mejorado alguna función que era demasiado compleja\n\nEs importante en el desarrollo de software para grupos nuevos debido a que dicho software se desarrolla de manera progresiva"
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Explica el ciclo TDD  y su importancia en el desarrollo de software."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "En el enfoque tradicional de testing en el desarrollo de software es algo que se centra más en el código que pasar los test, los test se consideran algo secundario. \n\nEn el desarrollo del TDD se centra más en el partado de los test que el desarrollo del código en si."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Compara TDD con un enfoque tradicional de testing en el desarrollo de software."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Las buenas prácticas del TDD trata de mejorar el desarrollo de software progresivamente durante el desarrollo y que sea más accesible para que otros integrantes del grupo puedan seguir mejorando dicho código.\n\nHace que la calidad del software incremente de manera exponencial y que sea accesible para todos"
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Describe las buenas prácticas en TDD y su impacto en la calidad del software."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Las ventajas de implementar el TDD en un proyecto software son que evita número de bugs durante el desarrollo, que incremente el software de manera progresiva, un código limpio y que gracias a los test podemos comprobar que líneas de código están siendo ejecutadas de manera correcta\n\nEsto implica unas desventas de tiempo principalmente porque tienes que ver como reaccionan los test a cada cambio que estas realizando en el código y puede hacer que retrase la entrega del proyecto."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Discute las ventajas y desventajas de implementar TDD en un proyecto de software."
+    },
+    "salida": "8.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Tienes que ver los informes del codigo y como están reaccionando. Esto habla de las líneas que estan siendo ejecutadas (verdes), las líneas que se ejecutan parcialmente (naranjas) y las líneas que no están siendo ejecutadas (rojas). Si el resultado de las líneas es que más del 70% de las líneas está siendo ejecutada significa que esta de manera correcta, si tienes el 80% significa que están bien las líneas de codigo y con más del 90% significa que está perfecto"
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Define el concepto de cobertura de código y su relevancia en el contexto de TDD."
+    },
+    "salida": "8"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Es fundamental que un test falle antes de escribir cualquier código para entender el código que estás deasarrollando. Es como si fuera un boceto y las explicaciones que te dan son las cosas que tienes que desarrollar como mínimo para que pase ese test. La calidad del diseño de software mejora porque todo el grupo que está trabajando en ello ha visto ese primer boceto haciendo una especie de guía. Por ejemplo queremos desarrollar una calculadora y para ese test primer test que va a fallar vamos a poner las funciones principales que va a hacer esa calculadora. En la evolución del sistema va a ser más viable poder desarrollarlo porque lo has hecho de manera clara y que todo el mundo pueda entender que va a hacer nuestro programa. En la calculadora ya hemos realizado las cuatro funciones básicas (sumar, restar, multiplicar y dividir), pero ahora el cliente quiere que hagamos raices cuadradas y nosotros a partir de esas funciones básicas vamos a desarrollar como hacer funciones cuadradas."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "En el contexto de TDD, ¿por qué es fundamental que un test falle antes de escribir cualquier código de producción? Explica cómo este principio influye en la calidad del diseño del software y en la evolución del sistema, considerando tanto aspectos técnicos como de comunicación entre equipos."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Para validar las entradas en el cotexto de TDD vamos a evitar los casos Edge, se refiere a los casos donde nosotros pedimos un dato al usuario y con el teclado se puede equivocar. Por ejemplo, cuando nosotros pedimos un la edad a un usuario en un formulario y te dice que tiene -1 años. Esto se relaciona con la robustez del software para que a lo hora de insertar datos en los usuarios ponga sitios que no sean nulos, datos negativos, etc."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Explica la importancia de validar entradas en el contexto de TDD y cómo se relaciona con la robustez del software."
+    },
+    "salida": "7.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "Las aserciones consisten en si el test funciona correctamente o si dicho test no funciona correctamente y te devuelve un false. \n\nSon importante dichas aserciones para que no haya casos duplicados, huecos en blanco, que puedas comparar dos arrays valor por valor, etc"
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes."
+    },
+    "salida": "85"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "El papel del frameworks de testingn en java consisten en ver de manera visual los resultado que te han dado los tests y que líneas de código de código son las que están puestas de manera correcta. \n\nEsto contribuye al TDD de manera muy eficaz ya que cuando tu pones el primer test en rojo ves de manera visual que no está funcionando en el código y que tienes que implementar para que funcione. En caso de que ya hayas implementado lo mínimo y hayas pasado ese primer test, te permite volver a pasar ese test para ver que de verdad has podido mejorar y puedes seguir viendo el test en verde"
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Discute el papel de los frameworks de testing en Java y su contribución a TDD."
+    },
+    "salida": "3"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "El ciclo TDD (Test Driven Development) es una metodología utilizada en la ingeniería del software que permite implementar los requisitos a código mediante el uso de pruebas o tests. Para ello, sigue el siguiente ciclo de tests:\n\n-Rojo: se escribe un test que no cumple, no pasa, va a fallar (ya que las clases y métodos no están todavía implementados).\n\n-Verde: se implementa el código mínimo para que el test anterior pase sin ningún problema\n\n-Refactor: se mejora  el código o estructura interna sin afectar a la salida o comportamiento del programa.\n\nEl TDD es importante en el desarrollo de software porque permite crear programas con códigos completos y eficientes, asegurandonos de que todas las líneas de código están cubiertas y que no se ha creado código innecesario. Es un tipo de programación proactiva en la que primero se crean los tests y luego el código."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Explica el ciclo TDD  y su importancia en el desarrollo de software."
+    },
+    "salida": "9.5"
+  },
+  {
+    "entrada": {
+      "role": "user",
+      "content": "En el TDD se escriben primero los tests y luego el código en base a lo que cubren dichas pruebas, pero en el testing tradicional primero va el código y luego los tests en función de dicho código.\n\nEn el TDD se utiliza una programación proactiva y en el testing tradicional se utiliza una programación reactiva.\n\nEn el TDD, los tests son obligatorios (ya que el código va a depender de ellos). Sin embargo, en el testing tradicional, los tests son opcionales (pueden estar o no).\n\nEn el testing tradicional es más probable que existan bugs y código innecesario o sin ejecutar, mientras que en el TDD se minimiza considerablemente la probabilidad de tener bugs y se implementa el código necesario para que el programa funcione correctamente."
+    },
+    "contexto": {
+      "role": "system",
+      "content": "Compara TDD con un enfoque tradicional de testing en el desarrollo de software."
+    },
+    "salida": "10"
+  }
+]
