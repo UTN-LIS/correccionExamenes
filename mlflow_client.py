@@ -2,6 +2,7 @@ import json
 import tempfile
 import mlflow
 import os
+import shutil
 
 class MLFlowClient:
     def __init__(self, experiment_name, modelo="no especificado"):
@@ -24,26 +25,16 @@ class MLFlowClient:
             return  # evita archivos vacíos
 
 
-        tmp_file = tempfile.NamedTemporaryFile(
-            mode="w",
-            delete=False,
-            suffix=".json",
-            encoding="utf-8"
-        )
-
+        tmpdir = tempfile.mkdtemp()
         try:
-            json.dump(datos, tmp_file, ensure_ascii=False, indent=2)
+            # Ruta del archivo con el nombre deseado
+            file_path = os.path.join(tmpdir, f"chunk_{self.chunk_id}.json")
 
-            tmp_file.flush()
-            tmp_file.close()  # 🔥 CLAVE (especialmente en Windows)
-
-            mlflow.log_artifact(
-                tmp_file.name,
-                artifact_path=f"outputs/chunk_{self.chunk_id}"
-            )
-
+            # Escribimos el JSON en ese archivo
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump(datos, f, ensure_ascii=False, indent=2)
         finally:
-            os.unlink(tmp_file.name)  # limpiar archivo local
+            shutil.rmtree(tmpdir, ignore_errors=True)  # limpiar archivo local
 
         self.chunk_id += 1
         return
