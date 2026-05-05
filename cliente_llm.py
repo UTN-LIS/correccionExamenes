@@ -10,9 +10,9 @@ class ClienteLLM:
         self.url = os.getenv("URL_LLM")
 
 
-    def generar_salida(self, entrada, contextos):
+    def generar_salida(self, messages):
         payload = {
-            "messages": ["Eres un asistente útil que califica respuestas a examenes como si fuera un profesor. responde unicamente con la nota numerica",contextos, entrada]
+            "messages": messages
         }
 
         inicio = time.time()

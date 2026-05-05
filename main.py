@@ -11,9 +11,9 @@ from metricas.tamaño_contexto import TamañoC
 
 def main():
     cliente = ClienteLLM()
-    mlflow_client = MLFlowClient("Primera_prueba_real", "Qwen3-4B-Instruct-2507")
+    mlflow_client = MLFlowClient("Primera_prueba_real", "gemma-3-4b")
 
-    experimento = Experimento(cliente, mlflow_client)
+    experimento = Experimento(cliente, mlflow_client, modelo="gemma-3-4b")
 
     # Registrar métricas dinámicamente
     experimento.registrar_metricas([
@@ -24,7 +24,7 @@ def main():
     ])
     dataset_generator = generadorCSV()
 
-    experimento.ejecutar_dataset(dataset_generator, max_items=1000)
+    experimento.ejecutar_dataset1(dataset_generator)
 
 
 if __name__ == "__main__":
