@@ -2,17 +2,17 @@ import time
 import requests
 import os
 import json
+from dotenv import load_dotenv
 
 class ClienteLLM:
     def __init__(self):
+        load_dotenv()
         self.url = os.getenv("URL_LLM")
 
 
     def generar_salida(self, entrada, contextos):
         payload = {
-            "session_id": "1",
-            "summary": "",
-            "messages": [{"role": "system", "content": "Eres un asistente útil que califica respuestas a examenes como si fuera un profesor. responde unicamente con la nota numerica"},contextos, entrada]
+            "messages": ["Eres un asistente útil que califica respuestas a examenes como si fuera un profesor. responde unicamente con la nota numerica",contextos, entrada]
         }
 
         inicio = time.time()

@@ -9,8 +9,8 @@ class generadorCSV:
 
     def dataset_batch(self):
         for _, row in self.df.iterrows():
-            entrada = {"role": "user", "content": row["student_answer"]}
-            contexto = {"role": "system", "content": row["question_text"]}
+            entrada = "Respuesta: " + row["student_answer"]
+            contexto =  "Pregunta: " + row["question_text"]
             esperado = row.get("teacher_grade")
 
             yield entrada, contexto, esperado

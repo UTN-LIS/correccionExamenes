@@ -19,7 +19,8 @@ def main():
     experimento.registrar_metricas([
         Latencia,
         ErrorNota,
-        TamañoE
+        TamañoE,
+        TamañoC
     ])
     dataset_generator = generadorCSV()
 

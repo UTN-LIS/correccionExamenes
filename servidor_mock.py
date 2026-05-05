@@ -8,6 +8,7 @@ def root():
 
 @app.post("/chat")
 async def chat(body= Body(...)):
+    print(body)
     return {
         "response": "7.3",
         "session_id": 1
