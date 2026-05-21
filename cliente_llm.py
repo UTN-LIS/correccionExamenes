@@ -11,6 +11,24 @@ class ClienteLLM:
 
 
     def generar_salida(self, messages):
+        
+        formateados = []
+        for i in messages[0:-1]:
+            formateados.append({"type": "text", "text": f"{i}"})
+
+        messages = [
+        {
+            "role": "system",
+            "content": formateados
+        },
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": f"{messages[-1]}"}
+            ]
+        }
+        ]
+        print(messages)
         payload = {
             "messages": messages
         }

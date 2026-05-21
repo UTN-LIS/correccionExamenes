@@ -83,7 +83,7 @@ class Experimento:
         step = 0
         fieldnames = ['step', 'entrada', 'contexto', 'salida', 'esperado', 'tiempo']
 
-        contextoEstatico = "Eres un profesor experto que corrige exámenes de estudiantes. Evalúa la respuesta del estudiante en base a la pregunta dada y da una justificacion de tu evaluacion"
+        contextoEstatico = "Eres un profesor experto que corrige exámenes de estudiantes. Evalúa la respuesta del estudiante en base a la pregunta dada y da nota numerica del 1 al 10"
 
         dataset_generator.crear_csv_resultados(fieldnames)
 
@@ -122,4 +122,3 @@ class Experimento:
             dataset_generator.guardar_buffer_csv(buffer_salidas, fieldnames)
 
 
-        dataset_generator.guardar_configuracion(self.modelo, contextoEstatico)
