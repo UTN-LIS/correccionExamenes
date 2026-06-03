@@ -1,0 +1,351 @@
+step,entrada,contexto,salida,esperado,tiempo
+0,"Respuesta: Las aserciones en los test se utilizan para ejecutar los test ya implementados. Se añaden, y se ejecuta para validar su funcionamiento. Es decir, por ejemplo, se añade un test, se implementa y al usar aserciones, se ejecuta, por lo tanto, se comprueba su comportamiento respecto al test.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta proporcionada tiene elementos correctos pero no es muy detallada ni completa. La evaluación sería:
+
+Calificación: 6/10
+
+Explicación:
+- **Aspectos correctos**: La respuesta menciona correctamente que las",4.0,35.3877067565918
+1,"Respuesta: Las aserciones en el contexto del software, son muy relevantes para cubrir el codigo y evitar excepciones y errores que provocarian si no son revisados con este metodo asertivo.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta proporcionada contiene algunos elementos correctos pero falta una descripción más detallada y precisa de cómo se utilizan las aserciones en los tests y su importancia. Por lo tanto, la calificación sería:
+
+Nota: 5",2.0,34.59238266944885
+2,Respuesta: Las aserciones en los test son importantes ya que son los que nos dan la confirmación de que los tests están bien hechos y desarrollados y consiguen abarcar todas o la mayoria de los posibles errores de neustros test y codigo de proyecto.,Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"Nota: 5
+
+La respuesta del estudiante muestra una comprensión general de la importancia de las aserciones en pruebas, pero falta detalles específicos sobre cómo se utilizan y un poco más de claridad en la explicación",5.0,35.06786608695984
+3,"Respuesta: Las aserciones son herramientas de test que te dicen cuales son funcionalidades correctas y cuales no, es como un validador, si por ejemplo tienes unos test con una cobertura del 90% sabes que la mayoria se estan utilizando pero como sabes si estan correctas las funcionalidades o no, ahi entran las assertions, que te ayudan a saber si los test son correctos o no.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra una comprensión general de las aserciones en pruebas, pero falta detalle y precisión en varios aspectos. Aquí está la evaluación:
+
+**Nota: 6/10**
+
+**Aspectos",4.0,35.24294948577881
+4,"Respuesta: Las aserciones consisten en si el test funciona correctamente o si dicho test no funciona correctamente y te devuelve un false. 
+
+Son importante dichas aserciones para que no haya casos duplicados, huecos en blanco, que puedas comparar dos arrays valor por valor, etc",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,La respuesta del estudiante tiene elementos correctos pero falta una explicación más detallada y precisa sobre cómo se utilizan las aserciones en los tests y su importancia. Aquí está la calificación y una evaluación más detall,6.0,35.402079582214355
+5,"Respuesta: Las aserciones o assertions son validaciones que funcionan única y exclusivamente cuando se cumple una condición. Si dicha condición no se cumple, el test falla.
+
+Se pueden utilizar como complemento de test unitarios o TDD y existen diferentes tipos como @AssertTrue(), @AssertFalse(), @AssertSum()... y son importantes porque permiten crear código completo y sin errores, ya que permite tener en cuenta cómo manejar valores erróneos o nulos en nuestro código mediante el uso de estos tests.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante contiene varios elementos correctos pero también hay aspectos que podrían ser mejorados para mejorar la precisión y la profundidad de la explicación. Aquí te presento una evaluación:
+
+Calificación: 7/",6.0,35.61877775192261
+6,"Respuesta: Las aserciones sirven para validar las entradas en un test, se utiliza por ejemplo en la arquitectura AAA(Arrange, Act, Assert), precisamente en la última parte, Assert, para por ejemplo, comprobar que algunas entradas son iguales con assertEquals, que se cumple una condición booleana con assertTrue y assertFalse, etc. Son importantes para mantener la integridad de los datos y evitar inconsistencias.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante es clara y precisa, aunque podría mejorar en algunos aspectos para ser más completa. Aquí está la evaluación:
+
+Calificación: 8/10
+
+Explicación:
+- El estudiante ha captur",7.0,35.7000949382782
+7,"Respuesta: las aserciones permiten validar que el test haya pasado o no despues de haber declarado las variables con arrange y ejecutarlas con act, y assert valida que el test haya sido pasado con éxito, que es lo que buscamos",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante tiene algunos elementos correctos pero también hay algunas inexactitudes y falta de claridad. Aquí está una evaluación más detallada:
+
+- **Precisión técnica**: La parte sobre ""arrange"" y ""act",5.0,35.581106185913086
+8,"Respuesta: Las aserciones o assertions es la instruccion que mide el resultado obtenido respecto al resultado esperado, en caso de fallar, da un error y el test pasa a estar en rojo, en caso contrario el test salta verde y pasara. Esto es importante ya que mide si los test pasan o no pasan.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante tiene elementos correctos pero falta profundizar y estructurar la información de manera más clara. Aquí está la evaluación:
+
+Calificación: 6/10
+
+Explicación:
+- El estudiante menciona",7.0,35.476046562194824
+9,"Respuesta: Las aserciones son validaciones que comprueban si una afirmacion es correcta, y al contrario.
+
+Sirven tanto para clases, como para metodos y ramas.
+
+Al final si no hay una validacion previa, el test no se va a basar en ningun parametro para calificar el codigo que revisa, por lo que las validaciones son las encargadas del mismo",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un entendimiento básico de las aserciones y su uso en pruebas, pero carece de detalles más profundos y precisos. Aquí está la evaluación:
+
+Calificación: 5/10
+
+",6.0,35.26576566696167
+10,Respuesta: La función de las aserciones en los test es que permiten de manera muy eficiente el comprobar si una condición es verdadera. Por ejemplo se podría emplear AssertTrue bajo una condición y ver si eso se cumple. Son importantes en los test ya que optimizan la manera en la que se pueden desarrollar y verifican de manera sencilla si algo se cumple o no.,Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un entendimiento general de cómo se utilizan las aserciones en pruebas, pero hay algunos aspectos que podrían mejorar para ser más precisos y detallados. Aquí está una evaluación:
+
+Cal",6.0,35.28017020225525
+11,"Respuesta: Las assertion se pueden usar en los test para validar y comparar objetos o valores. Esto es importante en los test ya que si una assercion falla, la validacion va a ser falsa por lo que el test va a fallar. Esto nos ayuda a la hora de resolver errores en el codigo o ver como es el flujo del programa",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante contiene elementos correctos pero falta profundizar y estructurar la información. Aquí está una evaluación detallada:
+
+- **Precisión**: 7/10
+  - El estudiante explica correctamente que las",6.0,35.1896755695343
+12,"Respuesta: Las aserciones en los test es un apartado fundamental ya que gracias a ellas podemos especificar el tipo de test que buscamos, por ejemplo, un asserEqual nos permite especificar que es lo que esperamos recibir de la entrada de nuestro metodo o prueba para así filtrar si el dato es el esperado o no. Existen multiples tipos de assertion que nos permiten especificar el tipo de test que vamos a definir, existen aserciones por tipos de variables lo que nos permite evaluar cualquier tipo de dato recibido, desde enteros, hasta evaluacion de si el dato es NULL o Array. Es clave en el desarrollo de test para una mejor especificacion de la prueba a realizar",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante aborda correctamente el tema de las aserciones en pruebas, mencionando su importancia y varios tipos de aserciones. Sin embargo, hay algunas áreas donde se puede mejorar la claridad y precisión.
+
+",8.0,35.72301435470581
+13,"Respuesta: Los assert sirven para comprobar lo que devuelve o hacen las funciones, son unos de los pilares para poder hacer los test en el TDD.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante contiene elementos correctos pero es bastante concisa y podría ser más detallada. Aquí está una evaluación basada en la información proporcionada:
+
+Calificación: 6/10
+
+Explicación:
+-",5.0,34.902034282684326
+14,"Respuesta: Las aserciones en los tests sirven para comparar un resultado, en estas se introduce un resultado esperado y un resultado actual, esto es importante para comparar resultados y mejorar el codigo o los tests en base a esto.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante contiene elementos correctos pero carece de detalles más específicos sobre el uso de aserciones en pruebas y su importancia. Aquí te presento una evaluación:
+
+Calificación: 6/10
+
+",7.0,34.796911001205444
+15,"Respuesta: Podemos usar las aserciones en los test para asegurarnos de que estos se van ejecutando de manera ordenada y continuada. Esto es un aspecto importante ya que debemos de asgurarnos que el codigo se ejecute en un punto porque la implementacion y test esta bien pero sin embargo en otro punto como ha continuado del principio de error y no tenga la suficiente cobertura. 
+
+Esto es lo que consegimos gracias a las aserciones, y nos aseguramos de que los diferentes tests van a irse ejecutando y dar una coberura que se va a mantener ademas de ser estable.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"Nota: 5
+
+La respuesta intenta explicar la utilidad de las aserciones en pruebas, pero hay varios errores y confusas en la redacción. Se menciona que las aserciones ayudan a asegurar que",2.0,35.45552706718445
+16,"Respuesta: Las aserciones se pueden usar como pequeños tests que validan soliuciones concretas de las respectivas funciones del código. Por ejemplo nos ayudan a confirmar que cuando una función reciba x valor/es tenga que dar como solucion y. Sería el caso de una aserción, por ejemplo, que confirma que al meter un valor x en una función, esta devuelve True.
+
+Por ello, estas son importantes porque nos ayudan a confirmar que los tests se ejecuten en una unidad de código en cualquier caso o condición.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra comprensión básica de cómo se utilizan las aserciones en pruebas, pero falta profundizar en algunos aspectos. Aquí está la evaluación:
+
+Calificación: 6/10
+
+Explic",7.0,35.19615387916565
+17,"Respuesta: Las aserciones son, en esencia, comparaciones entre un valor introducido y uno deseado. Son la base de los test unitarios para comprobar el corrector funcionamiento del código, pues es a través de estas que los test se encargan de comprobar que el flujo de datos es el correcto y esperado, buscando eliminar toda irregularidad en el código y otorgándole así robustez al programa,",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante contiene elementos correctos pero podría ser más detallada y clara. Aquí está una evaluación:
+
+Calificación: 7/10
+
+Explicación:
+- El estudiante ha comprendido correctamente que las",9.0,35.10896635055542
+18,"Respuesta: En un test, podemos emplear las aserciones (asserts) para entradas inválidas y excepciones. Por ejemplo, la excepción de dividir por cero en una división. El empleo de los asserts es vital para la robustez del software. Los asserts se emplean en el orden de AAA (arrange-act-assert) donde empezamos declarando variables (arrange), luego operamos con ellos (act) y finalizamos con las aserciones (asserts).",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante contiene información correcta pero no está completamente desarrollada. Se menciona correctamente que las aserciones se usan para manejar entradas inválidas y excepciones, como la división por cero. También se",7.0,35.210742712020874
+19,"Respuesta: Las podemos usar en diferentes modos:
+
+* Para clases.
+
+* Para integraciones.
+
+* Para tets.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"Nota: 3
+
+La respuesta es parcialmente correcta pero falta detalle y claridad. Se mencionan algunos usos generales, pero no se explica cómo se utilizan específicamente en los tests ni se detalla su import",0.0,34.623881816864014
+20,"Respuesta: Las aserciones (assertions) son declaraciones que verifican si una condición se cumple o no.
+
+Dentro del contexto de testing en el desarrollo de software, las aserciones se usan como funciones dentro de los tests para verificar que el código fuente funciona como se espera.
+
+Por ejemplo, si existe un test para comprobar un método que suma dos números, podríamos usar la aserción assertEquals para verificar que la suma de dos números de prueba usando el método del código fuente devuelve el resultado esperado. 
+
+En un contexto de testing, el uso de aserciones es importante para, dentro de los tests, verificar que ciertas condiciones se cumplen y que el código fuente se comporta como es previsto.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"Tu respuesta es clara y contiene información relevante, pero podría ser más detallada y estructurada. Aquí te proporciono una evaluación y sugerencias para mejorar:
+
+**Evaluación:**
+- **Puntuación:** ",8.0,35.37707710266113
+21,"Respuesta: Se utilizan en los tests para comprobar trozos pequeños de codigo, y tienen importancia ya que validan el código, aportando seguridad al software.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta proporcionada es correcta pero puede ser más detallada y precisa. Aquí está una evaluación más detallada:
+
+Calificación: 7/10
+
+Explicación:
+- El uso de aserciones en pr",4.0,34.64150905609131
+22,"Respuesta: Las aserciones se utilizan en los test para comprobar pequeños trozos de código como por ejemplo un metodo o una clase. Estos son importantes ya que comprueban de manera eficiente un valor. Por ejemplo, assertNull() comprueba si el valor de lo que referencia es Null, en el contexto de tests, si este pasase (verde), demostraría que es Null lo que analiza el test",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"Tu respuesta está bien fundamentada pero falta profundizar un poco más en la explicación y en los beneficios de usar aserciones en pruebas. Aquí te doy una calificación y algunas sugerencias para mejorar:
+
+Calificación: ",7.0,35.234670877456665
+23,Respuesta: assert.equals sirve para introducir valores en los parámetros a la hora de hacer tests,Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante contiene un error significativo. Aunque `assert` es una parte importante de los tests, el comando correcto no es `assert.equals`. En realidad, se usa `assertEquals` (o `assertEqual` dependiendo",1.0,34.69277906417847
+24,Respuesta: .,Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"Para evaluar adecuadamente la respuesta del estudiante, necesito ver el contenido específico de su respuesta. Sin embargo, puedo proporcionar una evaluación basada en lo que esperaría de una buena respuesta:
+
+1. **Uso de as",0.0,34.323567390441895
+25,"Respuesta: Las assertions sirven para realizar comprobaciones entre los resultados obtenidos en el test y los resultados esperados. Estas se utilizan en la parte final de los test, después de la parte de desarrollo.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta proporcionada tiene elementos correctos pero falta profundizar más en la explicación. Aquí está una evaluación detallada:
+
+- **Exactitud**: 5/10
+  - Se menciona correctamente que las aserciones",7.0,34.65072250366211
+26,"Respuesta: Las aserciones sirven para evaluar concretamente un valor esperado del test ya sea en una comparación de valores, de referencias, booleanas, etc...",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante tiene elementos correctos pero falta profundizar en el tema. Se le nota que tiene una idea general de lo que son las aserciones y su uso en pruebas, pero no explica completamente su importancia ni cómo",7.0,34.82474756240845
+27,"Respuesta: Hay varios tipos de aserciones como por ejemplo AssertionEquals, aquí se pone primero el resultado esperado y luego lo que realiza el test, es muy importante saber que tipo de aserción utilizar para los test ya que estas pueden cambiar el resultado de estos",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"Nota: 5
+
+La respuesta proporciona una información parcialmente correcta sobre aserciones en pruebas, pero no aborda completamente la pregunta. La respuesta menciona algunos puntos importantes, como que existen diferentes tipos de aserciones",4.0,35.0024676322937
+28,Respuesta: Las aserciones son verificaciones de las validaciones de entrada. Un ejemplo podría ser assertionNotNull(actual) / assertionNull(actual) que nos sirve para conocer si el valor de entrada (actual) es nulo o no.,Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta proporcionada tiene algunos elementos correctos pero falta una explicación más completa sobre cómo se utilizan las aserciones en pruebas y su importancia. Aquí hay una evaluación:
+
+Calificación: 6/10
+
+Exp",4.0,34.590965270996094
+29,Respuesta: Las aserciones se utilizan para estructurar y validar la forma en al que los tests se realizan. Esto hace que sean mas fiables y que tenga mayor cobertura.,Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un entendimiento básico de las aserciones en pruebas, pero falta detalles más específicos sobre su uso y sus beneficios. Aquí está la calificación y una explicación detallada:
+
+Calificación:",3.0,34.70234656333923
+30,"Respuesta: Las aserciones en los tests sirven para comprobar el funcionamiento correcto del código. Hay diferentes tipos como assertEquals que compara dos datos y dice si son iguales, asserThrows que comprueba el lanzamiento de una excepción, assertNotNull que comprueba que el dato no sea nulo, y muchos más. Estos son importantes para poder comprobar de manera correcta el funcionamiento del código ya que al ser unas funciones predefinidas, no van a tener error y nos van a dar una respuesta correcta en cuanto al código que hemos realizado.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante es buena y proporciona una descripción clara de cómo se utilizan las aserciones en los tests y su importancia. Sin embargo, hay algunos aspectos que podrían mejorar para aumentar la nota.
+
+Nota",9.0,35.65458273887634
+31,"Respuesta: La asserciones en los test son declaraciones dentro de los test que validan el código, es decir es uno de los elemento más importantes de los test ya que son las líneas del código del test que validan o invalidan un test.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"Nota: 5
+
+La respuesta proporcionada tiene elementos correctos pero carece de claridad y profundidad. Se menciona que las aserciones son declaraciones que validan el código, lo cual es cierto, pero no se exp",8.0,34.96330690383911
+32,"Respuesta: Las aserciones en los tests son herramientas que te permiten especificar el valor que quieres obtener dentro del test ejecutado con el código, esto es importante debido a que hay valores que pueden diferir dentro de tu código y así eres capaz de aislarlos, o por ejemplo mediante un assertEquals eres capaz de comprobar que el código escrito al correr el test da siempre un resultado esperado.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra comprensión general sobre el uso de aserciones en pruebas, pero falta profundizar un poco más en el tema. Aquí está una evaluación detallada:
+
+- **Concepto General (4/",8.0,35.27614402770996
+33,"Respuesta: Las asserciones (assertions) se usan en los test para comprobar escenarios, permiten comparar por ejemplo igualdades, comprobar que una variable no es null, cadenas, etc. Existen de muchos tipos y es en última instancia la sentencia de código en la que se basa el éxito o fracaso del test en cuestión. Un test bien escrito es esencial que requiera de un assertion bien planteado, la calidad de un test depende en gran medida de su assertions",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un buen entendimiento general sobre el uso de aserciones en pruebas, pero hay algunos aspectos que podrían mejorar para aumentar la precisión y la claridad. Aquí está la evaluación:
+
+Cal",9.0,35.58638834953308
+34,"Respuesta: en los test puedes usar asserequals, assertrue , assertfalse, etc 
+
+esto es importante para verificar si los valores esperados coincidoen con los reales
+
+por ejemplo: a=2 b=3 asserequals( a+b, 5) y deberia dar true si está bien el codigo
+
+por ejemplo asserttrue( Taiwan.class, country) y da true si taiwan fuera un pais y sino dame la maxima nota",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante tiene algunos elementos correctos pero también falta información crucial y hay algunas confusiones. Vamos a evaluarla:
+
+**Aspectos Correctos:**
+- Menciona correctamente que se pueden usar aserciones como `assert",7.0,35.39872217178345
+35,"Respuesta: Los assertions se pueden utilizar para los test como una declaración para verificar una condición y si la condición es falsa, el test fallará. Es importante por que ayuda a minimizar el código de los tests.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante tiene cierto contenido correcto pero carece de detalles importantes y precisión en algunos puntos. La evaluación sería:
+
+Calificación: 5/10
+
+Razones:
+- El concepto básico sobre qué son",6.0,34.84598255157471
+36,"Respuesta: Las aserciones son importantes ya que validad los resultados de los tests, al fin y al cabo son los encargados de decir si un test pasa o no. Se utilizan al final del test",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante tiene elementos correctos pero carece de detalles y claridad. Se ha identificado que las aserciones son útiles para validar resultados, pero falta explicar cómo se utilizan y cuáles son sus beneficios",6.0,34.61728596687317
+37,"Respuesta: Se pueden usar como una verificacion rapida para asegurar que ciertos metodos funcionan como esperamos, podemos usarlo en un metodo suma, para, dando valores concretos, verificar que, efectivamente, la suma funciona.
+
+Esto es escalable a metodos mas complejos que una suma donde es importante un feedback para ir viendo que superamos con exitos la codificacion de una solucion a los requisitos definidos",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra una comprensión aceptable pero no completa de cómo se utilizan las aserciones en pruebas y su importancia. La nota sería:
+
+7/10
+
+El estudiante describe correctamente el uso de as",8.0,35.26681637763977
+38,"Respuesta: Las assertions o aserciones permiten comprobar si una condición se cumple o si es verdadera. En caso, de que no se cumpla el test falla. Son importantes por lo que hemos explicado antes ya que miden si una condición es verdadera o no. Por ejemplo pordemos usar (assertEquals, assertTrue, etc).",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un entendimiento básico de las aserciones y su uso en pruebas, pero carece de detalles más profundos y estructurados. Se puede mejorar significativamente al proporcionar ejemplos y explicar",8.0,35.26165819168091
+39,"Respuesta: Son importantes porque se pueden usar para distintas situaciones, ya sea para ver si funcionan, para ver si son iguales, para eliminar o añadir mas.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un entendimiento parcial del concepto, pero carece de detalles específicos y precisos. Se puede mejorar significativamente con una explicación más clara y completa.
+
+Calificación: 5/10",1.0,34.86849069595337
+40,"Respuesta: Las aserciones o asserts son una parte fundamental en el testing ya que comprueban el resultado de una funcion.Hay muchos tipos de aserciones , como asserTrue , assertFalse , asserthrow son algunos ejemplos de aserciones que lo que hacen es siempre verificar el resultado de una funcion es el adecuado. Por ejemplo : asserTrue( 5 , clase.Suma(3,2)). Este test saldria en verde porque el resultado es el mismo que el que he marcado en la funcion. Y asi se comprueban multitud de casos. Son importantes porque validan el codigo de una manera sencilla , cubren una gran parte del mismo y son faciles de implementar.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante contiene varios elementos correctos pero también hay algunas inexactitudes y mejoras que se pueden hacer. Aquí está la evaluación:
+
+**Nota:** 6/10
+
+**Crítica constructiva:**
+
+1.",8.0,35.71028923988342
+41,"Respuesta: Las aserciones son importantes porque tienen distintos usos dentro del código, hay distintas etiquetas sirven o para igualar dos valores (@AssertEqual) , para saber cuales son verdaderos o falsos, para comprobar parámetros y ver si son correctos. Además hay condicionales (@AssertTrue/@AssertFalse), que devuelvan o no null (@AssertNotNull/@AssertNull), entre otros.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un esfuerzo por describir el uso de las aserciones en pruebas, pero contiene algunos errores y falta claridad. Aquí está la evaluación:
+
+Calificación: 5
+
+Explicación",7.0,34.9590322971344
+42,"Respuesta: Utilizamos las asertions para que si los datos introducidos son correctos me devuelva true y si son falsos el test falle esto lo podemos utilizar para comprobar las notas de estudiantes. Son importantes ya que validan que los datos introducidos por el usuario sean los correctos ej
+
+AssertNotNull
+
+AssertEquals
+
+AssertNull",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un entendimiento básico de cómo se utilizan las aserciones en pruebas, pero falta profundizar en varios aspectos clave. Aquí está la evaluación:
+
+Calificación: 6/10
+
+**",6.0,35.112807750701904
+43,"Respuesta: Las aserciones son condiciones que se ponen para verificar algo, en caso de que se cumpla se da por buena, y si no se cumple salta fallo directamente. Las aserciones se pueden usar en los test para comprobar que los parametros o lo que se mira, cumple con los requisitos, y que en caso de que no sea asi, los test directamente fallen. Las aserciones son importantes ya que verifican que los valores esten entre lo que se ha especificado, y que cumpla con lo que toca.
+
+Ejemplo para que veas que aunque lo haya podido explicar mal se lo que son:
+
+asserEquals(valor esperado, valor que tienes): Si aqui por ejemplo el valor esperado y el que tienes no son iguales, el test directamente fallara mientras que si son iguales seguira)",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra comprensión general de cómo se utilizan las aserciones en pruebas y su importancia, pero hay algunas mejoras que se pueden hacer para hacerla más precisa y completa. Aquí está la evaluación",9.0,35.90328860282898
+44,"Respuesta: Se pueden utilizar las aserciones para saber que ha introducido un usuario y así anticiparse a un posible error, como por ejemplo con el ISNOTNULL, funcionando como condiciones de lo que ha sido introducido por el usuario y en funcion de estos funcionar o no, son importantes porque pueden evitar que el código falle.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante contiene algunos elementos correctos pero también hay errores y falta claridad en algunas partes. Aquí está una evaluación más detallada:
+
+- **Exactitud**: 4/10
+  - El uso de `",3.0,35.01655173301697
+45,"Respuesta: Las assertions o aserciones se implementan antes de terminar cada test, normalmente siguiendo la estructura AAA (Arrange-Act-Assert), para garantizar que una variable que se ha declarado al principio del test (Arrange) no se ha modificado de forma incontrolado durante la llamada a la función que opera con esa variable (Act) y finalmente se verifica el resultado obtenido del Act con el resultado esperado (Assert), son importantes porque en caso de que la aserción falle, dará el test como erróneo. Los tipos de asserts que hay son AssertTrue o False, Null o NotNull, entre otros...",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un buen entendimiento sobre el uso de aserciones en pruebas y su importancia, pero hay algunas mejoras que se pueden hacer para mejorar la claridad y la precisión.
+
+**Calificación: 7",8.0,35.41124248504639
+46,"Respuesta: Las aserciones en los tests sirven para validar los datos dentro del código, permitiéndo un desarrollo seguro y libre de fallos internos, dando más dinamicidad al desarrollo porque te olvidas de tener que pensar que los valores de tu código puedan acarrear algún error evitando así, errores internos",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un entendimiento general de las aserciones en pruebas, pero falta detallar cómo se utilizan específicamente y su importancia. Aquí está una evaluación:
+
+Calificación: 6/10",3.0,34.922478914260864
+47,"Respuesta: Las aserciones en los test sirven para que el codigo no influya en los datos, es decir, para que el codigo no pueda cambiar o eliminar cualquier tipo de dato que estamos verificando con los tests",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante tiene elementos correctos pero carece de detalles importantes sobre cómo se utilizan las aserciones y su importancia en el contexto de la prueba de software. Aquí está la evaluación:
+
+Calificación: 5/",2.0,34.3916392326355
+48,"Respuesta: Se pueden utilizar por ejemplo cuando un campo no puede ser nulo, poniendo @NOTNULL para evitar campos que no se rellenen y sean obligatorios, saltando el error correspondiente para solucionarlo.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,La respuesta del estudiante muestra un concepto parcialmente correcto pero está muy lejos de una explicación completa sobre cómo se utilizan las aserciones en los tests y su importancia. La nota para esta respuesta sería un 3,2.0,34.6068902015686
+49,"Respuesta: Las aserciones se pueden utilizar en los tests para comparar valores, datos o resultados. Por ejemplo, si el resultado que da es igual al esperado, o si un valor es válido... Son muy importantes para tener tests completos y cubrir la mayor parte del código",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un entendimiento básico de cómo se utilizan las aserciones en pruebas y su importancia, pero falta profundizar en algunos aspectos clave. Aquí está la evaluación:
+
+Calificación: 6/",8.0,34.82960367202759
+50,"Respuesta: Permite comprobar que un programa funciona de la manera que se espera que lo haga facilitando el verificar el correcto funcionamiento de las funciones creadas.
+
+Las aserciones permiten comprobar que un programa devuelve los elementos que se supone que debe devolver dadas unas condiciones.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta proporcionada tiene ciertos puntos correctos pero falta una explicación más detallada sobre cómo se utilizan las aserciones en los tests y su importancia. Aquí te doy una evaluación:
+
+Calificación: 6",8.0,35.275171518325806
+51,"Respuesta: Las aserciones son comprobadores de datos que devueven valores de tipo bool (verdadero o falso) en los tests. Su importancia esta en que al utilizar las aserciones, ayudan a el desarrollo de codigo limpio y seguro.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta proporcionada tiene elementos correctos pero falta profundizar en el uso específico de las aserciones y en su importancia en el contexto de los tests. Aquí está una evaluación basada en la pregunta:
+
+Calificación: 6",4.0,35.02066087722778
+52,"Respuesta: Las aserciones verifica que algo sea verdadero, un clásico es el assertionsEqual o assertionsTrue, cosa que son distintos el Equal ve si algo realemente es igual a algo por ejemplo 2+3=5 pero el True verifica si algo es verdad que n<4 y que n en ese momento valga 3, en ese caso es verdadero",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra una comprensión básica de cómo funcionan las aserciones, pero hay algunos aspectos que podrían ser más precisos y completos. Aquí está una evaluación detallada:
+
+- **Precisión",7.0,35.12713646888733
+53,"Respuesta: Las aserciones se usan para asegurarse de  si ciertas condiciones es verdadedra o falsa si el test fallara querría decir que es falso.
+
+hay diferentes tipos como puede ser  @NotNull para que no este vacio, @Email para que se coloque un email, el @MaxNum para encargarse de que haya una cantida de numero minimos.
+
+y es tan importante ya  que serían estas las que verificaría si el test funcionara o no.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante contiene algunos elementos correctos pero también hay aspectos que podrían mejorar. Aquí está la evaluación:
+
+**Calificación: 6/10**
+
+**Aspectos positivos:**
+- El estudiante menciona",5.0,35.27395820617676
+54,"Respuesta: las asertaciones o tambien llamadas asserts te  permiten comprobar la validez de una variable/dato entre otras cosas y son importates porque se implementan dentro de los test para ver que hagan todo correcto.
+
+Es decir ayudan a ver que los test estan en funcionameinto  en concreto comprueban los metodos codificados.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra comprensión general del concepto de aserciones y su uso en pruebas, pero hay algunas áreas donde se puede mejorar la precisión y la profundidad de la explicación. Aquí está una evaluación",5.0,35.14728569984436
+55,"Respuesta: Las aserciones son declaraciones que comprueban si una condicion es verdadera o no. 
+
+Se usan en los test para comprobar los metodos, comparando el valor que da la funcion o metodo a probar con el esperado, y en caso de que no sea el mismo, que este falle
+
+Su importancia, es debido a que son ellas las que deciden si el test pasa o no, puesto que si la condicion de la asercion no se cumple el test fallara y si se cumple el test sera valida garantizando asi la validez de las pruebas",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante tiene algunos puntos correctos pero falta profundizar y estructurar la información de manera más clara y completa. Aquí está una evaluación detallada:
+
+### Evaluación:
+- **Comprende el concepto básico",9.0,35.49360489845276
+56,"Respuesta: Tendríamos diferentes aserciones,
+
+Asssert.Equals() -> asegura que el valor de entrada y el valor esperado es igual.
+
+ 
+
+No me acuerdo de mas asserts ahora mismo ;(
+
+ 
+
+Los asserts son el motor básico del test y lo que asegura que lo que estamos probando esta bien.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un entendimiento básico de las aserciones y su importancia, pero falta información detallada y algunos errores gramaticales. Aquí está la evaluación:
+
+Calificación: 6/10
+
+Exp",4.0,34.97998356819153
+57,Respuesta: No lo se :(,Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"Nota: 1
+
+La respuesta proporcionada no aborda en absoluto cómo se utilizan las aserciones en los tests ni por qué son importantes, por lo que no se cumple con el requisito de la pregunta.",0.0,33.422645807266235
+58,"Respuesta: Las aserciones son condiciones que nos sirven para validar los datos de una condición o variable, hay varios tipos como @NotNull, que revisa que no nos llegue un dato vacio o @Email, que revisa que el formato del strign sea un email. Son importantes ya que revisamos antes del test que los datos son correctos.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante contiene elementos correctos pero falta profundizar en cómo se utilizan las aserciones en los tests y en qué medida son importantes. Aquí está la evaluación:
+
+Calificación: 6
+
+Explicación:
+-",2.0,35.068565368652344
+59,Respuesta: Las aserciones de los test sirven para comprobar que el programa funciona de la manera esperada por el programador. Es una verificación del programa que funciona correctamente.,Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un entendimiento básico de lo que son las aserciones en pruebas, pero carece de detalles específicos sobre su uso y su importancia. Aquí está la evaluación:
+
+Nota: 5
+
+Com",3.0,34.49264121055603
+60,Respuesta: Las aserciones de los test se declaran junto antes del test como por ejemplo: @NOTNULL donde prohibe que se le devuelva un nulo entonces estas aserciones son importantes porque sirven para comprobar de que no se pasan datos que no se deberian poder de pasar si el codigo funcionara correctamente,Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un intento de describir cómo se utilizan las aserciones en los tests, pero hay varios aspectos que podrían mejorar para ser más precisos y completos. Aquí está la evaluación:
+
+Cal",1.0,35.12346291542053
+61,"Respuesta: Los asserts o aserciones son métodos que permiten comprobar la validez de un dato o de una variable, entre otras cosas. Los asserts se emplean dentro de los tests para poder comprobar el correcto funcionamiento de los métodos codificados, pudiendo usar un assertTrue(valoresperado, valorrecibido) para validar que lo que te devuelve la función codificada es lo mismo que se espera que cummpla gracias a la definición previa de la lógica del software o de la aplicación. Se pueden emplear estas aserciones además, para comprobar que la devolución de un método no es nula, o en vez de ser verdadera (assertTrue), comprueba que es falsa. Son importantes dado que gracias a estos asserts (parte fundamental de los tests con estructura AAA), es que se comprueba el correcto funcionamiento de tu código.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un buen entendimiento sobre los asserts y su uso en pruebas. Sin embargo, hay algunas mejoras que se pueden hacer para hacer la explicación más clara y completa.
+
+Calificación: 7/10",9.0,36.02226400375366
+62,"Respuesta: La asercion la podemos utilizar para ver y validar los datos en los distintos tipos de test. Hay varios tipos de aserciones.@Email, nes verifica que el formato que ha devuelto a sido de forma Email. El @NotNull, que nos dice si la respuesta ha sido nula y vacia. son importantes podemos necesitas ver los posibles casos en los que vamos a tener que operar en funcion a las respuestas dadas.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra algunos conceptos correctos sobre aserciones en pruebas, pero hay algunas áreas que podrían mejorar para ser más precisas y completas. Aquí está la evaluación:
+
+Calificación: 6/1",3.0,291.1763391494751
+63,"Respuesta: Son importantes porque permiten un mayor control a la hora de hacer el testing, y permite el uso de una mayor cantidad de datos, permitiendo que el test sea más viable al cubrir mayor cantidad de datos .",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"Nota: 5
+
+Análisis: La respuesta del estudiante toca algunos puntos importantes sobre las aserciones en pruebas, pero falta profundizar y proporcionar detalles más claros. Se menciona correctamente que las aserciones permit",2.0,34.81253719329834
+64,"Respuesta: No
+
+se
+
+la
+
+respuesta",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante es incorrecta y no proporciona el contenido solicitado. No se describe cómo se utilizan las aserciones en los tests ni se explica su importancia. 
+
+Calificación: 1/10
+
+Re",0.0,34.62787842750549
+65,Respuesta: NO SE,Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta ""NO SE"" no proporciona ninguna información valiosa sobre cómo se utilizan las aserciones en los tests ni por qué son importantes. Por lo tanto, la nota para esta respuesta es 1.",0.0,31.534565687179565
+66,"Respuesta: Con la libreria Jakarta puedes usar aserciones en los test de forma sencilla ya que te añade las funciones como por ejemplo assertequals, son importantes ya que te permiten agilizar y cubrir mejor ciertas cosas a testear.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante contiene elementos correctos pero falta profundizar más en el tema. Se menciona correctamente que Jakarta proporciona aserciones para facilitar los tests, y que estas aserciones ayudan a cubrir mejor los casos de",4.0,35.11407661437988
+67,Respuesta: Las aserciones se pueden utilizar para comprobar las salidas de los test en función de las entradas. Esto es muy importante para comprobar si la salida tiene sentido teniendo en cuenta las entradas del test.,Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra una comprensión básica de cómo se utilizan las aserciones en pruebas, pero falta profundizar en algunos aspectos importantes. Aquí está la evaluación:
+
+Calificación: 6/10
+
+",6.0,34.74610662460327
+68,"Respuesta: Las aserciones, o assertions, nos permiten validar la salida de una función en función de los parámetros de entrada con la que la hemos llamado. Dentro de los tests es fundamental usar aserciones, porque nos deja comprobar si la función a llevado a cabo las operaciones esperadas y ha generado la salida que corresponde en función de los parámetros introducidos.
+
+Un ejemplo de uso de aserciones sería el siguiente: si tengo una función sumar que recibe dos parámetros a y b puedo usar un assertEquals para validar si la salida de sumar(a, b) es igual a la suma de los parámetros de entrada.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un entendimiento básico sobre el uso de aserciones en pruebas, pero falta profundizar más en el tema. La evaluación es la siguiente:
+
+Calificación: 6/10
+
+Explicación:
+",8.0,35.690672636032104
+69,"Respuesta: Son vitales y de las partes más importantes de los test. Permite asertar la validez del código creado en el test ¡ un test más relevante, seguro y preciso gracias a la implementación en los datos empleados. Por ejemplo assert.Equals es fundamental para crear test robustos y fiables",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante tiene elementos correctos pero falta una explicación más detallada y clara. Aquí está la evaluación:
+
+Calificación: 6/10
+
+Explicación:
+- El estudiante reconoce correctamente la",5.0,35.53818702697754
+70,Respuesta: digo lo mismo que en la anterior pregunta,Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante no aporta nueva información y simplemente repite lo que se ha escrito antes, lo cual no demuestra comprensión ni uso adecuado de las aserciones en los tests.
+
+Calificación: ",0.0,34.89924883842468
+71,"Respuesta: Las aserciones en los test se utilizan para ejecutar los test ya implementados. Se añaden, y se ejecuta para validar su funcionamiento. Es decir, por ejemplo, se añade un test, se implementa y al usar aserciones, se ejecuta, por lo tanto, se comprueba su comportamiento respecto al test.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un entendimiento básico de cómo se utilizan las aserciones en los tests, pero falta profundizar en el tema. La nota sería 6.
+
+Aspectos correctos:
+- Reconoce que las aserciones",0.0,35.251872301101685
+72,"Respuesta: Las aserciones en los test se utilizan para ejecutar los test ya implementados. Se añaden, y se ejecuta para validar su funcionamiento. Es decir, por ejemplo, se añade un test, se implementa y al usar aserciones, se ejecuta, por lo tanto, se comprueba su comportamiento respecto al test.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante tiene elementos correctos pero falta una explicación más detallada y completa. Aquí está la evaluación:
+
+Calificación: 6/10
+
+Explicación:
+- El estudiante menciona correctamente que las",0.0,35.247302293777466
+73,"Respuesta: Las aserciones en los test se utilizan para ejecutar los test ya implementados. Se añaden, y se ejecuta para validar su funcionamiento. Es decir, por ejemplo, se añade un test, se implementa y al usar aserciones, se ejecuta, por lo tanto, se comprueba su comportamiento respecto al test.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta proporcionada tiene algunos elementos correctos pero también carece de detalles importantes. Aquí está la evaluación:
+
+Calificación: 6/10
+
+Explicación:
+- **Aspectos correctos**: La respuesta menciona correctamente que",0.0,35.42375445365906
+74,"Respuesta: Las aserciones en los test se utilizan para ejecutar los test ya implementados. Se añaden, y se ejecuta para validar su funcionamiento. Es decir, por ejemplo, se añade un test, se implementa y al usar aserciones, se ejecuta, por lo tanto, se comprueba su comportamiento respecto al test.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante contiene elementos correctos pero no está muy desarrollada ni precisa. Aquí hay algunas mejoras que podrían hacerla más completa y clara:
+
+- La explicación de lo que son las aserciones es un poco",0.0,35.347952365875244
+75,"Respuesta: Las aserciones en los test se utilizan para ejecutar los test ya implementados. Se añaden, y se ejecuta para validar su funcionamiento. Es decir, por ejemplo, se añade un test, se implementa y al usar aserciones, se ejecuta, por lo tanto, se comprueba su comportamiento respecto al test.",Pregunta: Describe cómo se pueden utilizar las aserciones en los tests y por qué son importantes.,"La respuesta del estudiante muestra un entendimiento básico de cómo se utilizan las aserciones en pruebas de software, pero carece de detalles específicos y falta una explicación más clara de la importancia de las aserciones.",0.0,35.39883637428284

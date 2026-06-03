@@ -19,29 +19,31 @@ class ClienteLLM:
         messages = [
         {
             "role": "system",
-            "content": formateados
+            "content": "\n ".join(messages[:-1]) 
         },
         {
             "role": "user",
-            "content": [
-                {"type": "text", "text": f"{messages[-1]}"}
-            ]
+            "content": messages[-1]
+
         }
         ]
-        print(messages)
+
         payload = {
             "messages": messages
         }
-
         inicio = time.time()
 
-        response = requests.post(
-            self.url + "/chat",
-            json=payload,
-            headers={"Content-Type": "application/json"}
-        ).json()
-
-        tiempo = time.time() - inicio
-
-
-        return response["response"], tiempo
+        try:
+            response = requests.post(
+                self.url + "/chat",
+                json=payload,
+                headers={"Content-Type": "application/json"}
+            ).json()
+            tiempo = time.time() - inicio
+            return response["response"], tiempo
+            
+        except Exception as e:
+            tiempo = time.time() - inicio
+            return {
+                "response": "respuesta no obtenida"
+            }, tiempo
