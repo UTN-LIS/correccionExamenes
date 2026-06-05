@@ -5,7 +5,7 @@ columnas = [
 ]
 
 # Leer CSV original
-df = pd.read_csv("Qwen2-71PreguntaConEjemplos_2048tokens.csv")
+df = pd.read_csv("resultados.csv")
 
 # Filtrar filas
 

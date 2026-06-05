@@ -19,12 +19,13 @@ class ClienteLLM:
         messages = [
         {
             "role": "system",
-            "content": "\n ".join(messages[:-1]) 
+            "content": formateados
         },
         {
             "role": "user",
-            "content": messages[-1]
-
+            "content": [
+                {"type": "text", "text": f"{messages[-1]}"}
+            ]
         }
         ]
 
@@ -32,7 +33,7 @@ class ClienteLLM:
             "messages": messages
         }
         inicio = time.time()
-
+ 
         try:
             response = requests.post(
                 self.url + "/chat",
@@ -46,4 +47,4 @@ class ClienteLLM:
             tiempo = time.time() - inicio
             return {
                 "response": "respuesta no obtenida"
-            }, tiempo
+            }, int(tiempo)
