@@ -1,37 +1,37 @@
 import time
 import requests
 import os
-import json
 from dotenv import load_dotenv
+
 
 class ClienteLLM:
     def __init__(self):
         load_dotenv()
         self.url = os.getenv("URL_LLM")
 
-
-    def generar_salida(self, messages):
-        
+    def generar_salida(self, system_prompt: str, user_message: str):
+        """
+        Llama al LLM con un system prompt y un user message ya construidos.
+        Retorna (respuesta: str, tiempo: float).
+        """
         messages = [
-        {
-            "role": "system",
-            "content": [
-                {"type": "text", "text": f"{[messages[0], messages[1]]}"}
-            ]
-        },
-        {
-            "role": "user",
-            "content": [
-                {"type": "text", "text": f"{[messages[2], messages[3]]}"}
-            ]
-        }
+            {
+                "role": "system",
+                "content": [
+                {"type": "text", "text":system_prompt}
+                ]
+            },
+            {
+                "role": "user",
+                "content": [
+                {"type": "text", "text":user_message}
+                ]
+            }
         ]
 
-        payload = {
-            "messages": messages
-        }
+        payload = {"messages": messages}
         inicio = time.time()
- 
+
         try:
             response = requests.post(
                 self.url + "/chat",
@@ -40,9 +40,8 @@ class ClienteLLM:
             ).json()
             tiempo = time.time() - inicio
             return response["response"], tiempo
-            
+
         except Exception as e:
             tiempo = time.time() - inicio
-            return {
-                "response": "respuesta no obtenida"
-            }, int(tiempo)
+            print(f"Error al llamar al LLM: {e}")
+            return "respuesta no obtenida", tiempo

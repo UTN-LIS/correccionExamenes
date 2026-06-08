@@ -1,5 +1,4 @@
-Modelo: gemma-3-12b
-System Prompt:
+SYSTEM_PROMPT = """
 Eres un evaluador experto de respuestas estudiantiles. Tu única tarea es insertar etiquetas de marcado en el texto original para identificar conceptos presentes en la respuesta.
 
 ## ENTRADA
@@ -39,3 +38,35 @@ NO marques SI:
 ## SALIDA
 Devuelve únicamente la respuesta original con las etiquetas insertadas.
 Está prohibido agregar: comentarios, análisis, puntuaciones, explicaciones, markdown, texto adicional de cualquier tipo.
+""".strip()
+
+
+def construir_user_message(pregunta: str, conceptos: list[dict], respuesta: str) -> str:
+    """
+    Arma el mensaje de usuario con la pregunta, los conceptos y la respuesta del estudiante.
+
+    Args:
+        pregunta:  Texto de la pregunta evaluada.
+        conceptos: Lista de dicts con claves 'tag' y 'descripcion'.
+                   Puede ser lista vacía si el dataset aún no los incluye.
+        respuesta: Respuesta del estudiante a evaluar.
+
+    Returns:
+        String formateado listo para enviarse como user message al LLM.
+    """
+    if conceptos:
+        conceptos_str = "\n".join(
+            f'  - <{c["tag"]}>: {c["descripcion"]}'
+            for c in conceptos
+        )
+    else:
+        conceptos_str = "  (no se proveyeron conceptos para esta pregunta)"
+
+    return f"""## PREGUNTA
+{pregunta}
+
+## CONCEPTOS A IDENTIFICAR
+{conceptos_str}
+
+## RESPUESTA DEL ESTUDIANTE
+{respuesta}"""
