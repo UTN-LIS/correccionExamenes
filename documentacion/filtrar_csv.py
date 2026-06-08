@@ -35,7 +35,12 @@ ids_filtrar = [
     "Q977667967"
 ]
 
-ids_filtrar1 = ["Q434022307"]
+ids_filtrar1 = [
+    "Q004474161",
+    "Q205293180",
+    "Q675600740",
+    "Q799823558"
+    ]
 
 # Leer CSV original
 df = pd.read_csv("dataset_es.csv")
