@@ -134,28 +134,33 @@ def normalizar_nota(nota, den, escala_objetivo=10.0):
     return nota
 
 def buscar_archivos_csv(directorio_base="."):
-    """Busca archivos CSV recursivamente en el directorio, excluyendo los ya procesados."""
+    """Busca archivos CSV y Excel recursivamente en el directorio, excluyendo los ya procesados."""
     archivos = []
     for raiz, _, files in os.walk(directorio_base):
         for f in files:
-            if f.endswith(".csv") and not f.endswith("_procesado.csv"):
+            if f.startswith("~$"):
+                continue
+            ext = os.path.splitext(f)[1].lower()
+            if ext == ".csv" and not f.endswith("_procesado.csv"):
+                archivos.append(os.path.join(raiz, f))
+            elif ext in [".xlsx", ".xls"] and not f.endswith("_procesado.xlsx") and not f.endswith("_procesado.xls"):
                 archivos.append(os.path.join(raiz, f))
     return sorted(archivos)
 
 def seleccionar_archivo_interactivo():
-    """Presenta una lista de archivos CSV y permite al usuario elegir uno."""
+    """Presenta una lista de archivos CSV/Excel y permite al usuario elegir uno."""
     archivos = buscar_archivos_csv()
     if not archivos:
-        print_error("No se encontraron archivos CSV en el directorio actual.")
+        print_error("No se encontraron archivos CSV o Excel en el directorio actual.")
         return None
     
     if USE_RICH:
-        console.print(Panel.fit("[bold cyan]Buscador de Experimentos CSV[/bold cyan]\n"
+        console.print(Panel.fit("[bold cyan]Buscador de Experimentos (CSV/Excel)[/bold cyan]\n"
                                 "Seleccione el archivo que desea procesar ingresando su número:"))
         for idx, ruta in enumerate(archivos):
             console.print(f"  [bold green][{idx}][/bold green] {os.path.relpath(ruta)}")
     else:
-        print("Buscador de Experimentos CSV:")
+        print("Buscador de Experimentos (CSV/Excel):")
         for idx, ruta in enumerate(archivos):
             print(f"  [{idx}] {os.path.relpath(ruta)}")
             
@@ -287,42 +292,75 @@ def calcular_metricas(datos):
     }
 
 def procesar_csv(ruta_csv):
-    """Procesa el CSV de entrada, extrae las notas, calcula las métricas y genera salidas."""
+    """Procesa el CSV o Excel de entrada, extrae las notas, calcula las métricas y genera salidas."""
     if not os.path.exists(ruta_csv):
         print_error(f"El archivo '{ruta_csv}' no existe.")
         return
     
     print_info(f"Cargando archivo: [bold]{os.path.basename(ruta_csv)}[/bold]")
+    ext = os.path.splitext(ruta_csv)[1].lower()
     
-    # Intentar decodificar con distintos encodigs comunes
-    encoding_exitoso = None
     filas_raw = []
+    fieldnames = []
+    tipo_archivo = ""
     
-    encodings_to_try = ['utf-8-sig', 'utf-8', 'latin-1', 'cp1252']
-    for enc in encodings_to_try:
+    if ext in ['.xlsx', '.xls']:
+        tipo_archivo = "Excel"
         try:
-            with open(ruta_csv, mode='r', encoding=enc) as f:
-                reader = csv.DictReader(f)
-                fieldnames = reader.fieldnames
-                if not fieldnames:
-                    continue
-                filas_raw = list(reader)
-                encoding_exitoso = enc
-                break
-        except Exception:
-            continue
+            import pandas as pd
+        except ImportError:
+            print_error(
+                "\nPara procesar archivos de Excel (.xlsx/.xls) necesitas instalar pandas y openpyxl.\n"
+                "Por favor ejecuta:\n"
+                "  pip install pandas openpyxl\n"
+                "O alternativamente, guarda tu archivo como un CSV (.csv) e inténtalo de nuevo."
+            )
+            return
             
-    if not encoding_exitoso:
-        print_error("No se pudo leer el archivo CSV. Verifique el formato y la codificación.")
-        return
+        try:
+            df = pd.read_excel(ruta_csv)
+            fieldnames = list(df.columns)
+            for _, row in df.iterrows():
+                d = {}
+                for col in fieldnames:
+                    val = row[col]
+                    if pd.isna(val):
+                        d[col] = ""
+                    else:
+                        d[col] = str(val)
+                filas_raw.append(d)
+        except Exception as e:
+            print_error(f"Error al leer el archivo Excel: {e}")
+            return
+    else:
+        # Intentar decodificar con distintos encodings comunes
+        encoding_exitoso = None
+        encodings_to_try = ['utf-8-sig', 'utf-8', 'latin-1', 'cp1252']
+        for enc in encodings_to_try:
+            try:
+                with open(ruta_csv, mode='r', encoding=enc) as f:
+                    reader = csv.DictReader(f)
+                    fieldnames = reader.fieldnames
+                    if not fieldnames:
+                        continue
+                    filas_raw = list(reader)
+                    encoding_exitoso = enc
+                    break
+            except Exception:
+                continue
+                
+        if not encoding_exitoso:
+            print_error("No se pudo leer el archivo CSV. Verifique el formato y la codificación.")
+            return
+        tipo_archivo = f"CSV ({encoding_exitoso})"
         
-    print_success(f"Archivo cargado correctamente con codificación: {encoding_exitoso} ({len(filas_raw)} filas encontradas)")
+    print_success(f"Archivo cargado correctamente [{tipo_archivo}] ({len(filas_raw)} filas encontradas)")
     
     # Detectar columnas relevantes
     col_step, col_salida, col_esperado = detectar_encabezados(fieldnames)
     
     if not col_salida or not col_esperado:
-        print_error(f"No se pudieron identificar las columnas críticas en el CSV.\n"
+        print_error(f"No se pudieron identificar las columnas críticas en el archivo.\n"
                     f"Columnas detectadas: {fieldnames}\n"
                     f"Se requiere al menos una columna de salida del modelo y una de nota esperada.")
         return
@@ -414,11 +452,9 @@ def procesar_csv(ruta_csv):
     # Calcular métricas globales
     metricas = calcular_metricas(datos_calculo)
     
-    # Escribir el nuevo archivo CSV procesado
+    # Escribir el nuevo archivo procesado
     ruta_dir, nombre_archivo = os.path.split(ruta_csv)
     nombre_base, _ = os.path.splitext(nombre_archivo)
-    
-    ruta_csv_salida = os.path.join(ruta_dir, f"{nombre_base}_procesado.csv")
     
     nuevos_encabezados = fieldnames + [
         'nota_modelo', 'denominador_modelo', 'nota_modelo_normalizada',
@@ -426,15 +462,32 @@ def procesar_csv(ruta_csv):
         'diferencia_normalizada', 'diferencia_absoluta_normalizada'
     ]
     
-    try:
-        with open(ruta_csv_salida, mode='w', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=nuevos_encabezados)
-            writer.writeheader()
-            writer.writerows(filas_procesadas)
-        print_success(f"Archivo CSV procesado guardado en: [bold]{ruta_csv_salida}[/bold]")
-    except Exception as e:
-        print_error(f"No se pudo escribir el archivo CSV procesado: {e}")
-        return
+    # Si la entrada era un Excel, intentar guardar como Excel procesado
+    guardado_exitoso = False
+    if ext in ['.xlsx', '.xls']:
+        try:
+            import pandas as pd
+            ruta_salida = os.path.join(ruta_dir, f"{nombre_base}_procesado.xlsx")
+            df_salida = pd.DataFrame(filas_procesadas)
+            # Reordenar columnas para que las nuevas estén al final
+            df_salida = df_salida[nuevos_encabezados]
+            df_salida.to_excel(ruta_salida, index=False)
+            print_success(f"Archivo Excel procesado guardado en: [bold]{ruta_salida}[/bold]")
+            guardado_exitoso = True
+        except Exception as e:
+            print_warning(f"No se pudo guardar como Excel ({e}). Guardando como CSV de respaldo...")
+            
+    if not guardado_exitoso:
+        ruta_csv_salida = os.path.join(ruta_dir, f"{nombre_base}_procesado.csv")
+        try:
+            with open(ruta_csv_salida, mode='w', newline='', encoding='utf-8') as f:
+                writer = csv.DictWriter(f, fieldnames=nuevos_encabezados)
+                writer.writeheader()
+                writer.writerows(filas_procesadas)
+            print_success(f"Archivo procesado guardado en: [bold]{ruta_csv_salida}[/bold]")
+        except Exception as e:
+            print_error(f"No se pudo escribir el archivo procesado: {e}")
+            return
 
     # Generar Reporte de Métricas en Markdown
     ruta_reporte_md = os.path.join(ruta_dir, f"{nombre_base}_reporte.md")
