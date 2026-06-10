@@ -35,9 +35,9 @@ CONCEPTOS_POR_PREGUNTA = {
             "descripcion": "Relaciona TDD con el concepto de calidad o prevención de errores"
         },
         {
-            "tag": "GUIA_DESARROLLO",
-            "descripcion": "Los tests guían el desarrollo"
-        },
+            "tag": "ERROR",
+            "descripcion": "plantea algun concepto de forma ambigua o erroneamente"
+        }
     ],
     "Q205293180": [
         {
@@ -60,6 +60,10 @@ CONCEPTOS_POR_PREGUNTA = {
             "tag": "PROPOSITO_REFACTOR",
             "descripcion": "Menciona mejora en mantenibilidad o calidad del código"
         },
+        {
+            "tag": "ERROR",
+            "descripcion": "plantea algun concepto de forma ambigua o erroneamente"
+        }
     ],
     "Q675600740": [
         {
@@ -82,6 +86,10 @@ CONCEPTOS_POR_PREGUNTA = {
             "tag": "SIRVE_VALIDACION",
             "descripcion": "Explica que las pruebas ayudan a verificar el correcto funcionamiento del software"
         },
+        {
+            "tag": "ERROR",
+            "descripcion": "plantea algun concepto de forma ambigua o erroneamente"
+        }
     ],
     "Q799823558": [
         {
@@ -108,5 +116,9 @@ CONCEPTOS_POR_PREGUNTA = {
             "tag": "ESPECIFICACION",
             "descripcion": "Menciona que los tests funcionan como especificación en TDD"
         },
+        {
+            "tag": "ERROR",
+            "descripcion": "plantea algun concepto de forma ambigua o erroneamente"
+        }
     ],
 }

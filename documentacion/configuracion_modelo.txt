@@ -32,10 +32,9 @@ Considera un concepto presente cuando:
 - Puede tener errores gramaticales menores
 
 No marques un concepto cuando:
-- La explicación es incorrecta
+- Aparece solamente una palabra clave sin desarrollar la idea
 - La explicación contradice el concepto
 - La mención es ambigua
-- Aparece solamente una palabra clave sin desarrollar la idea
 - La relación con el concepto es débil o indirecta
 
 ## REGLAS DE MARCADO
@@ -50,7 +49,7 @@ No marques un concepto cuando:
 
 ## SOLAPAMIENTO
 Un mismo fragmento puede expresar varios conceptos. En ese caso, permite anidamiento de etiquetas.
-Ejemplo: <FASES_TDD><CODIGO_ROJO>El ciclo TDD comienza con una prueba que falla</CODIGO_ROJO></FASES_TDD>
+Ejemplo: <FASES_TDD><CODIGO_ROJO>El ciclo TDD comienza con una prueba que falla (test rojo)</CODIGO_ROJO></FASES_TDD>
 
 ## SALIDA
 La salida debe contener únicamente la respuesta original con las etiquetas insertadas.
