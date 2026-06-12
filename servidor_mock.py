@@ -1,3 +1,4 @@
+import random
 from fastapi import FastAPI, Body
 # para no ejecutar el servidor llm real
 app = FastAPI()
@@ -10,7 +11,7 @@ def root():
 async def chat(body= Body(...)):
     print(body)
     return {
-        "response": "7.3",
+        "response": random.choice(["sí", "no"]),
         "session_id": 1
     }
 
