@@ -12,7 +12,7 @@ class Experimento:
         Construye los mensajes y llama al LLM.
         Retorna (salida: str, tiempo: float).
         """
-        user_message = construir_user_message(pregunta, conceptos, respuesta)
+        user_message = construir_user_message(pregunta, respuesta)
         salida, tiempo = self.cliente_llm.generar_salida(SYSTEM_PROMPT, user_message)
         return salida, tiempo
 

@@ -1,11 +1,11 @@
 import pandas as pd
 
 columnas = [
-    "tiempo",
+    "question_id",
 ]
 
 # Leer CSV original
-df = pd.read_csv("resultados.csv")
+df = pd.read_csv("dataset_filtrado.csv")
 
 # Filtrar filas
 
