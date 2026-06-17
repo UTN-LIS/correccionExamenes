@@ -6,7 +6,8 @@ Script de Visualización de Rendimiento de Experimentos de Calificación con IA
 Autor: Antigravity
 Propósito: Cargar los resultados del CSV de experimentos paralelos y generar
            gráficos de alta calidad para analizar el comportamiento y precisión
-           de cada experimento frente a las notas de referencia (esperadas).
+           de cada experimento frente a las notas de referencia (esperadas),
+           incluyendo análisis agregados y caso por caso de manera individual.
 """
 
 import os
@@ -124,12 +125,12 @@ def generar_graficos(datos, ruta_salida):
     Genera el tablero de visualización comparativo.
     """
     # 1. Preparar datos para las gráficas
-    # Filtrar datos válidos para experimentos numéricos
+    # Filtrar datos válidos
     datos_num = [d for d in datos if d['experimento_nota'] is not None]
     datos_conceptos = [d for d in datos if d['nota_conceptos'] is not None]
     datos_cat = [d for d in datos if d['cota_inf'] is not None]
     
-    # Agrupar valores numéricos por nota de referencia (esperado) para obtener las curvas promedio (rectas de tendencia)
+    # Agrupar valores numéricos por nota de referencia (esperado) para obtener las curvas promedio
     # Experimento-nota
     esp_valores_nota = {}
     for d in datos_num:
@@ -155,36 +156,50 @@ def generar_graficos(datos, ruta_salida):
     promedios_cota_inf = [np.mean([x[0] for x in esp_valores_cat[e]]) for e in esp_unicos_cat]
     promedios_cota_sup = [np.mean([x[1] for x in esp_valores_cat[e]]) for e in esp_unicos_cat]
 
-    # Crear la figura del panel con 2 subplots principales
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 7.5))
+    # Ordenar los datos individualmente por la nota esperada para el gráfico caso por caso
+    datos_ordenados = sorted(datos, key=lambda x: (x['esperado'], x['index']))
+    num_casos = len(datos_ordenados)
+    indices_x = np.arange(num_casos)
+    
+    val_esperados = [d['esperado'] for d in datos_ordenados]
+    val_nota = [d['experimento_nota'] for d in datos_ordenados]
+    val_conceptos = [d['nota_conceptos'] for d in datos_ordenados]
+    
+    # Manejar cotas nulas para la graficación caso por caso
+    val_cota_inf = [d['cota_inf'] if d['cota_inf'] is not None else np.nan for d in datos_ordenados]
+    val_cota_sup = [d['cota_sup'] if d['cota_sup'] is not None else np.nan for d in datos_ordenados]
+
+    # Crear la figura del panel con 2x2 subplots (el de abajo unificado)
+    fig = plt.figure(figsize=(16, 12))
+    
+    ax1 = plt.subplot2grid((2, 2), (0, 0))
+    ax2 = plt.subplot2grid((2, 2), (0, 1))
+    ax3 = plt.subplot2grid((2, 2), (1, 0), colspan=2)
+    
     fig.suptitle('Análisis de Experimentos de Corrección con IA frente al Profesor', 
-                 fontsize=18, fontweight='bold', color='#0F172A', y=0.96)
+                 fontsize=18, fontweight='bold', color='#0F172A', y=0.97)
     
     # -------------------------------------------------------------
-    # SUBPLOT 1: Comparación de Notas Numéricas (Rectas y Dispersión)
+    # SUBPLOT 1: Comparación de Notas Numéricas (Promedios)
     # -------------------------------------------------------------
-    # Línea de referencia (Profesor)
     lims = [0, 10]
     ax1.plot(lims, lims, color='#475569', linestyle='--', linewidth=2, label='Esperado (Profesor)', zorder=2)
     
-    # Puntos de dispersión individuales (con baja opacidad para evitar solapamiento)
-    # Experimento-nota (puntos lilas/violetas)
+    # Puntos de dispersión individuales
     ax1.scatter([d['esperado'] for d in datos_num], [d['experimento_nota'] for d in datos_num],
                 color='#818CF8', alpha=0.35, edgecolors='none', s=45, label='Casos: Experimento-nota', zorder=3)
-    
-    # nota-por-varios-conceptos (puntos celestes/teales)
     ax1.scatter([d['esperado'] for d in datos_conceptos], [d['nota_conceptos'] for d in datos_conceptos],
                 color='#2DD4BF', alpha=0.3, edgecolors='none', s=35, label='Casos: Nota por varios conceptos', zorder=3)
     
-    # Rectas promedio (Líneas de tendencia)
+    # Rectas promedio
     ax1.plot(esp_unicos_nota, promedios_nota, color='#4F46E5', marker='o', linewidth=3, markersize=8,
              label='Tendencia: Experimento-nota', zorder=5)
     ax1.plot(esp_unicos_conceptos, promedios_conceptos, color='#0D9488', marker='s', linewidth=2.5, markersize=7,
              label='Tendencia: Nota por varios conceptos', zorder=4)
     
-    ax1.set_title('Comparación de Calificaciones Numéricas', fontsize=14, fontweight='semibold', pad=15)
-    ax1.set_xlabel('Nota Esperada (Profesor)', fontsize=12, labelpad=10)
-    ax1.set_ylabel('Nota Asignada por IA', fontsize=12, labelpad=10)
+    ax1.set_title('Comparación de Calificaciones Numéricas (Promedios)', fontsize=13, fontweight='bold', pad=15)
+    ax1.set_xlabel('Nota Esperada (Profesor)', fontsize=11, labelpad=8)
+    ax1.set_ylabel('Nota Asignada por IA', fontsize=11, labelpad=8)
     ax1.set_xlim(-0.5, 10.5)
     ax1.set_ylim(-0.5, 10.5)
     ax1.set_xticks(range(11))
@@ -192,33 +207,30 @@ def generar_graficos(datos, ruta_salida):
     ax1.legend(loc='upper left', frameon=True, facecolor='#FFFFFF', edgecolor='#E2E8F0', framealpha=0.9)
     
     # -------------------------------------------------------------
-    # SUBPLOT 2: Experimento de Categorías (Cotas Superior e Inferior)
+    # SUBPLOT 2: Experimento de Categorías (Promedios)
     # -------------------------------------------------------------
-    # Línea de referencia (Profesor)
     ax2.plot(lims, lims, color='#475569', linestyle='--', linewidth=2, label='Esperado (Profesor)', zorder=2)
     
-    # Región sombreada del intervalo promedio predicho por la categoría para cada nota esperada
+    # Región sombreada del intervalo promedio
     ax2.fill_between(esp_unicos_cat, promedios_cota_inf, promedios_cota_sup, 
                      color='#F87171', alpha=0.2, label='Banda de Categoría Promedio (Cota Inf-Sup)', zorder=1)
     
-    # Graficar las cotas promedio como líneas límite
     ax2.plot(esp_unicos_cat, promedios_cota_inf, color='#EF4444', linestyle=':', linewidth=1.8, label='Límite Inferior Promedio', zorder=4)
     ax2.plot(esp_unicos_cat, promedios_cota_sup, color='#EF4444', linestyle=':', linewidth=1.8, label='Límite Superior Promedio', zorder=4)
     
-    # Puntos individuales clasificados según acierto de cota
+    # Puntos individuales clasificados según acierto
     correctos_x, correctos_y = [], []
-    sobre_x, sobre_y = [], []   # IA sobreestimó (el valor esperado es menor que la cota inferior)
-    sub_x, sub_y = [], []       # IA subestimó (el valor esperado es mayor que la cota superior)
+    sobre_x, sobre_y = [], []
+    sub_x, sub_y = [], []
     
     for d in datos_cat:
         esp = d['esperado']
         cota_i = d['cota_inf']
         cota_s = d['cota_sup']
         
-        # Evaluar si la nota real del profesor cae en el intervalo de la categoría predicha por la IA
         if cota_i <= esp <= cota_s:
             correctos_x.append(esp)
-            correctos_y.append((cota_i + cota_s) / 2) # Graficar en el centro del intervalo
+            correctos_y.append((cota_i + cota_s) / 2)
         elif esp < cota_i:
             sobre_x.append(esp)
             sobre_y.append((cota_i + cota_s) / 2)
@@ -226,25 +238,51 @@ def generar_graficos(datos, ruta_salida):
             sub_x.append(esp)
             sub_y.append((cota_i + cota_s) / 2)
             
-    # Graficar los puntos individuales por tipo de acierto
     ax2.scatter(correctos_x, correctos_y, color='#10B981', alpha=0.6, edgecolors='none', s=50, 
-                label='Categoría Correcta (Nota real dentro del intervalo)', zorder=3)
+                label='Categoría Correcta (En rango)', zorder=3)
     ax2.scatter(sobre_x, sobre_y, color='#EF4444', alpha=0.6, edgecolors='none', s=50, 
-                label='IA Sobrecalificó (Nota real menor que la categoría)', zorder=3)
+                label='IA Sobrecalificó', zorder=3)
     ax2.scatter(sub_x, sub_y, color='#3B82F6', alpha=0.6, edgecolors='none', s=50, 
-                label='IA Subcalificó (Nota real mayor que la categoría)', zorder=3)
+                label='IA Subcalificó', zorder=3)
     
-    ax2.set_title('Evaluación de Intervalos (experimento-categoria)', fontsize=14, fontweight='semibold', pad=15)
-    ax2.set_xlabel('Nota Esperada (Profesor)', fontsize=12, labelpad=10)
-    ax2.set_ylabel('Centro de la Categoría Predicha', fontsize=12, labelpad=10)
+    ax2.set_title('Evaluación de Intervalos (Promedios)', fontsize=13, fontweight='bold', pad=15)
+    ax2.set_xlabel('Nota Esperada (Profesor)', fontsize=11, labelpad=8)
+    ax2.set_ylabel('Centro de la Categoría Predicha', fontsize=11, labelpad=8)
     ax2.set_xlim(-0.5, 10.5)
     ax2.set_ylim(-0.5, 10.5)
     ax2.set_xticks(range(11))
     ax2.set_yticks(range(11))
     ax2.legend(loc='upper left', frameon=True, facecolor='#FFFFFF', edgecolor='#E2E8F0', framealpha=0.9)
     
-    # Ajustar espaciado
-    plt.tight_layout(rect=[0, 0, 1, 0.93])
+    # -------------------------------------------------------------
+    # SUBPLOT 3: Análisis Caso por Caso (Cada fila por separado)
+    # -------------------------------------------------------------
+    # Graficar la región sombreada del intervalo de categoría para cada caso individual
+    # Para evitar que fill_between dibuje saltos extraños entre puntos nulos, lo rellenamos
+    ax3.fill_between(indices_x, val_cota_inf, val_cota_sup, 
+                     color='#EF4444', alpha=0.12, label='Intervalo de Categoría Predicha (Cota Inf-Sup)', zorder=1)
+    
+    # Graficar la nota esperada (Profesor) como una escalera/recta ascendente
+    ax3.plot(indices_x, val_esperados, color='#1E293B', linewidth=2, label='Nota Esperada (Profesor)', zorder=4)
+    
+    # Graficar cada predicción de nota numérica individual
+    ax3.scatter(indices_x, val_nota, color='#4F46E5', s=12, alpha=0.7, label='Caso: Experimento-nota', zorder=5)
+    ax3.scatter(indices_x, val_conceptos, color='#0D9488', s=10, alpha=0.6, label='Caso: Nota por varios conceptos', zorder=3)
+    
+    # Conectar predicciones individuales con líneas de trazo fino para ver la alternancia
+    ax3.plot(indices_x, val_nota, color='#4F46E5', linewidth=0.5, alpha=0.35, zorder=4)
+    ax3.plot(indices_x, val_conceptos, color='#0D9488', linewidth=0.5, alpha=0.3, zorder=2)
+    
+    ax3.set_title('Análisis Detallado Caso por Caso (Ordenado por Nota Esperada)', fontsize=14, fontweight='bold', pad=15)
+    ax3.set_xlabel(f'Índice del Caso en CSV ({num_casos} filas, ordenadas ascendentemente por nota del profesor)', fontsize=11, labelpad=8)
+    ax3.set_ylabel('Nota / Escala', fontsize=11, labelpad=8)
+    ax3.set_xlim(-5, num_casos + 5)
+    ax3.set_ylim(-0.5, 10.5)
+    ax3.set_yticks(range(11))
+    ax3.legend(loc='upper left', frameon=True, facecolor='#FFFFFF', edgecolor='#E2E8F0', framealpha=0.9, ncol=2)
+    
+    # Ajustar espaciado de la figura
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
     
     # Guardar la gráfica en disco
     plt.savefig(ruta_salida, dpi=300, bbox_inches='tight')
