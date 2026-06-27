@@ -1,5 +1,6 @@
 import os
 import uvicorn
+import json
 from typing import List
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -42,24 +43,87 @@ class EvaluacionRequest(BaseModel):
     pregunta: str
     respuesta_alumno: str
 
-# 2. Inicialización del Modelo con LangChain
-try:
-    from langchain_ollama import ChatOllama
-except ImportError:
-    from langchain_community.chat_models import ChatOllama
+# 2. Inicialización del Modelo Local de Transformers (google/gemma-4-12B-it)
+from transformers import AutoProcessor, AutoModelForMultimodalLM
 
-# Conexión al modelo local cuantizado a través de Ollama (por defecto 'qwen2-7b' o 'llama3')
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2-7b")
-OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+print("Cargando procesador y modelo google/gemma-4-12B-it...")
+processor = AutoProcessor.from_pretrained("google/gemma-4-12B-it")
+model = AutoModelForMultimodalLM.from_pretrained("google/gemma-4-12B-it",
+                                                device_map="auto",
+                                                max_memory={
+                                                    0: "13GiB",
+                                                    1: "13GiB",
+                                                    "cpu": "30GiB"
+                                                },
+                                                trust_remote_code=True,
+                                            )
 
-print(f"Inicializando ChatOllama con el modelo: {OLLAMA_MODEL}...")
-model = ChatOllama(
-    model=OLLAMA_MODEL,
-    base_url=OLLAMA_BASE_URL,
-    temperature=0
-)
+# 3. Clase Wrapper de LangChain para Salida Estructurada
+class StructuredGemma:
+    def __init__(self, model, processor, schema):
+        self.model = model
+        self.processor = processor
+        self.schema = schema
 
-# 3. Prompt de Sistema y Construcción de la Cadena
+    def invoke(self, prompt_value):
+        # Convertir PromptValue a la estructura de mensajes del template
+        messages = []
+        for msg in prompt_value.to_messages():
+            role = "user" if msg.type == "human" else "system" if msg.type == "system" else "assistant"
+            messages.append({"role": role, "content": msg.content})
+        
+        # Inyectar instrucción JSON basada en el esquema de Pydantic
+        schema_json = json.dumps(self.schema.model_json_schema(), indent=2, ensure_ascii=False)
+        json_instruction = (
+            f"\n\nDebes responder UNICAMENTE con un objeto JSON plano que cumpla estrictamente "
+            f"con el siguiente esquema de Pydantic:\n{schema_json}\n"
+            "No agregues texto explicativo, markdown ni bloques de código. Solo el JSON plano."
+        )
+        if messages and messages[-1]["role"] == "user":
+            messages[-1]["content"] += json_instruction
+        else:
+            messages.append({"role": "user", "content": json_instruction})
+
+        # Preparar inputs con el procesador según lo solicitado por el usuario
+        inputs = self.processor.apply_chat_template(
+            messages,
+            tokenize=True,
+            return_dict=True,
+            return_tensors="pt",
+            add_generation_prompt=True,
+            enable_thinking=False
+        ).to(self.model.device)
+        input_len = inputs["input_ids"].shape[-1]
+        
+        # Generar salida
+        outputs = self.model.generate(**inputs, max_new_tokens=1024)
+        response = self.processor.decode(outputs[0][input_len:], skip_special_tokens=False)
+        
+        # Limpieza de la salida
+        clean_response = response.strip()
+        clean_response = clean_response.replace("<|im_end|>", "").replace("<|eot_id|>", "").strip()
+        
+        if "```json" in clean_response:
+            clean_response = clean_response.split("```json")[1].split("```")[0].strip()
+        elif "```" in clean_response:
+            clean_response = clean_response.split("```")[1].split("```")[0].strip()
+            
+        try:
+            return self.schema.model_validate_json(clean_response)
+        except Exception:
+            return self.schema.parse_raw(clean_response)
+
+class ChatGemma:
+    def __init__(self, model, processor):
+        self.model = model
+        self.processor = processor
+
+    def with_structured_output(self, schema):
+        return StructuredGemma(self.model, self.processor, schema)
+
+chat_model = ChatGemma(model, processor)
+
+# 4. Prompt de Sistema y Construcción de la Cadena
 from langchain_core.prompts import ChatPromptTemplate
 
 system_prompt = (
@@ -93,9 +157,9 @@ prompt_template = ChatPromptTemplate.from_messages([
 ])
 
 # Unimos el prompt y el modelo forzando salida estructurada
-chain = prompt_template | model.with_structured_output(EvaluacionExamenUTN)
+chain = prompt_template | chat_model.with_structured_output(EvaluacionExamenUTN)
 
-# 4. Inicialización de FastAPI
+# 5. Inicialización de FastAPI
 from pyngrok import ngrok
 import nest_asyncio
 
@@ -106,7 +170,7 @@ app = FastAPI()
 
 @app.get("/")
 def home():
-    return {"message": "Hola desde Colab + FastAPI + LangChain!"}
+    return {"message": "Hola desde Colab + FastAPI + LangChain + Gemma4!"}
 
 @app.post("/evaluar", response_model=EvaluacionExamenUTN)
 async def evaluar_examen(body: EvaluacionRequest):
