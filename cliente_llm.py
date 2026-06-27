@@ -9,35 +9,29 @@ class ClienteLLM:
         load_dotenv()
         self.url = os.getenv("URL_LLM")
 
-    def generar_salida(self, system_prompt: str, user_message: str):
+    def generar_salida(self, apuntes: str, rubrica: str, pregunta: str, respuesta_alumno: str):
         """
-        Llama al LLM con un system prompt y un user message ya construidos.
-        Retorna (respuesta: str, tiempo: float).
+        Llama al LLM (servidor FastAPI) expuesto en /evaluar enviando el EvaluacionRequest.
+        Retorna (evaluacion: dict, tiempo: float).
         """
-        messages = [
-            {
-                "role": "system",
-                "content": system_prompt
-            },
-            {
-                "role": "user",
-                "content": user_message
-            }
-        ]
-
-        payload = {"messages": messages}
+        payload = {
+            "apuntes": apuntes,
+            "rubrica": rubrica,
+            "pregunta": pregunta,
+            "respuesta_alumno": respuesta_alumno
+        }
         inicio = time.time()
 
         try:
             response = requests.post(
-                self.url + "/chat",
+                self.url + "/evaluar",
                 json=payload,
                 headers={"Content-Type": "application/json"}
             ).json()
             tiempo = time.time() - inicio
-            return response["response"], tiempo
+            return response, tiempo
 
         except Exception as e:
             tiempo = time.time() - inicio
             print(f"Error al llamar al LLM: {e}")
-            return "respuesta no obtenida", tiempo
+            return {}, tiempo

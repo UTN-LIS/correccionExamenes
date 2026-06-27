@@ -14,9 +14,9 @@ class GeneradorCSV:
 
     def dataset_batch(self):
         """
-        Yields tuplas (pregunta, conceptos, respuesta, esperado) por cada fila del dataset.
+        Yields tuplas (pregunta, conceptos, respuesta, esperado, ideal) por cada fila del dataset.
 
-        Espera las columnas: question_id, question_text, student_answer, teacher_grade.
+        Espera las columnas: question_id, question_text, student_answer, teacher_grade, ideal_answer.
         Los conceptos se resuelven desde CONCEPTOS_POR_PREGUNTA usando question_id.
         Si el question_id no tiene conceptos definidos, se retorna lista vacía.
         """
@@ -25,8 +25,9 @@ class GeneradorCSV:
             pregunta    = row["question_text"]
             respuesta   = row["student_answer"]
             esperado    = row.get("teacher_grade")
+            ideal       = row.get("ideal_answer", "")
             conceptos   = CONCEPTOS_POR_PREGUNTA.get(question_id, [])
-            yield pregunta, conceptos, respuesta, esperado
+            yield pregunta, conceptos, respuesta, esperado, ideal
 
     def crear_csv_resultados(self, fieldnames):
         """Crea el archivo CSV de resultados con encabezados."""
