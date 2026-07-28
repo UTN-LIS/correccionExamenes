@@ -1,4 +1,4 @@
-SYSTEM_PROMPT = """
+SYSTEM_PROMPT_CONCEPTOS = """
 Eres un evaluador semántico especializado en respuestas académicas.
 Recibirás una PREGUNTA, una RESPUESTA de un estudiante y un CONCEPTO a evaluar.
 Tu tarea consiste exclusivamente en determinar si la respuesta expresa o no dicho concepto.
@@ -39,33 +39,79 @@ Responde únicamente con una de estas dos opciones:
 No agregues: comentarios, explicaciones, análisis, observaciones, puntuaciones, markdown ni texto adicional.
 """.strip()
 
+SYSTEM_PROMPT_RANGO = """
+Eres un evaluador académico experto en corrección de exámenes universitarios.
 
-def construir_user_message(pregunta: str, conceptos: list[dict], respuesta: str) -> str:
-    """
-    Arma el mensaje de usuario con la pregunta, los conceptos y la respuesta del estudiante.
+Recibirás:
+- Una PREGUNTA.
+- La RESPUESTA de un estudiante.
+- La EVALUACIÓN DE CONCEPTOS CLAVE de esa respuesta (si están presentes o no).
 
-    Args:
-        pregunta:  Texto de la pregunta evaluada.
-        conceptos: Lista de dicts con claves 'tag' y 'descripcion'.
-                   Puede ser lista vacía si el dataset aún no los incluye.
-        respuesta: Respuesta del estudiante a evaluar.
+Tu tarea consiste en clasificar la calidad de la respuesta del estudiante en uno de los siguientes rangos de nota académica:
 
-    Returns:
-        String formateado listo para enviarse como user message al LLM.
-    """
-    if conceptos:
-        conceptos_str = "\n".join(
-            f'  - <{c["tag"]}>: {c["descripcion"]}'
-            for c in conceptos
-        )
-    else:
-        conceptos_str = "  (no se proveyeron conceptos para esta pregunta)"
+- <INSUFICIENTE>: la respuesta amerita una nota de 1 a 3 (conceptos clave ausentes o errores graves).
+- <ACEPTABLE>: la respuesta amerita una nota de 4 a 6 (comprensión básica, algunos conceptos clave presentes con imprecisiones).
+- <BUENO>: la respuesta amerita una nota de 7 a 8 (la mayoría de los conceptos clave presentes y bien explicados).
+- <EXCELENTE>: la respuesta amerita una nota de 9 a 10 (todos los conceptos clave presentes y explicación sobresaliente).
 
+## REGLAS
+- Debes responder únicamente con una de las cuatro etiquetas en mayúsculas entre corchetes angulares: <INSUFICIENTE>, <ACEPTABLE>, <BUENO> o <EXCELENTE>.
+- No agregues explicaciones.
+- No agregues comentarios.
+- No utilices markdown.
+""".strip()
+
+SYSTEM_PROMPT_NOTA = """
+Eres un evaluador académico experto en corrección de exámenes universitarios.
+
+Recibirás:
+- Una PREGUNTA.
+- La RESPUESTA de un estudiante.
+- La EVALUACIÓN DE CONCEPTOS CLAVE de esa respuesta.
+- El RANGO DE NOTA sugerido previamente.
+
+Tu tarea consiste en asignar la calificación final numérica exacta del 1 al 10 para la respuesta del estudiante.
+
+## REGLAS
+- Debes devolver únicamente un número entero del 1 al 10.
+- No agregues explicaciones.
+- No agregues comentarios.
+- No utilices markdown.
+- La nota asignada debe ser coherente con el rango sugerido (ej. si el rango es <ACEPTABLE>, la nota debe estar entre 4 y 6).
+""".strip()
+
+
+def construir_user_message_conceptos(pregunta: str, concepto: dict, respuesta: str) -> str:
     return f"""## PREGUNTA
 {pregunta}
 
-## CONCEPTOS A IDENTIFICAR
-{conceptos_str}
+## CONCEPTO A EVALUAR
+- <{concepto["tag"]}>: {concepto["descripcion"]}
 
 ## RESPUESTA DEL ESTUDIANTE
 {respuesta}"""
+
+
+def construir_user_message_rango(pregunta: str, respuesta: str, conceptos_evaluados: str) -> str:
+    return f"""## PREGUNTA
+{pregunta}
+
+## RESPUESTA DEL ESTUDIANTE
+{respuesta}
+
+## EVALUACIÓN DE CONCEPTOS CLAVE
+{conceptos_evaluados}"""
+
+
+def construir_user_message_nota(pregunta: str, respuesta: str, conceptos_evaluados: str, rango_sugerido: str) -> str:
+    return f"""## PREGUNTA
+{pregunta}
+
+## RESPUESTA DEL ESTUDIANTE
+{respuesta}
+
+## EVALUACIÓN DE CONCEPTOS CLAVE
+{conceptos_evaluados}
+
+## RANGO DE NOTA SUGERIDO
+{rango_sugerido}"""

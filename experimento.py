@@ -1,4 +1,12 @@
-from prompts import SYSTEM_PROMPT, construir_user_message
+import time
+from prompts import (
+    SYSTEM_PROMPT_CONCEPTOS,
+    SYSTEM_PROMPT_RANGO,
+    SYSTEM_PROMPT_NOTA,
+    construir_user_message_conceptos,
+    construir_user_message_rango,
+    construir_user_message_nota
+)
 
 
 class Experimento:
@@ -7,18 +15,12 @@ class Experimento:
         self.cliente_llm = cliente_llm
         self.modelo = modelo
 
-    def generar_salida(self, pregunta: str, conceptos: list, respuesta: str):
-        """
-        Construye los mensajes y llama al LLM.
-        Retorna (salida: str, tiempo: float).
-        """
-        user_message = construir_user_message(pregunta, conceptos, respuesta)
-        salida, tiempo = self.cliente_llm.generar_salida(SYSTEM_PROMPT, user_message)
-        return salida, tiempo
-
     def ejecutar_dataset(self, max_items=None):
         """
-        Itera el dataset, llama al LLM por cada concepto de cada fila y guarda los resultados en CSV.
+        Itera el dataset y ejecuta la evaluación secuencial en 3 pasos:
+        Paso 1: Evaluar conceptos clave uno a uno.
+        Paso 2: Evaluar rango de nota con la información de los conceptos clave.
+        Paso 3: Obtener la nota final con toda la información acumulada.
         """
         from conceptos import CONCEPTOS_POR_PREGUNTA
 
@@ -30,11 +32,13 @@ class Experimento:
                     unique_tags.append(c["tag"])
         unique_tags.sort()
 
-        # Los encabezados de salida ahora no tienen 'salida', sino las columnas de conceptos
-        fieldnames = ['step', 'pregunta', 'respuesta', 'esperado', 'tiempo'] + unique_tags
+        # Las columnas del CSV incluyen campos principales, rango, salida (nota final) y tags individuales
+        fieldnames = ['step', 'pregunta', 'respuesta', 'rango_nota', 'salida', 'esperado', 'tiempo'] + unique_tags
 
         self.dataset_cliente.crear_csv_resultados(fieldnames)
-        self.dataset_cliente.guardar_configuracion(self.modelo, SYSTEM_PROMPT)
+        
+        # Guardar configuración (usamos el prompt final como referencia de prompt del sistema)
+        self.dataset_cliente.guardar_configuracion(self.modelo, SYSTEM_PROMPT_NOTA)
 
         buffer_salidas = []
         step = 0
@@ -44,28 +48,56 @@ class Experimento:
             if max_items and step >= max_items:
                 break
 
-            # Inicializar la fila del resultado con las columnas principales y los tags en vacío
+            # Inicializar la fila del resultado
             fila_resultado = {
                 'step': step,
                 'pregunta': pregunta,
                 'respuesta': respuesta,
                 'esperado': esperado,
+                'rango_nota': "",
+                'salida': "",
                 'tiempo': 0.0
             }
             for tag in unique_tags:
                 fila_resultado[tag] = ""
 
-            # Iterar por cada concepto del conjunto de conceptos definidos para esta pregunta
+            conceptos_resultados = []
+
+            # ---- PASO 1: EVALUAR CONCEPTOS CLAVE ----
             if conceptos:
                 for concepto in conceptos:
                     tag = concepto['tag']
-                    # Hacer la consulta para este único concepto
-                    salida, tiempo = self.generar_salida(pregunta, [concepto], respuesta)
+                    desc = concepto['descripcion']
                     
-                    # Limpiar y guardar el resultado binario (sí/no)
-                    clean_salida = salida.strip().lower().rstrip('.')
-                    fila_resultado[tag] = clean_salida
-                    fila_resultado['tiempo'] += tiempo
+                    user_msg_c = construir_user_message_conceptos(pregunta, concepto, respuesta)
+                    salida_c, tiempo_c = self.cliente_llm.generar_salida(SYSTEM_PROMPT_CONCEPTOS, user_msg_c)
+                    
+                    clean_c = salida_c.strip().lower().rstrip('.')
+                    fila_resultado[tag] = clean_c
+                    fila_resultado['tiempo'] += tiempo_c
+                    
+                    conceptos_resultados.append(f"- <{tag}> ({desc}): {clean_c}")
+            
+            if conceptos_resultados:
+                conceptos_evaluados_str = "\n".join(conceptos_resultados)
+            else:
+                conceptos_evaluados_str = "No hay conceptos específicos definidos para esta pregunta."
+
+            # ---- PASO 2: EVALUAR RANGO DE NOTA ----
+            user_msg_r = construir_user_message_rango(pregunta, respuesta, conceptos_evaluados_str)
+            salida_r, tiempo_r = self.cliente_llm.generar_salida(SYSTEM_PROMPT_RANGO, user_msg_r)
+            
+            clean_r = salida_r.strip().replace("\n", "").strip()
+            fila_resultado['rango_nota'] = clean_r
+            fila_resultado['tiempo'] += tiempo_r
+
+            # ---- PASO 3: EVALUAR NOTA FINAL ----
+            user_msg_n = construir_user_message_nota(pregunta, respuesta, conceptos_evaluados_str, clean_r)
+            salida_n, tiempo_n = self.cliente_llm.generar_salida(SYSTEM_PROMPT_NOTA, user_msg_n)
+            
+            clean_n = salida_n.strip().replace("\n", "").strip()
+            fila_resultado['salida'] = clean_n
+            fila_resultado['tiempo'] += tiempo_n
 
             buffer_salidas.append(fila_resultado)
 
@@ -77,7 +109,6 @@ class Experimento:
             print(f"Progreso: {step + 1} ejemplos procesados")
             step += 1
 
-        # Flush final con lo que quede en el buffer
+        # Flush final
         if buffer_salidas:
             self.dataset_cliente.guardar_buffer_csv(buffer_salidas, fieldnames)
-
