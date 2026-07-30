@@ -32,7 +32,10 @@ class ClienteLLM:
             response = requests.post(
                 self.url + "/chat",
                 json=payload,
-                headers={"Content-Type": "application/json"}
+                headers={
+                    "Content-Type": "application/json",
+                    "ngrok-skip-browser-warning": "69420"
+                }
             ).json()
             tiempo = time.time() - inicio
             return response["response"], tiempo

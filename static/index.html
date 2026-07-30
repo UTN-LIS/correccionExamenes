@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UTN LIS - Evaluador de Exámenes con IA</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Background glow elements -->
+    <div class="glow-bg glow-1"></div>
+    <div class="glow-bg glow-2"></div>
+
+    <div class="app-container">
+        <!-- Sidebar Navbar -->
+        <header class="navbar">
+            <div class="nav-brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>UTN LIS</h1>
+                    <span>AI Exam Grader</span>
+                </div>
+            </div>
+            
+            <nav class="nav-links">
+                <button class="nav-btn active" data-tab="dashboard">
+                    <i class="fa-solid fa-chart-line"></i> Evaluar Examen
+                </button>
+                <button class="nav-btn" data-tab="preguntas">
+                    <i class="fa-solid fa-database"></i> Banco de Preguntas
+                </button>
+                <button class="nav-btn" data-tab="resultados">
+                    <i class="fa-solid fa-square-poll-vertical"></i> Resultados
+                </button>
+            </nav>
+
+            <div class="nav-footer">
+                <div class="server-status" id="server-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Cargando...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace Content -->
+        <main class="main-content">
+            <!-- TAB: DASHBOARD -->
+            <section id="tab-dashboard" class="tab-panel active">
+                <div class="panel-header">
+                    <h2>Panel de Evaluación</h2>
+                    <p>Suba las respuestas de los estudiantes para iniciar el análisis automático con agentes de IA.</p>
+                </div>
+
+                <div class="grid-layout">
+                    <!-- Columna Izquierda: Carga y Configuración del Servidor -->
+                    <div style="display: flex; flex-direction: column; gap: 2rem;">
+                        <!-- Upload Card -->
+                        <div class="card glass-card upload-container">
+                            <div class="card-icon">
+                                <i class="fa-solid fa-file-csv"></i>
+                            </div>
+                            <h3>Respuestas de Alumnos</h3>
+                            <p class="card-desc">Suba un archivo CSV con las columnas: <code>question_id</code>, <code>alumno_id</code>, <code>student_answer</code>.</p>
+                            
+                            <div class="drop-zone" id="drop-zone-respuestas">
+                                <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+                                <span class="drop-text">Arrastre el CSV aquí o haga clic para buscar</span>
+                                <input type="file" id="file-respuestas" accept=".csv" class="file-input">
+                            </div>
+                            
+                            <div id="upload-status" class="status-alert hidden"></div>
+                        </div>
+
+                        <!-- Connection Card -->
+                        <div class="card glass-card connection-container">
+                            <div class="card-icon" style="font-size: 1.75rem; margin-bottom: 0.75rem;">
+                                <i class="fa-solid fa-network-wired"></i>
+                            </div>
+                            <h3>Conexión al Agente LLM</h3>
+                            <p class="card-desc" style="margin-bottom: 1rem;">Configure la dirección del servidor de inferencia. Utilice su túnel ngrok activo o el servidor mock local (<code>http://localhost:8000</code>).</p>
+                            
+                            <div class="form-group">
+                                <label for="input-url-llm">URL del Servidor LLM</label>
+                                <div style="display: flex; gap: 0.75rem; align-items: center; margin-top: 0.25rem;">
+                                    <input type="text" id="input-url-llm" placeholder="https://xxxxx.ngrok-free.dev" style="flex-grow: 1; padding: 0.65rem 0.85rem;">
+                                    <button id="btn-probar-conexion" class="btn btn-secondary" style="padding: 0.65rem 1rem; white-space: nowrap;" title="Verificar estado de conexión">
+                                        <i class="fa-solid fa-arrows-rotate"></i> Probar
+                                    </button>
+                                    <button id="btn-guardar-conexion" class="btn btn-primary" style="padding: 0.65rem 1.2rem; white-space: nowrap;">
+                                        <i class="fa-solid fa-floppy-disk"></i> Guardar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Process Control Card -->
+                    <div class="card glass-card control-container">
+                        <h3>Estado del Proceso</h3>
+                        <p class="card-desc">Monitoree la corrección en tiempo real por el agente LLM.</p>
+                        
+                        <div class="process-stats-grid">
+                            <div class="stat-box">
+                                <span class="stat-val" id="stat-total">0</span>
+                                <span class="stat-lbl">Respuestas Cargadas</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-val" id="stat-procesado">0</span>
+                                <span class="stat-lbl">Evaluadas</span>
+                            </div>
+                            <div class="stat-box alert-box">
+                                <span class="stat-val" id="stat-errores">0</span>
+                                <span class="stat-lbl">Errores</span>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="progress-wrapper">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" id="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <div class="progress-percent" id="progress-percent">0%</div>
+                        </div>
+
+                        <div class="action-footer">
+                            <button id="btn-iniciar-correccion" class="btn btn-primary btn-lg" disabled>
+                                <i class="fa-solid fa-play"></i> Iniciar Corrección con IA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: BANCO DE PREGUNTAS -->
+            <section id="tab-preguntas" class="tab-panel">
+                <div class="panel-header-action">
+                    <div>
+                        <h2>Banco de Preguntas</h2>
+                        <p>Configure las preguntas, respuestas de referencia y los conceptos clave para la evaluación del LLM.</p>
+                    </div>
+                    <div class="header-buttons">
+                        <label class="btn btn-secondary">
+                            <i class="fa-solid fa-file-import"></i> Importar CSV
+                            <input type="file" id="file-preguntas" accept=".csv" class="file-input" style="display:none">
+                        </label>
+                        <button class="btn btn-primary" id="btn-nueva-pregunta">
+                            <i class="fa-solid fa-plus"></i> Nueva Pregunta
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Live Filter -->
+                <div class="search-filter-row">
+                    <div class="search-input-wrapper">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="filter-preguntas" placeholder="Buscar preguntas por ID o texto...">
+                    </div>
+                </div>
+
+                <!-- Questions Grid -->
+                <div class="questions-grid" id="questions-grid">
+                    <!-- Dynamic Cards -->
+                    <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i> Cargando banco de preguntas...</div>
+                </div>
+            </section>
+
+            <!-- TAB: RESULTADOS -->
+            <section id="tab-resultados" class="tab-panel">
+                <div class="panel-header-action">
+                    <div>
+                        <h2>Resultados Académicos</h2>
+                        <p>Consulte las calificaciones asignadas por el agente y el desglose de conceptos identificados por alumno.</p>
+                    </div>
+                    <div class="header-buttons">
+                        <button class="btn btn-secondary" id="btn-exportar-csv">
+                            <i class="fa-solid fa-file-export"></i> Exportar CSV de Notas
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Overview Cards -->
+                <div class="stats-overview">
+                    <div class="card glass-card stat-card">
+                        <div class="stat-card-icon bg-indigo"><i class="fa-solid fa-users"></i></div>
+                        <div>
+                            <h4 id="res-total-alumnos">0</h4>
+                            <p>Alumnos Calificados</p>
+                        </div>
+                    </div>
+                    <div class="card glass-card stat-card">
+                        <div class="stat-card-icon bg-emerald"><i class="fa-solid fa-gauge-high"></i></div>
+                        <div>
+                            <h4 id="res-promedio-general">0.0</h4>
+                            <p>Promedio General (1-10)</p>
+                        </div>
+                    </div>
+                    <div class="card glass-card stat-card">
+                        <div class="stat-card-icon bg-cyan"><i class="fa-solid fa-check-double"></i></div>
+                        <div>
+                            <h4 id="res-aprobados">0%</h4>
+                            <p>Tasa de Aprobación (Nota &ge; 4)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="search-filter-row">
+                    <div class="search-input-wrapper">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="filter-resultados" placeholder="Buscar alumnos por ID...">
+                    </div>
+                </div>
+
+                <!-- Table Card -->
+                <div class="card glass-card table-card">
+                    <div class="table-responsive">
+                        <table class="custom-table" id="tabla-resultados">
+                            <thead>
+                                <tr>
+                                    <th>Alumno ID</th>
+                                    <th>Preguntas Evaluadas</th>
+                                    <th>Promedio Numérico</th>
+                                    <th>Rango Promedio</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-resultados-body">
+                                <tr>
+                                    <td colspan="5" class="empty-table">No hay resultados disponibles. Cargue respuestas y comience la corrección.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL: AGREGAR PREGUNTA -->
+    <div class="modal" id="modal-pregunta">
+        <div class="modal-content glass-card animate-zoom">
+            <div class="modal-header">
+                <h3>Agregar Nueva Pregunta</h3>
+                <button class="close-btn" id="close-modal-pregunta"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-pregunta" class="modal-body">
+                <div class="form-group">
+                    <label for="form-question-id">Código / ID de Pregunta</label>
+                    <input type="text" id="form-question-id" required placeholder="Ej: Q004474161">
+                </div>
+                <div class="form-group">
+                    <label for="form-question-text">Enunciado de la Pregunta</label>
+                    <textarea id="form-question-text" rows="3" required placeholder="Escriba la consigna del examen..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="form-ideal-answer">Respuesta de Referencia (Pauta de Corrección)</label>
+                    <textarea id="form-ideal-answer" rows="4" required placeholder="Escriba la respuesta esperada de la cátedra..."></textarea>
+                </div>
+
+                <div class="concepts-section">
+                    <div class="concepts-header">
+                        <h4>Conceptos Clave a Evaluar (Opcional)</h4>
+                        <button type="button" class="btn btn-secondary btn-sm" id="btn-add-concepto-row">
+                            <i class="fa-solid fa-plus"></i> Agregar Concepto
+                        </button>
+                    </div>
+                    <p class="concepts-desc">Defina criterios específicos que la IA verificará (sí/no) en la respuesta del alumno.</p>
+                    <div class="concepts-rows" id="concepts-rows-container">
+                        <!-- Dynamic rows of Tag + Desc -->
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-cancelar-pregunta">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Pregunta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SLIDE OVER MODAL: DETALLE ALUMNO -->
+    <div class="slide-modal" id="modal-detalle-alumno">
+        <div class="slide-modal-content glass-card">
+            <div class="slide-modal-header">
+                <div>
+                    <h3 id="detail-alumno-id">Alumno ID: -</h3>
+                    <p class="detail-subtitle">Calificación Promedio: <strong id="detail-alumno-promedio">-</strong></p>
+                </div>
+                <button class="close-btn" id="close-modal-detalle"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="slide-modal-body" id="detail-answers-container">
+                <!-- Dynamic student answer details -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

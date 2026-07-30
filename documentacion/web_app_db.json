@@ -1,0 +1,443 @@
+{
+  "preguntas": {
+    "Q004474161": {
+      "question_text": "Explica el ciclo TDD  y su importancia en el desarrollo de software.",
+      "ideal_answer": "El ciclo TDD consiste en tres etapas: primero, se escribe un test que falla (Rojo) porque la funcionalidad aún no ha sido implementada. En la segunda fase (Verde), se desarrolla el mínimo código necesario para que el test pase. Finalmente, en la etapa de Refactor, se mejora el código manteniendo todos los tests en verde. Este ciclo es crucial ya que promueve un desarrollo proactivo, asegurando que el código producido cumple con las especificaciones definidas inicialmente por los tests.",
+      "conceptos": [
+        {
+          "tag": "USA_TESTS",
+          "descripcion": "la metodología TDD utiliza pruebas o tests para implementarse"
+        },
+        {
+          "tag": "CICLO_ITERATIVO",
+          "descripcion": "Existe un ciclo iterativo entre pruebas y código en el TDD"
+        },
+        {
+          "tag": "CODIGO_ROJO",
+          "descripcion": "no existe código para pasar el test"
+        },
+        {
+          "tag": "CODIGO_VERDE",
+          "descripcion": "se implementa el código minimo para pasar el test"
+        },
+        {
+          "tag": "VALIDACION_COMPORTAMIENTO",
+          "descripcion": "El ciclo valida el comportamiento esperado"
+        },
+        {
+          "tag": "FASES_TDD",
+          "descripcion": "Describe correctamente Rojo, Verde y Refactor como fases del TDD"
+        },
+        {
+          "tag": "PROPOSITO_REFACTOR",
+          "descripcion": "Explica el propósito de la refactorización"
+        },
+        {
+          "tag": "CALIDAD_SOFTWARE",
+          "descripcion": "Relaciona TDD con el concepto de calidad o prevención de errores"
+        },
+        {
+          "tag": "ERROR",
+          "descripcion": "plantea algun concepto de forma ambigua o erroneamente"
+        }
+      ]
+    },
+    "Q799823558": {
+      "question_text": "Compara TDD con un enfoque tradicional de testing en el desarrollo de software.",
+      "ideal_answer": "TDD y el enfoque tradicional de testing difieren fundamentalmente en su secuencia y propósito. En TDD, los tests se escriben antes del código, sirviendo como especificación y guía para el desarrollo. En contraste, en un enfoque tradicional, primero se desarrolla el código y luego se realizan pruebas, lo que puede llevar a una verificación reactiva. Además, en TDD, los tests son obligatorios y ayudan a prevenir errores desde el inicio, mientras que en el enfoque tradicional, los tests pueden ser opcionales y se utilizan para validar el trabajo ya realizado.",
+      "conceptos": [
+        {
+          "tag": "TESTS_PRIMERO",
+          "descripcion": "En TDD los tests se escriben antes del código"
+        },
+        {
+          "tag": "TRADICIONAL_TESTS_FINAL",
+          "descripcion": "En el enfoque tradicional los tests se realizan después del desarrollo"
+        },
+        {
+          "tag": "USA_TESTS",
+          "descripcion": "la metodología TDD utiliza pruebas o tests para implementarse"
+        },
+        {
+          "tag": "COMPARACION",
+          "descripcion": "Compara el momento en que aparecen o se detectan los errores"
+        },
+        {
+          "tag": "TDD_PROACTIVO",
+          "descripcion": "Describe el carácter proactivo de TDD frente al carácter reactivo del enfoque tradicional"
+        },
+        {
+          "tag": "ESPECIFICACION",
+          "descripcion": "Menciona que los tests funcionan como especificación en TDD"
+        },
+        {
+          "tag": "ERROR",
+          "descripcion": "plantea algun concepto de forma ambigua o erroneamente"
+        }
+      ]
+    },
+    "Q675600740": {
+      "question_text": "Describe las buenas prácticas en TDD y su impacto en la calidad del software.",
+      "ideal_answer": "Las buenas prácticas en TDD incluyen escribir solo los tests necesarios para que fallen, evitar la duplicación de código y refactorizar regularmente. Estas prácticas aseguran que el desarrollo se mantenga enfocado y eficiente, reduciendo la complejidad del código y mejorando su mantenibilidad. Al seguir estas guías, se promueve la creación de un software más robusto y de alta calidad, ya que cada unidad de código está respaldada por pruebas que garantizan su correcto funcionamiento.",
+      "conceptos": [
+        {
+          "tag": "PRACTICA_FUNDAMENTAL",
+          "descripcion": "Menciona la escritura de tests como práctica fundamental"
+        },
+        {
+          "tag": "PRACTICA_RECOMENDADA",
+          "descripcion": "Menciona la refactorización como práctica recomendada"
+        },
+        {
+          "tag": "PREVIENE_ERRORES",
+          "descripcion": "Relaciona las buenas prácticas con la prevención de errores"
+        },
+        {
+          "tag": "SOLO_NECESARIOS",
+          "descripcion": "Menciona escribir solo los tests necesarios"
+        },
+        {
+          "tag": "SIRVE_VALIDACION",
+          "descripcion": "Explica que las pruebas ayudan a verificar el correcto funcionamiento del software"
+        },
+        {
+          "tag": "ERROR",
+          "descripcion": "plantea algun concepto de forma ambigua o erroneamente"
+        }
+      ]
+    },
+    "Q205293180": {
+      "question_text": "Explica la importancia de validar entradas en el contexto de TDD y cómo se relaciona con la robustez del software.",
+      "ideal_answer": "Validar entradas es crucial en TDD porque ayuda a prevenir errores y comportamientos inesperados en el software. Al escribir tests para validar las entradas antes de implementar la lógica del negocio, se aseguran condiciones adecuadas para el funcionamiento del código. Esto se traduce en un software más robusto, ya que se minimizan los casos de errores en tiempo de ejecución. La validación en TDD no solo mejora la calidad del código, sino que también facilita el mantenimiento y la comprensión del mismo.",
+      "conceptos": [
+        {
+          "tag": "VALIDACION_ENTRADA",
+          "descripcion": "menciona que las entradas deben validarse"
+        },
+        {
+          "tag": "VALIDAR_PARA",
+          "descripcion": "La validación mejora el funcionamiento del software evita errores"
+        },
+        {
+          "tag": "VALIDACION_RELACION",
+          "descripcion": "Relaciona la validación con los tests"
+        },
+        {
+          "tag": "RELACION_ROBUSTEZ",
+          "descripcion": "Relaciona explícitamente la validación con la robustez"
+        },
+        {
+          "tag": "PROPOSITO_REFACTOR",
+          "descripcion": "Menciona mejora en mantenibilidad o calidad del código"
+        },
+        {
+          "tag": "ERROR",
+          "descripcion": "plantea algun concepto de forma ambigua o erroneamente"
+        }
+      ]
+    }
+  },
+  "respuestas_cargadas": [
+    {
+      "question_id": "Q004474161",
+      "alumno_id": "ALUMNO_01",
+      "student_answer": "El TDD en inglés es Test-Driven Development, es un mecanismo de test independientes para el proceso de un proyecto. En primer lugar, está el test en rojo, es decir, los test de la práctica están fallando porque no está implementado. En segundo lugar, el test verde, es decir, se ha implementado los métodos necesarios para probar la ejecución. No importaría el largo del código sino su funcionamiento. Y, por último, está el refactor, se ha corregido dicha implementación para mejorar el código y su implementación. En otras palabras, no se modifica su funcionamiento, pero sí el código para hacerlo más dinámico. Es un ciclo el cuál empieza en rojo -> verde -> refactor. Nos ayuda a comprobar si los métodos implementados han sido utilizados en los test y qué está fallando."
+    },
+    {
+      "question_id": "Q004474161",
+      "alumno_id": "ALUMNO_02",
+      "student_answer": "Es una metodología en el desarrolo de proyectos software que se divide en fases, la fase en rojo nos informa que los test no han sido cubiertos de forma correcta y por lo tanto han fallado, la fase verde es la que nos indica que esos test han sido satisfactorios y cubren con lo requerido, y la ultima fase llamada refactor, es la que se encarga de limpiar el codigo y su diseño, evita codigo duplicado y por lo tanto el fin de este ciclo Test Driven Development"
+    },
+    {
+      "question_id": "Q004474161",
+      "alumno_id": "ALUMNO_03",
+      "student_answer": "El ciclo TDD (Test-Driven Development) consiste en 3 pasos cíclicos para desarrollar un codigo por completo de manera fiable y modular. Los 3 pasos son los siguientes:\n\n1. Rojo: se hacen test que luego comprobarán el codigo del proyecto. Además, se prueban para que el test falle.\n\n2. Verde: se desarrolla el minimo codigo con el que se pueda pasar el test de esa parte del codigo. Y se prueba para que todos los test pasen.\n\n3. Refactor: se mejora el codigo manteniendo las pruebas test en verde."
+    },
+    {
+      "question_id": "Q799823558",
+      "alumno_id": "ALUMNO_04",
+      "student_answer": "El TDD nos ayuda a comprobar que la implementación de los métodos de la práctica y su uso sean correctos. Se prueba en un inicio que los test funcionan, es decir, fallan porque no hay implementación. Pasamos a implementar los métodos y comprobar su funcionamiento, es decir, pasarían a los test en verde. Corregimos el código, sin modificar su funcionamiento y logar la refactorización. Esto sería el TDD. Sin embargo, el enfoque tradicional de testing sería implementar los métodos de la práctica y al ejecutar, poder comprobar si funciona o no. Ahí sí falla, se cambiaría el método del test y se volvería a ejecutar. En este enfoque sería de muy buena práctica usar git para poder saber en qué punto de los test se encuentra la ejecución."
+    },
+    {
+      "question_id": "Q799823558",
+      "alumno_id": "ALUMNO_05",
+      "student_answer": "El Test Driven Development nos permite probar paso a paso durante el ciclo del desarrolo software a diferencia del tradicional que es mas rigido, el TDD nos permite realizar pruebas mas frecuentes y de forma mas flexible, por ejemplo, si tuvieramos que desarrollar un software, seria mas fiable una metodologia TDD antes que la tradicional para asegurar que las funcionalidades requeridas se cumplen de forma adecuada sin errores y cubriendo los test."
+    },
+    {
+      "question_id": "Q799823558",
+      "alumno_id": "ALUMNO_06",
+      "student_answer": "El enfoque tradicional de testing era que priemro se desarrollaba el codigo del proyecto y luego se hacián test para probar que el codigo fucnionase correctamente. Sin embargo, el enfoque TDD, es al contrario, primero se hacen los test y luego se desarrolla el codigo del proyacto que va a hacer que esos test los pasen.\n\n \n\nEl enfoque de desarrollo del TDD hace que el codigo sea mas limpio, fiable y modular. Ya que esta estructura junto con los frameworks de testing pueden confirmar que se ha desarrollado exclusivamente el codigo justo y necesario para cada funcionalidad."
+    },
+    {
+      "question_id": "Q675600740",
+      "alumno_id": "ALUMNO_07",
+      "student_answer": "Las buenas prácticas del TDD son: \n\n* El código de cada test tiene que ser independiente de cada uno.\n\n* La implementación debe de ser clara, con comentarios explicando qué realiza cada método.\n\n* La implementación de cada test, de cada método para comprobar el test, tiene que ser independiente de los demás. \n\n* Primero se haría el test en rojo para comprobar su funcionalidad, en segundo lugar, se implementaría su funcionalidad que pasaría al test en verde. Y por último, haríamos el refactor mejorando el código y su implementación sin modificar su funcionalidad, para un buen uso del mismo y que esté mejor desarrollado.\n\nEl impacto de las buenas prácticas en el TDD causarían un impacto bueno en la calidad del software ya que vas probando si dichos test funcionan y comprobamos que esos métodos usados se ejecutan. En el caso que no se ejecute, podemos comprobar con los test en dónde en especifico está fallando."
+    },
+    {
+      "question_id": "Q675600740",
+      "alumno_id": "ALUMNO_08",
+      "student_answer": "Las buenas practicas del Test Driven Development serian el hecho de realizar test de cobertura que definan lo que queremos que cubra el codigo, es una buena practica el realizar primero los test antes que el codigo para que los test diseñen el codigo y no viceversa, otras buenas practicas son el realizar pruebas y test a lo largo del ciclo del software, no solo al final, ya que si realizamos test a lo largo del proyecto nos facilitaria posibles errores graves que pudieran suceder si fueramos a arreglarlo al final del desarrolo, esta metodologia tiene un gran impacto positivo siendo mas eficiente a la hora de seguir el ciclo de vida del software."
+    },
+    {
+      "question_id": "Q205293180",
+      "alumno_id": "ALUMNO_09",
+      "student_answer": "La importancia de validar las entradas en el TDD es necesaria ya que implementa el código con datos verificados, es decir, si estamos comprobando los alumnos de una universidad, un alumno no puede tener años en negativo (-0 años), igual que si comprobamos el ID del estudiante, necesitamos verificar si existe ese ID, el alumno, etc. \n\nEs importante validar esos datos para realizar un buen proyecto y buen software a comprobar con el TDD ya que va a estar comprobado los test que se implementen en el código."
+    },
+    {
+      "question_id": "Q205293180",
+      "alumno_id": "ALUMNO_10",
+      "student_answer": "Es importante validar las entradas del Test Driven Development en relacion al contexto, cuanto mas test y validaciones se realicen, y estas se cubran y se aprueben, mayor sera la fiabilidad del software, haciendolo mas estable y por ello reduciendo considerablemente errores criticos. Son buenas practicas si queremos un software seguro."
+    }
+  ],
+  "resultados": {
+    "ALUMNO_01": {
+      "respuestas": [
+        {
+          "conceptos_evaluados": {
+            "USA_TESTS": "sí",
+            "CICLO_ITERATIVO": "sí",
+            "CODIGO_ROJO": "sí",
+            "CODIGO_VERDE": "sí",
+            "VALIDACION_COMPORTAMIENTO": "sí",
+            "FASES_TDD": "sí",
+            "PROPOSITO_REFACTOR": "sí",
+            "CALIDAD_SOFTWARE": "sí",
+            "ERROR": "sí"
+          },
+          "rango_nota": "<ACEPTABLE>",
+          "nota_final": 8,
+          "tiempo": 0.076,
+          "estado": "completado",
+          "question_id": "Q004474161",
+          "student_answer": "El TDD en inglés es Test-Driven Development, es un mecanismo de test independientes para el proceso de un proyecto. En primer lugar, está el test en rojo, es decir, los test de la práctica están fallando porque no está implementado. En segundo lugar, el test verde, es decir, se ha implementado los métodos necesarios para probar la ejecución. No importaría el largo del código sino su funcionamiento. Y, por último, está el refactor, se ha corregido dicha implementación para mejorar el código y su implementación. En otras palabras, no se modifica su funcionamiento, pero sí el código para hacerlo más dinámico. Es un ciclo el cuál empieza en rojo -> verde -> refactor. Nos ayuda a comprobar si los métodos implementados han sido utilizados en los test y qué está fallando.",
+          "question_text": "Explica el ciclo TDD  y su importancia en el desarrollo de software.",
+          "ideal_answer": "El ciclo TDD consiste en tres etapas: primero, se escribe un test que falla (Rojo) porque la funcionalidad aún no ha sido implementada. En la segunda fase (Verde), se desarrolla el mínimo código necesario para que el test pase. Finalmente, en la etapa de Refactor, se mejora el código manteniendo todos los tests en verde. Este ciclo es crucial ya que promueve un desarrollo proactivo, asegurando que el código producido cumple con las especificaciones definidas inicialmente por los tests."
+        }
+      ],
+      "promedio": 8.0
+    },
+    "ALUMNO_02": {
+      "respuestas": [
+        {
+          "conceptos_evaluados": {
+            "USA_TESTS": "sí",
+            "CICLO_ITERATIVO": "sí",
+            "CODIGO_ROJO": "sí",
+            "CODIGO_VERDE": "sí",
+            "VALIDACION_COMPORTAMIENTO": "sí",
+            "FASES_TDD": "sí",
+            "PROPOSITO_REFACTOR": "sí",
+            "CALIDAD_SOFTWARE": "sí",
+            "ERROR": "sí"
+          },
+          "rango_nota": "<ACEPTABLE>",
+          "nota_final": 8,
+          "tiempo": 0.08,
+          "estado": "completado",
+          "question_id": "Q004474161",
+          "student_answer": "Es una metodología en el desarrolo de proyectos software que se divide en fases, la fase en rojo nos informa que los test no han sido cubiertos de forma correcta y por lo tanto han fallado, la fase verde es la que nos indica que esos test han sido satisfactorios y cubren con lo requerido, y la ultima fase llamada refactor, es la que se encarga de limpiar el codigo y su diseño, evita codigo duplicado y por lo tanto el fin de este ciclo Test Driven Development",
+          "question_text": "Explica el ciclo TDD  y su importancia en el desarrollo de software.",
+          "ideal_answer": "El ciclo TDD consiste en tres etapas: primero, se escribe un test que falla (Rojo) porque la funcionalidad aún no ha sido implementada. En la segunda fase (Verde), se desarrolla el mínimo código necesario para que el test pase. Finalmente, en la etapa de Refactor, se mejora el código manteniendo todos los tests en verde. Este ciclo es crucial ya que promueve un desarrollo proactivo, asegurando que el código producido cumple con las especificaciones definidas inicialmente por los tests."
+        }
+      ],
+      "promedio": 8.0
+    },
+    "ALUMNO_03": {
+      "respuestas": [
+        {
+          "conceptos_evaluados": {
+            "USA_TESTS": "sí",
+            "CICLO_ITERATIVO": "sí",
+            "CODIGO_ROJO": "sí",
+            "CODIGO_VERDE": "sí",
+            "VALIDACION_COMPORTAMIENTO": "sí",
+            "FASES_TDD": "sí",
+            "PROPOSITO_REFACTOR": "sí",
+            "CALIDAD_SOFTWARE": "sí",
+            "ERROR": "sí"
+          },
+          "rango_nota": "<ACEPTABLE>",
+          "nota_final": 8,
+          "tiempo": 0.088,
+          "estado": "completado",
+          "question_id": "Q004474161",
+          "student_answer": "El ciclo TDD (Test-Driven Development) consiste en 3 pasos cíclicos para desarrollar un codigo por completo de manera fiable y modular. Los 3 pasos son los siguientes:\n\n1. Rojo: se hacen test que luego comprobarán el codigo del proyecto. Además, se prueban para que el test falle.\n\n2. Verde: se desarrolla el minimo codigo con el que se pueda pasar el test de esa parte del codigo. Y se prueba para que todos los test pasen.\n\n3. Refactor: se mejora el codigo manteniendo las pruebas test en verde.",
+          "question_text": "Explica el ciclo TDD  y su importancia en el desarrollo de software.",
+          "ideal_answer": "El ciclo TDD consiste en tres etapas: primero, se escribe un test que falla (Rojo) porque la funcionalidad aún no ha sido implementada. En la segunda fase (Verde), se desarrolla el mínimo código necesario para que el test pase. Finalmente, en la etapa de Refactor, se mejora el código manteniendo todos los tests en verde. Este ciclo es crucial ya que promueve un desarrollo proactivo, asegurando que el código producido cumple con las especificaciones definidas inicialmente por los tests."
+        }
+      ],
+      "promedio": 8.0
+    },
+    "ALUMNO_05": {
+      "respuestas": [
+        {
+          "conceptos_evaluados": {
+            "TESTS_PRIMERO": "sí",
+            "TRADICIONAL_TESTS_FINAL": "sí",
+            "USA_TESTS": "sí",
+            "COMPARACION": "sí",
+            "TDD_PROACTIVO": "sí",
+            "ESPECIFICACION": "sí",
+            "ERROR": "sí"
+          },
+          "rango_nota": "<ACEPTABLE>",
+          "nota_final": 8,
+          "tiempo": 0.086,
+          "estado": "completado",
+          "question_id": "Q799823558",
+          "student_answer": "El Test Driven Development nos permite probar paso a paso durante el ciclo del desarrolo software a diferencia del tradicional que es mas rigido, el TDD nos permite realizar pruebas mas frecuentes y de forma mas flexible, por ejemplo, si tuvieramos que desarrollar un software, seria mas fiable una metodologia TDD antes que la tradicional para asegurar que las funcionalidades requeridas se cumplen de forma adecuada sin errores y cubriendo los test.",
+          "question_text": "Compara TDD con un enfoque tradicional de testing en el desarrollo de software.",
+          "ideal_answer": "TDD y el enfoque tradicional de testing difieren fundamentalmente en su secuencia y propósito. En TDD, los tests se escriben antes del código, sirviendo como especificación y guía para el desarrollo. En contraste, en un enfoque tradicional, primero se desarrolla el código y luego se realizan pruebas, lo que puede llevar a una verificación reactiva. Además, en TDD, los tests son obligatorios y ayudan a prevenir errores desde el inicio, mientras que en el enfoque tradicional, los tests pueden ser opcionales y se utilizan para validar el trabajo ya realizado."
+        }
+      ],
+      "promedio": 8.0
+    },
+    "ALUMNO_04": {
+      "respuestas": [
+        {
+          "conceptos_evaluados": {
+            "TESTS_PRIMERO": "sí",
+            "TRADICIONAL_TESTS_FINAL": "sí",
+            "USA_TESTS": "sí",
+            "COMPARACION": "sí",
+            "TDD_PROACTIVO": "sí",
+            "ESPECIFICACION": "sí",
+            "ERROR": "sí"
+          },
+          "rango_nota": "<ACEPTABLE>",
+          "nota_final": 8,
+          "tiempo": 0.09,
+          "estado": "completado",
+          "question_id": "Q799823558",
+          "student_answer": "El TDD nos ayuda a comprobar que la implementación de los métodos de la práctica y su uso sean correctos. Se prueba en un inicio que los test funcionan, es decir, fallan porque no hay implementación. Pasamos a implementar los métodos y comprobar su funcionamiento, es decir, pasarían a los test en verde. Corregimos el código, sin modificar su funcionamiento y logar la refactorización. Esto sería el TDD. Sin embargo, el enfoque tradicional de testing sería implementar los métodos de la práctica y al ejecutar, poder comprobar si funciona o no. Ahí sí falla, se cambiaría el método del test y se volvería a ejecutar. En este enfoque sería de muy buena práctica usar git para poder saber en qué punto de los test se encuentra la ejecución.",
+          "question_text": "Compara TDD con un enfoque tradicional de testing en el desarrollo de software.",
+          "ideal_answer": "TDD y el enfoque tradicional de testing difieren fundamentalmente en su secuencia y propósito. En TDD, los tests se escriben antes del código, sirviendo como especificación y guía para el desarrollo. En contraste, en un enfoque tradicional, primero se desarrolla el código y luego se realizan pruebas, lo que puede llevar a una verificación reactiva. Además, en TDD, los tests son obligatorios y ayudan a prevenir errores desde el inicio, mientras que en el enfoque tradicional, los tests pueden ser opcionales y se utilizan para validar el trabajo ya realizado."
+        }
+      ],
+      "promedio": 8.0
+    },
+    "ALUMNO_06": {
+      "respuestas": [
+        {
+          "conceptos_evaluados": {
+            "TESTS_PRIMERO": "sí",
+            "TRADICIONAL_TESTS_FINAL": "sí",
+            "USA_TESTS": "sí",
+            "COMPARACION": "sí",
+            "TDD_PROACTIVO": "sí",
+            "ESPECIFICACION": "sí",
+            "ERROR": "sí"
+          },
+          "rango_nota": "<ACEPTABLE>",
+          "nota_final": 8,
+          "tiempo": 0.079,
+          "estado": "completado",
+          "question_id": "Q799823558",
+          "student_answer": "El enfoque tradicional de testing era que priemro se desarrollaba el codigo del proyecto y luego se hacián test para probar que el codigo fucnionase correctamente. Sin embargo, el enfoque TDD, es al contrario, primero se hacen los test y luego se desarrolla el codigo del proyacto que va a hacer que esos test los pasen.\n\n \n\nEl enfoque de desarrollo del TDD hace que el codigo sea mas limpio, fiable y modular. Ya que esta estructura junto con los frameworks de testing pueden confirmar que se ha desarrollado exclusivamente el codigo justo y necesario para cada funcionalidad.",
+          "question_text": "Compara TDD con un enfoque tradicional de testing en el desarrollo de software.",
+          "ideal_answer": "TDD y el enfoque tradicional de testing difieren fundamentalmente en su secuencia y propósito. En TDD, los tests se escriben antes del código, sirviendo como especificación y guía para el desarrollo. En contraste, en un enfoque tradicional, primero se desarrolla el código y luego se realizan pruebas, lo que puede llevar a una verificación reactiva. Además, en TDD, los tests son obligatorios y ayudan a prevenir errores desde el inicio, mientras que en el enfoque tradicional, los tests pueden ser opcionales y se utilizan para validar el trabajo ya realizado."
+        }
+      ],
+      "promedio": 8.0
+    },
+    "ALUMNO_07": {
+      "respuestas": [
+        {
+          "conceptos_evaluados": {
+            "PRACTICA_FUNDAMENTAL": "sí",
+            "PRACTICA_RECOMENDADA": "sí",
+            "PREVIENE_ERRORES": "sí",
+            "SOLO_NECESARIOS": "sí",
+            "SIRVE_VALIDACION": "sí",
+            "ERROR": "sí"
+          },
+          "rango_nota": "<ACEPTABLE>",
+          "nota_final": 8,
+          "tiempo": 0.047,
+          "estado": "completado",
+          "question_id": "Q675600740",
+          "student_answer": "Las buenas prácticas del TDD son: \n\n* El código de cada test tiene que ser independiente de cada uno.\n\n* La implementación debe de ser clara, con comentarios explicando qué realiza cada método.\n\n* La implementación de cada test, de cada método para comprobar el test, tiene que ser independiente de los demás. \n\n* Primero se haría el test en rojo para comprobar su funcionalidad, en segundo lugar, se implementaría su funcionalidad que pasaría al test en verde. Y por último, haríamos el refactor mejorando el código y su implementación sin modificar su funcionalidad, para un buen uso del mismo y que esté mejor desarrollado.\n\nEl impacto de las buenas prácticas en el TDD causarían un impacto bueno en la calidad del software ya que vas probando si dichos test funcionan y comprobamos que esos métodos usados se ejecutan. En el caso que no se ejecute, podemos comprobar con los test en dónde en especifico está fallando.",
+          "question_text": "Describe las buenas prácticas en TDD y su impacto en la calidad del software.",
+          "ideal_answer": "Las buenas prácticas en TDD incluyen escribir solo los tests necesarios para que fallen, evitar la duplicación de código y refactorizar regularmente. Estas prácticas aseguran que el desarrollo se mantenga enfocado y eficiente, reduciendo la complejidad del código y mejorando su mantenibilidad. Al seguir estas guías, se promueve la creación de un software más robusto y de alta calidad, ya que cada unidad de código está respaldada por pruebas que garantizan su correcto funcionamiento."
+        }
+      ],
+      "promedio": 8.0
+    },
+    "ALUMNO_08": {
+      "respuestas": [
+        {
+          "conceptos_evaluados": {
+            "PRACTICA_FUNDAMENTAL": "sí",
+            "PRACTICA_RECOMENDADA": "sí",
+            "PREVIENE_ERRORES": "sí",
+            "SOLO_NECESARIOS": "sí",
+            "SIRVE_VALIDACION": "sí",
+            "ERROR": "sí"
+          },
+          "rango_nota": "<ACEPTABLE>",
+          "nota_final": 8,
+          "tiempo": 0.049,
+          "estado": "completado",
+          "question_id": "Q675600740",
+          "student_answer": "Las buenas practicas del Test Driven Development serian el hecho de realizar test de cobertura que definan lo que queremos que cubra el codigo, es una buena practica el realizar primero los test antes que el codigo para que los test diseñen el codigo y no viceversa, otras buenas practicas son el realizar pruebas y test a lo largo del ciclo del software, no solo al final, ya que si realizamos test a lo largo del proyecto nos facilitaria posibles errores graves que pudieran suceder si fueramos a arreglarlo al final del desarrolo, esta metodologia tiene un gran impacto positivo siendo mas eficiente a la hora de seguir el ciclo de vida del software.",
+          "question_text": "Describe las buenas prácticas en TDD y su impacto en la calidad del software.",
+          "ideal_answer": "Las buenas prácticas en TDD incluyen escribir solo los tests necesarios para que fallen, evitar la duplicación de código y refactorizar regularmente. Estas prácticas aseguran que el desarrollo se mantenga enfocado y eficiente, reduciendo la complejidad del código y mejorando su mantenibilidad. Al seguir estas guías, se promueve la creación de un software más robusto y de alta calidad, ya que cada unidad de código está respaldada por pruebas que garantizan su correcto funcionamiento."
+        }
+      ],
+      "promedio": 8.0
+    },
+    "ALUMNO_09": {
+      "respuestas": [
+        {
+          "conceptos_evaluados": {
+            "VALIDACION_ENTRADA": "sí",
+            "VALIDAR_PARA": "sí",
+            "VALIDACION_RELACION": "sí",
+            "RELACION_ROBUSTEZ": "sí",
+            "PROPOSITO_REFACTOR": "sí",
+            "ERROR": "sí"
+          },
+          "rango_nota": "<ACEPTABLE>",
+          "nota_final": 8,
+          "tiempo": 0.046,
+          "estado": "completado",
+          "question_id": "Q205293180",
+          "student_answer": "La importancia de validar las entradas en el TDD es necesaria ya que implementa el código con datos verificados, es decir, si estamos comprobando los alumnos de una universidad, un alumno no puede tener años en negativo (-0 años), igual que si comprobamos el ID del estudiante, necesitamos verificar si existe ese ID, el alumno, etc. \n\nEs importante validar esos datos para realizar un buen proyecto y buen software a comprobar con el TDD ya que va a estar comprobado los test que se implementen en el código.",
+          "question_text": "Explica la importancia de validar entradas en el contexto de TDD y cómo se relaciona con la robustez del software.",
+          "ideal_answer": "Validar entradas es crucial en TDD porque ayuda a prevenir errores y comportamientos inesperados en el software. Al escribir tests para validar las entradas antes de implementar la lógica del negocio, se aseguran condiciones adecuadas para el funcionamiento del código. Esto se traduce en un software más robusto, ya que se minimizan los casos de errores en tiempo de ejecución. La validación en TDD no solo mejora la calidad del código, sino que también facilita el mantenimiento y la comprensión del mismo."
+        }
+      ],
+      "promedio": 8.0
+    },
+    "ALUMNO_10": {
+      "respuestas": [
+        {
+          "conceptos_evaluados": {
+            "VALIDACION_ENTRADA": "sí",
+            "VALIDAR_PARA": "sí",
+            "VALIDACION_RELACION": "sí",
+            "RELACION_ROBUSTEZ": "sí",
+            "PROPOSITO_REFACTOR": "sí",
+            "ERROR": "sí"
+          },
+          "rango_nota": "<ACEPTABLE>",
+          "nota_final": 8,
+          "tiempo": 0.029,
+          "estado": "completado",
+          "question_id": "Q205293180",
+          "student_answer": "Es importante validar las entradas del Test Driven Development en relacion al contexto, cuanto mas test y validaciones se realicen, y estas se cubran y se aprueben, mayor sera la fiabilidad del software, haciendolo mas estable y por ello reduciendo considerablemente errores criticos. Son buenas practicas si queremos un software seguro.",
+          "question_text": "Explica la importancia de validar entradas en el contexto de TDD y cómo se relaciona con la robustez del software.",
+          "ideal_answer": "Validar entradas es crucial en TDD porque ayuda a prevenir errores y comportamientos inesperados en el software. Al escribir tests para validar las entradas antes de implementar la lógica del negocio, se aseguran condiciones adecuadas para el funcionamiento del código. Esto se traduce en un software más robusto, ya que se minimizan los casos de errores en tiempo de ejecución. La validación en TDD no solo mejora la calidad del código, sino que también facilita el mantenimiento y la comprensión del mismo."
+        }
+      ],
+      "promedio": 8.0
+    }
+  },
+  "proceso_correccion": {
+    "status": "completed",
+    "total": 10,
+    "procesado": 10,
+    "errores": 0
+  },
+  "url_llm": "https://transmarginally-unrebuffed-else.ngrok-free.dev"
+}
