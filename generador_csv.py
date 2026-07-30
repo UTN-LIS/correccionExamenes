@@ -28,20 +28,3 @@ class GeneradorCSV:
             conceptos   = CONCEPTOS_POR_PREGUNTA.get(question_id, [])
             yield pregunta, conceptos, respuesta, esperado
 
-    def crear_csv_resultados(self, fieldnames):
-        """Crea el archivo CSV de resultados con encabezados."""
-        with open(self.csvResultados, 'w', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-
-    def guardar_buffer_csv(self, buffer, fieldnames):
-        """Agrega el buffer de diccionarios al archivo CSV de resultados."""
-        with open(self.csvResultados, 'a', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writerows(buffer)
-
-    def guardar_configuracion(self, modelo: str, system_prompt: str):
-        """Guarda la configuración del experimento en un archivo de texto."""
-        with open(self.configuracionModelo, 'w', encoding='utf-8') as f:
-            f.write(f"Modelo: {modelo}\n")
-            f.write(f"System Prompt:\n{system_prompt}\n")
