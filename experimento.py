@@ -1,13 +1,5 @@
 import time
-from prompts import (
-    SYSTEM_PROMPT_CONCEPTOS,
-    SYSTEM_PROMPT_RANGO,
-    SYSTEM_PROMPT_NOTA,
-    construir_user_message_conceptos,
-    construir_user_message_rango,
-    construir_user_message_nota
-)
-
+from grading_logic import evaluar_conceptos, evaluar_rango, evaluar_nota_directa, ensamblar_nota_final
 
 class Experimento:
     def __init__(self, cliente_llm, dataset_cliente, modelo="Modelo_XYZ"):
@@ -15,12 +7,13 @@ class Experimento:
         self.cliente_llm = cliente_llm
         self.modelo = modelo
 
-    def ejecutar_dataset(self, max_items=None):
+    def ejecutar_dataset(self, max_items=None, w1=0.10, w2=0.05, w3=0.85):
         """
-        Itera el dataset y ejecuta la evaluación secuencial en 3 pasos:
-        Paso 1: Evaluar conceptos clave uno a uno.
-        Paso 2: Evaluar rango de nota con la información de los conceptos clave.
-        Paso 3: Obtener la nota final con toda la información acumulada.
+        Itera el dataset y ejecuta la evaluación en 3 experimentos independientes:
+        Experimento 1: Evaluar conceptos clave uno a uno y obtener cobertura.
+        Experimento 2: Evaluar rango de nota de forma independiente.
+        Experimento 3: Obtener la nota final directa.
+        Consolida la nota usando la combinación lineal ponderada.
         """
         from conceptos import CONCEPTOS_POR_PREGUNTA
 
@@ -33,12 +26,16 @@ class Experimento:
         unique_tags.sort()
 
         # Las columnas del CSV incluyen campos principales, rango, salida (nota final) y tags individuales
-        fieldnames = ['step', 'pregunta', 'respuesta', 'rango_nota', 'salida', 'esperado', 'tiempo'] + unique_tags
+        fieldnames = ['step', 'pregunta', 'respuesta', 'rango_nota', 'nota_conceptos', 'nota_rango', 'nota_directa', 'salida', 'esperado', 'tiempo'] + unique_tags
 
         self.dataset_cliente.crear_csv_resultados(fieldnames)
         
-        # Guardar configuración (usamos el prompt final como referencia de prompt del sistema)
-        self.dataset_cliente.guardar_configuracion(self.modelo, SYSTEM_PROMPT_NOTA)
+        # Guardar configuración descriptiva con los pesos del ensamble
+        prompt_config_desc = (
+            f"Ensamble Ponderado: Nota_Final = (w1 * conceptos) + (w2 * rango) + (w3 * nota_directa)\n"
+            f"Pesos configurados: w1={w1}, w2={w2}, w3={w3}"
+        )
+        self.dataset_cliente.guardar_configuracion(self.modelo, prompt_config_desc)
 
         buffer_salidas = []
         step = 0
@@ -55,49 +52,43 @@ class Experimento:
                 'respuesta': respuesta,
                 'esperado': esperado,
                 'rango_nota': "",
+                'nota_conceptos': 0.0,
+                'nota_rango': 0.0,
+                'nota_directa': 0.0,
                 'salida': "",
                 'tiempo': 0.0
             }
             for tag in unique_tags:
                 fila_resultado[tag] = ""
 
-            conceptos_resultados = []
+            # ---- EJECUTAR EXPERIMENTOS INDEPENDIENTES ----
+            res_conceptos = evaluar_conceptos(self.cliente_llm, pregunta, conceptos, respuesta)
+            res_rango = evaluar_rango(self.cliente_llm, pregunta, respuesta)
+            res_nota_directa = evaluar_nota_directa(self.cliente_llm, pregunta, respuesta)
 
-            # ---- PASO 1: EVALUAR CONCEPTOS CLAVE ----
-            if conceptos:
-                for concepto in conceptos:
-                    tag = concepto['tag']
-                    desc = concepto['descripcion']
-                    
-                    user_msg_c = construir_user_message_conceptos(pregunta, concepto, respuesta)
-                    salida_c, tiempo_c = self.cliente_llm.generar_salida(SYSTEM_PROMPT_CONCEPTOS, user_msg_c)
-                    
-                    clean_c = salida_c.strip().lower().rstrip('.')
-                    fila_resultado[tag] = clean_c
-                    fila_resultado['tiempo'] += tiempo_c
-                    
-                    conceptos_resultados.append(f"- <{tag}> ({desc}): {clean_c}")
-            
-            if conceptos_resultados:
-                conceptos_evaluados_str = "\n".join(conceptos_resultados)
-            else:
-                conceptos_evaluados_str = "No hay conceptos específicos definidos para esta pregunta."
+            # ---- ENSAMBLE PONDERADO ----
+            res_ensemble = ensamblar_nota_final(
+                res_conceptos,
+                res_rango,
+                res_nota_directa,
+                w1=w1,
+                w2=w2,
+                w3=w3
+            )
 
-            # ---- PASO 2: EVALUAR RANGO DE NOTA ----
-            user_msg_r = construir_user_message_rango(pregunta, respuesta, conceptos_evaluados_str)
-            salida_r, tiempo_r = self.cliente_llm.generar_salida(SYSTEM_PROMPT_RANGO, user_msg_r)
-            
-            clean_r = salida_r.strip().replace("\n", "").strip()
-            fila_resultado['rango_nota'] = clean_r
-            fila_resultado['tiempo'] += tiempo_r
+            # Llenar la fila del resultado
+            fila_resultado['rango_nota'] = res_rango['rango']
+            fila_resultado['nota_conceptos'] = res_conceptos['nota_conceptos']
+            fila_resultado['nota_rango'] = res_rango['nota_rango']
+            fila_resultado['nota_directa'] = res_nota_directa['nota_directa']
+            fila_resultado['salida'] = res_ensemble['nota_final']
+            fila_resultado['tiempo'] = round(res_conceptos['tiempo'] + res_rango['tiempo'] + res_nota_directa['tiempo'], 3)
 
-            # ---- PASO 3: EVALUAR NOTA FINAL ----
-            user_msg_n = construir_user_message_nota(pregunta, respuesta, conceptos_evaluados_str, clean_r)
-            salida_n, tiempo_n = self.cliente_llm.generar_salida(SYSTEM_PROMPT_NOTA, user_msg_n)
-            
-            clean_n = salida_n.strip().replace("\n", "").strip()
-            fila_resultado['salida'] = clean_n
-            fila_resultado['tiempo'] += tiempo_n
+            # Rellenar los tags correspondientes
+            for tag, val in res_conceptos['conceptos_evaluados'].items():
+                if tag in unique_tags:
+                    fila_resultado[tag] = val
+
 
             buffer_salidas.append(fila_resultado)
 

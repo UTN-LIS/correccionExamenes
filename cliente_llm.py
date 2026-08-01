@@ -9,10 +9,11 @@ class ClienteLLM:
         load_dotenv()
         self.url = os.getenv("URL_LLM")
 
-    def generar_salida(self, system_prompt: str, user_message: str):
+    def generar_salida(self, system_prompt: str, user_message: str, max_retries: int = 3, backoff_factor: float = 1.5):
         """
         Llama al LLM con un system prompt y un user message ya construidos.
         Retorna (respuesta: str, tiempo: float).
+        Con reintentos y retroceso exponencial ante fallos de conexión o timeout.
         """
         messages = [
             {
@@ -26,21 +27,30 @@ class ClienteLLM:
         ]
 
         payload = {"messages": messages}
-        inicio = time.time()
+        
+        for attempt in range(max_retries):
+            inicio = time.time()
+            try:
+                response = requests.post(
+                    self.url + "/chat",
+                    json=payload,
+                    headers={
+                        "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "69420"
+                    },
+                    timeout=30.0  # Evita que se cuelgue indefinidamente
+                )
+                response.raise_for_status()
+                res_json = response.json()
+                tiempo = time.time() - inicio
+                return res_json["response"], tiempo
 
-        try:
-            response = requests.post(
-                self.url + "/chat",
-                json=payload,
-                headers={
-                    "Content-Type": "application/json",
-                    "ngrok-skip-browser-warning": "69420"
-                }
-            ).json()
-            tiempo = time.time() - inicio
-            return response["response"], tiempo
-
-        except Exception as e:
-            tiempo = time.time() - inicio
-            print(f"Error al llamar al LLM: {e}")
-            return "respuesta no obtenida", tiempo
+            except Exception as e:
+                tiempo = time.time() - inicio
+                print(f"Advertencia: Error al llamar al LLM (Intento {attempt + 1}/{max_retries}): {e}")
+                if attempt < max_retries - 1:
+                    sleep_time = backoff_factor ** attempt
+                    time.sleep(sleep_time)
+                else:
+                    print(f"Error crítico: Se agotaron los reintentos para la llamada al LLM: {e}")
+                    return "respuesta no obtenida", tiempo

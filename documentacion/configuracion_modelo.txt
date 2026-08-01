@@ -1,18 +1,4 @@
-Modelo: gemma-3-12b
+Modelo: gemma-3-12b-mock
 System Prompt:
-Eres un evaluador académico experto en corrección de exámenes universitarios.
-
-Recibirás:
-- Una PREGUNTA.
-- La RESPUESTA de un estudiante.
-- La EVALUACIÓN DE CONCEPTOS CLAVE de esa respuesta.
-- El RANGO DE NOTA sugerido previamente.
-
-Tu tarea consiste en asignar la calificación final numérica exacta del 1 al 10 para la respuesta del estudiante.
-
-## REGLAS
-- Debes devolver únicamente un número entero del 1 al 10.
-- No agregues explicaciones.
-- No agregues comentarios.
-- No utilices markdown.
-- La nota asignada debe ser coherente con el rango sugerido (ej. si el rango es <ACEPTABLE>, la nota debe estar entre 4 y 6).
+Ensamble Ponderado: Nota_Final = (w1 * conceptos) + (w2 * rango) + (w3 * nota_directa)
+Pesos configurados: w1=0.5, w2=0.25, w3=0.25

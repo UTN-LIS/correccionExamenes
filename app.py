@@ -3,7 +3,7 @@ import csv
 import json
 import asyncio
 import pandas as pd
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Callable
 from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -23,6 +23,8 @@ from prompts import (
     construir_user_message_rango,
     construir_user_message_nota
 )
+from grading_logic import evaluar_conceptos, evaluar_rango, evaluar_nota_directa, ensamblar_nota_final
+
 
 app = FastAPI(title="Evaluador Académico UTN-LIS con IA")
 
@@ -39,6 +41,19 @@ class CorreccionState:
 
 state = CorreccionState()
 state_lock = asyncio.Lock()
+
+# Estado de corrección y comparación en vivo
+class ComparacionState:
+    def __init__(self):
+        self.status = "idle"  # idle, running, completed, failed, cancelled
+        self.total = 0
+        self.procesado = 0
+        self.errores = 0
+        self.mae = 0.0
+        self.cancel_requested = False
+
+state_comp = ComparacionState()
+state_comp_lock = asyncio.Lock()
 
 # Asegurar la creación de la carpeta de documentación
 os.makedirs("documentacion", exist_ok=True)
@@ -321,69 +336,54 @@ async def corregir_respuesta_individual(
     cliente_llm: ClienteLLM,
     pregunta_text: str,
     conceptos: List[Dict[str, str]],
-    respuesta_estudiante: str
+    respuesta_estudiante: str,
+    check_cancellation: Optional[Callable[[], bool]] = None
 ) -> Dict[str, Any]:
-    """Ejecuta los tres pasos de evaluación llamando al LLM de forma no bloqueante."""
-    conceptos_resultados = []
-    conceptos_evaluados_dict = {}
-    tiempo_total = 0.0
-    
-    # PASO 1: Evaluar conceptos clave uno a uno
-    if conceptos:
-        for concepto in conceptos:
-            tag = concepto['tag']
-            desc = concepto['descripcion']
-            user_msg_c = construir_user_message_conceptos(pregunta_text, concepto, respuesta_estudiante)
-            
-            # Ejecutar en hilo de ejecución secundario para no bloquear el bucle de eventos async
-            salida_c, tiempo_c = await asyncio.to_thread(
-                cliente_llm.generar_salida, SYSTEM_PROMPT_CONCEPTOS, user_msg_c
-            )
-            clean_c = salida_c.strip().lower().rstrip('.')
-            if clean_c not in ("sí", "no"):
-                clean_c = "no"  # fallback de consistencia
-            conceptos_evaluados_dict[tag] = clean_c
-            tiempo_total += tiempo_c
-            conceptos_resultados.append(f"- <{tag}> ({desc}): {clean_c}")
-    
-    if conceptos_resultados:
-        conceptos_evaluados_str = "\n".join(conceptos_resultados)
-    else:
-        conceptos_evaluados_str = "No hay conceptos específicos definidos para esta pregunta."
-        
-    # PASO 2: Clasificar rango de nota
-    user_msg_r = construir_user_message_rango(pregunta_text, respuesta_estudiante, conceptos_evaluados_str)
-    salida_r, tiempo_r = await asyncio.to_thread(
-        cliente_llm.generar_salida, SYSTEM_PROMPT_RANGO, user_msg_r
+    """Ejecuta los tres experimentos de forma atómica e independiente, y los ensambla en una nota final."""
+    if check_cancellation and check_cancellation():
+        return {"estado": "cancelado"}
+
+    db = cargar_db()
+    pesos = db.get("pesos_ensamble", {"w1": 0.10, "w2": 0.05, "w3": 0.85})
+    w1 = pesos.get("w1", 0.10)
+    w2 = pesos.get("w2", 0.05)
+    w3 = pesos.get("w3", 0.85)
+
+
+    # Lanzar los tres experimentos atómicos en hilos separados para concurrencia
+    task_conceptos = asyncio.to_thread(evaluar_conceptos, cliente_llm, pregunta_text, conceptos, respuesta_estudiante)
+    task_rango = asyncio.to_thread(evaluar_rango, cliente_llm, pregunta_text, respuesta_estudiante)
+    task_nota_directa = asyncio.to_thread(evaluar_nota_directa, cliente_llm, pregunta_text, respuesta_estudiante)
+
+    res_conceptos, res_rango, res_nota_directa = await asyncio.gather(
+        task_conceptos, task_rango, task_nota_directa
     )
-    clean_r = salida_r.strip().replace("\n", "").strip()
-    tiempo_total += tiempo_r
-    
-    # PASO 3: Asignar calificación final numérica
-    user_msg_n = construir_user_message_nota(pregunta_text, respuesta_estudiante, conceptos_evaluados_str, clean_r)
-    salida_n, tiempo_n = await asyncio.to_thread(
-        cliente_llm.generar_salida, SYSTEM_PROMPT_NOTA, user_msg_n
+
+    if check_cancellation and check_cancellation():
+        return {"estado": "cancelado"}
+
+    # Integrar los resultados utilizando el ensamble ponderado
+    res_ensemble = ensamblar_nota_final(
+        res_conceptos,
+        res_rango,
+        res_nota_directa,
+        w1=w1,
+        w2=w2,
+        w3=w3
     )
-    clean_n = salida_n.strip().replace("\n", "").strip()
-    tiempo_total += tiempo_n
-    
-    try:
-        nota_final = int(clean_n)
-        if nota_final < 1 or nota_final > 10:
-            nota_final = 1
-    except ValueError:
-        # Intentar extraer el primer número
-        import re
-        numeros = re.findall(r'\d+', clean_n)
-        nota_final = int(numeros[0]) if numeros else 1
-        
+
+    tiempo_total = res_conceptos["tiempo"] + res_rango["tiempo"] + res_nota_directa["tiempo"]
+
     return {
-        "conceptos_evaluados": conceptos_evaluados_dict,
-        "rango_nota": clean_r,
-        "nota_final": nota_final,
+        "conceptos_evaluados": res_conceptos["conceptos_evaluados"],
+        "rango_nota": res_rango["rango"],
+        "nota_final": res_ensemble["nota_final"],
         "tiempo": round(tiempo_total, 3),
-        "estado": "completado"
+        "estado": "completado",
+        "desglose": res_ensemble["desglose"],
+        "configuracion": res_ensemble["configuracion"]
     }
+
 
 async def tarea_correccion_lote():
     """Bucle de ejecución asíncrona con limitación de concurrencia y reintentos robustos."""
@@ -480,7 +480,161 @@ async def tarea_correccion_lote():
     async with state_lock:
         state.status = db["proceso_correccion"]["status"]
 
+async def tarea_comparar_correccion_lote():
+    """Bucle asíncrono para evaluar y comparar notas en tiempo real."""
+    global state_comp
+    db = cargar_db()
+    url_llm = db.get("url_llm")
+    if url_llm:
+        os.environ["URL_LLM"] = url_llm
+        
+    respuestas = db.get("respuestas_comparar", [])
+    preguntas_db = db.get("preguntas", {})
+    
+    if not respuestas:
+        async with state_comp_lock:
+            state_comp.status = "idle"
+        return
+        
+    cliente_llm = ClienteLLM()
+    comparaciones_temp = []
+    mae_acumulado = 0.0
+    
+    # Semáforo para limitar la concurrencia a un máximo de 3 llamadas paralelas al servidor LLM
+    sem = asyncio.Semaphore(3)
+    
+    async def procesar_item(idx: int, resp: Dict[str, Any]):
+        global state_comp
+        nonlocal mae_acumulado
+        if state_comp.cancel_requested:
+            return
+            
+        q_id = resp["question_id"]
+        student_ans = resp["student_answer"]
+        teacher_grade = resp["teacher_grade"]
+        
+        pregunta = preguntas_db.get(q_id, {})
+        conceptos = pregunta.get("conceptos", [])
+        
+        intentos = 3
+        resultado = None
+        
+        for inteno in range(intentos):
+            if state_comp.cancel_requested:
+                return
+            try:
+                async with sem:
+                    resultado = await corregir_respuesta_individual(
+                        cliente_llm,
+                        pregunta.get("question_text", f"Pregunta {q_id}"),
+                        conceptos,
+                        student_ans,
+                        check_cancellation=lambda: state_comp.cancel_requested
+                    )
+                if resultado["estado"] == "completado" or resultado.get("estado") == "cancelado":
+                    break
+            except Exception as e:
+                print(f"Error corrigiendo para comparación en vivo (Intento {inteno+1}): {e}")
+                await asyncio.sleep(1)
+                
+        if state_comp.cancel_requested or (resultado is not None and resultado.get("estado") == "cancelado"):
+            return
+            
+        if resultado is None or resultado.get("estado") == "error":
+            resultado = {
+                "conceptos_evaluados": {},
+                "rango_nota": "ERROR_CONEXION",
+                "nota_final": 1,
+                "tiempo": 0.0,
+                "estado": "error",
+                "error_msg": "No se obtuvo respuesta del LLM tras varios intentos."
+            }
+            async with state_comp_lock:
+                state_comp.errores += 1
+                
+        agent_grade = float(resultado["nota_final"])
+        diff = agent_grade - teacher_grade
+        abs_error = abs(diff)
+        
+        item_comparado = {
+            "question_id": q_id,
+            "student_answer": student_ans,
+            "student_answer_short": student_ans[:120] + "..." if len(student_ans) > 120 else student_ans,
+            "teacher_grade": teacher_grade,
+            "agent_grade": agent_grade,
+            "diff": round(diff, 2),
+            "conceptos_evaluados": resultado.get("conceptos_evaluados", {}),
+            "rango_nota": resultado.get("rango_nota", ""),
+            "nota_conceptos": resultado.get("desglose", {}).get("experimento_conceptos", {}).get("nota_obtenida", 1.0),
+            "nota_rango": resultado.get("desglose", {}).get("experimento_rango", {}).get("nota_obtenida", 1.0),
+            "nota_directa": resultado.get("desglose", {}).get("experimento_nota_directa", {}).get("nota_obtenida", 1.0)
+        }
+
+        
+        async with state_comp_lock:
+            comparaciones_temp.append(item_comparado)
+            state_comp.procesado += 1
+            mae_acumulado += abs_error
+            state_comp.mae = round(mae_acumulado / state_comp.procesado, 2)
+            
+    tareas = [procesar_item(i, r) for i, r in enumerate(respuestas)]
+    await asyncio.gather(*tareas)
+    
+    db = cargar_db()
+    status_final = "cancelled" if state_comp.cancel_requested else ("completed" if state_comp.errores < state_comp.total else "failed")
+    
+    db["resultados_comparacion"] = {
+        "comparaciones": comparaciones_temp,
+        "total_comparados": len(comparaciones_temp),
+        "mae": state_comp.mae if comparaciones_temp else 0.0,
+        "status": status_final
+    }
+    db["proceso_comparacion"] = {
+        "status": status_final,
+        "total": state_comp.total,
+        "procesado": state_comp.procesado,
+        "errores": state_comp.errores,
+        "mae": state_comp.mae if comparaciones_temp else 0.0
+    }
+    guardar_db(db)
+    
+    async with state_comp_lock:
+        state_comp.status = status_final
+
+class PesosConfig(BaseModel):
+    w1: float
+    w2: float
+    w3: float
+
+@app.get("/api/config/pesos")
+async def obtener_pesos():
+    """Obtiene los pesos configurados para el ensamble ponderado."""
+    db = cargar_db()
+    pesos = db.get("pesos_ensamble", {"w1": 0.10, "w2": 0.05, "w3": 0.85})
+    return pesos
+
+
+@app.post("/api/config/pesos")
+async def guardar_pesos(req: PesosConfig):
+    """Guarda nuevos pesos para el ensamble ponderado."""
+    suma = req.w1 + req.w2 + req.w3
+    if abs(suma - 1.0) > 0.01:
+        # Normalizar automáticamente si no suman 1.0
+        w1 = round(req.w1 / suma, 3)
+        w2 = round(req.w2 / suma, 3)
+        w3 = round(req.w3 / suma, 3)
+    else:
+        w1 = req.w1
+        w2 = req.w2
+        w3 = req.w3
+
+    db = cargar_db()
+    db["pesos_ensamble"] = {"w1": w1, "w2": w2, "w3": w3}
+    guardar_db(db)
+    return {"mensaje": "Pesos configurados con éxito.", "pesos": db["pesos_ensamble"]}
+
 @app.post("/api/examenes/corregir")
+
 async def iniciar_correccion(background_tasks: BackgroundTasks):
     """Inicia el proceso de corrección por lotes en segundo plano."""
     global state
@@ -531,6 +685,294 @@ async def get_resultados():
         "resultados": db.get("resultados", {}),
         "status": db.get("proceso_correccion", {}).get("status", "idle")
     }
+
+@app.post("/api/examenes/comparar")
+async def comparar_resultados(file: UploadFile = File(...)):
+    """
+    Recibe un CSV (por ejemplo dataset_filtrado.csv) con notas del profesor (teacher_grade)
+    y lo compara con las correcciones ya realizadas por el agente en la base de datos.
+    Calcula métricas como MAE, Sesgo, Coincidencia exacta y distribución de la diferencia.
+    """
+    try:
+        df = pd.read_csv(file.file, encoding="utf-8-sig")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error leyendo archivo CSV: {str(e)}")
+
+    required = {"question_id", "student_answer", "teacher_grade"}
+    if not required.issubset(df.columns):
+        missing = required - set(df.columns)
+        raise HTTPException(status_code=400, detail=f"El CSV no contiene las columnas requeridas: {', '.join(missing)}")
+
+    db = cargar_db()
+    resultados_db = db.get("resultados", {})
+    
+    agente_lookup = {}
+    for alumno_id, info in resultados_db.items():
+        respuestas = info.get("respuestas", [])
+        for r in respuestas:
+            q_id = str(r.get("question_id")).strip()
+            ans = str(r.get("student_answer")).strip()
+            agente_lookup[(q_id, ans)] = r.get("nota_final")
+
+    comparaciones = []
+    mae_acumulado = 0.0
+    bias_acumulado = 0.0
+    coincidencia_exacta = 0
+    coincidencia_tolerancia = 0  # +-1 punto
+    distribucion_errores = {}
+
+    for idx, row in df.iterrows():
+        q_id = str(row["question_id"]).strip()
+        ans = str(row["student_answer"]).strip()
+        teacher_grade_raw = row["teacher_grade"]
+        
+        try:
+            teacher_grade = float(teacher_grade_raw)
+        except (ValueError, TypeError):
+            continue
+
+        nota_agente = agente_lookup.get((q_id, ans))
+        if nota_agente is not None:
+            nota_agente = float(nota_agente)
+            diff = nota_agente - teacher_grade
+            abs_error = abs(diff)
+            
+            mae_acumulado += abs_error
+            bias_acumulado += diff
+            
+            if abs_error == 0:
+                coincidencia_exacta += 1
+            if abs_error <= 1.0:
+                coincidencia_tolerancia += 1
+                
+            error_key = int(round(diff))
+            distribucion_errores[error_key] = distribucion_errores.get(error_key, 0) + 1
+            
+            comparaciones.append({
+                "question_id": q_id,
+                "student_answer": ans,
+                "student_answer_short": ans[:120] + "..." if len(ans) > 120 else ans,
+                "teacher_grade": teacher_grade,
+                "agent_grade": nota_agente,
+                "diff": round(diff, 2)
+            })
+
+    total_comparados = len(comparaciones)
+    if total_comparados == 0:
+        raise HTTPException(
+            status_code=400, 
+            detail="No se encontraron coincidencias entre el CSV subido y los exámenes ya corregidos por el agente. Asegúrate de haber ejecutado la corrección primero."
+        )
+
+    mae = round(mae_acumulado / total_comparados, 2)
+    bias = round(bias_acumulado / total_comparados, 2)
+    pct_exacto = round((coincidencia_exacta / total_comparados) * 100, 2)
+    pct_tolerancia = round((coincidencia_tolerancia / total_comparados) * 100, 2)
+
+    dist_ordenada = {k: distribucion_errores[k] for k in sorted(distribucion_errores.keys())}
+
+    return {
+        "total_comparados": total_comparados,
+        "mae": mae,
+        "bias": bias,
+        "pct_exacto": pct_exacto,
+        "pct_tolerancia": pct_tolerancia,
+        "distribucion_errores": dist_ordenada,
+        "comparaciones": comparaciones
+    }
+
+@app.post("/api/examenes/comparar-upload")
+async def upload_comparar_csv(file: UploadFile = File(...)):
+    """
+    Sube un CSV (como dataset_filtrado.csv) para realizar la corrección y comparación en vivo.
+    """
+    try:
+        df = pd.read_csv(file.file, encoding="utf-8-sig")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error leyendo archivo CSV: {str(e)}")
+
+    required = {"question_id", "student_answer", "teacher_grade"}
+    if not required.issubset(df.columns):
+        missing = required - set(df.columns)
+        raise HTTPException(status_code=400, detail=f"El CSV no contiene las columnas requeridas: {', '.join(missing)}")
+
+    respuestas_comp = []
+    for idx, row in df.iterrows():
+        try:
+            tg = float(row["teacher_grade"])
+        except (ValueError, TypeError):
+            continue
+            
+        respuestas_comp.append({
+            "question_id": str(row["question_id"]).strip(),
+            "student_answer": str(row["student_answer"]).strip(),
+            "teacher_grade": tg
+        })
+
+    if not respuestas_comp:
+        raise HTTPException(status_code=400, detail="El CSV no contiene registros válidos para evaluar.")
+
+    db = cargar_db()
+    db["respuestas_comparar"] = respuestas_comp
+    db["proceso_comparacion"] = {
+        "status": "idle",
+        "total": len(respuestas_comp),
+        "procesado": 0,
+        "errores": 0,
+        "mae": 0.0
+    }
+    db["resultados_comparacion"] = {}
+    guardar_db(db)
+
+    global state_comp
+    async with state_comp_lock:
+        state_comp.status = "idle"
+        state_comp.total = len(respuestas_comp)
+        state_comp.procesado = 0
+        state_comp.errores = 0
+        state_comp.mae = 0.0
+
+    return {
+        "mensaje": "Archivo de comparación cargado exitosamente.",
+        "total_registros": len(respuestas_comp)
+    }
+
+@app.post("/api/examenes/comparar-corregir")
+async def iniciar_correccion_comparacion(background_tasks: BackgroundTasks):
+    """
+    Inicia el proceso asíncrono de corrección y comparación en vivo de las respuestas cargadas.
+    """
+    global state_comp
+    db = cargar_db()
+    if not db.get("respuestas_comparar"):
+        raise HTTPException(status_code=400, detail="No hay respuestas cargadas para corregir y comparar.")
+
+    async with state_comp_lock:
+        if state_comp.status in ("running", "cancelling"):
+            return {"mensaje": "El proceso de corrección y comparación ya está en marcha o cancelándose.", "status": state_comp.status}
+
+        state_comp.status = "running"
+        state_comp.total = len(db["respuestas_comparar"])
+        state_comp.procesado = 0
+        state_comp.errores = 0
+        state_comp.mae = 0.0
+        state_comp.cancel_requested = False
+
+    # Limpiar estado anterior en DB
+    db["proceso_comparacion"]["status"] = "running"
+    db["proceso_comparacion"]["total"] = len(db["respuestas_comparar"])
+    db["proceso_comparacion"]["procesado"] = 0
+    db["proceso_comparacion"]["errores"] = 0
+    db["proceso_comparacion"]["mae"] = 0.0
+    db["resultados_comparacion"] = {}
+    guardar_db(db)
+
+    background_tasks.add_task(tarea_comparar_correccion_lote)
+    return {"mensaje": "Proceso de corrección y comparación en vivo iniciado.", "status": "running"}
+
+@app.get("/api/examenes/comparar-estado")
+async def get_estado_comparacion():
+    """
+    Sondea el estado actual del proceso de corrección y comparación en vivo.
+    """
+    async with state_comp_lock:
+        return {
+            "status": state_comp.status,
+            "total": state_comp.total,
+            "procesado": state_comp.procesado,
+            "errores": state_comp.errores,
+            "mae": state_comp.mae
+        }
+
+@app.get("/api/examenes/comparar-resultados")
+async def get_resultados_comparacion():
+    """
+    Devuelve los resultados consolidados de la comparación en vivo.
+    """
+    db = cargar_db()
+    res = db.get("resultados_comparacion", {})
+    if not res:
+        return {
+            "total_comparados": 0,
+            "mae": 0.0,
+            "bias": 0.0,
+            "pct_exacto": 0.0,
+            "pct_tolerancia": 0.0,
+            "distribucion_errores": {},
+            "comparaciones": []
+        }
+        
+    comparaciones = res.get("comparaciones", [])
+    total_comparados = len(comparaciones)
+    
+    if total_comparados == 0:
+        return {
+            "total_comparados": 0,
+            "mae": 0.0,
+            "bias": 0.0,
+            "pct_exacto": 0.0,
+            "pct_tolerancia": 0.0,
+            "distribucion_errores": {},
+            "comparaciones": []
+        }
+
+    mae_acumulado = 0.0
+    bias_acumulado = 0.0
+    coincidencia_exacta = 0
+    coincidencia_tolerancia = 0
+    distribucion_errores = {}
+
+    for c in comparaciones:
+        teacher_grade = float(c["teacher_grade"])
+        agent_grade = float(c["agent_grade"])
+        diff = agent_grade - teacher_grade
+        abs_error = abs(diff)
+
+        mae_acumulado += abs_error
+        bias_acumulado += diff
+
+        if abs_error == 0:
+            coincidencia_exacta += 1
+        if abs_error <= 1.0:
+            coincidencia_tolerancia += 1
+
+        error_key = int(round(diff))
+        distribucion_errores[error_key] = distribucion_errores.get(error_key, 0) + 1
+
+    mae = round(mae_acumulado / total_comparados, 2)
+    bias = round(bias_acumulado / total_comparados, 2)
+    pct_exacto = round((coincidencia_exacta / total_comparados) * 100, 2)
+    pct_tolerancia = round((coincidencia_tolerancia / total_comparados) * 100, 2)
+
+    dist_ordenada = {k: distribucion_errores[k] for k in sorted(distribucion_errores.keys())}
+
+    return {
+        "total_comparados": total_comparados,
+        "mae": mae,
+        "bias": bias,
+        "pct_exacto": pct_exacto,
+        "pct_tolerancia": pct_tolerancia,
+        "distribucion_errores": dist_ordenada,
+        "comparaciones": comparaciones
+    }
+
+@app.post("/api/examenes/comparar-cancelar")
+async def cancelar_comparacion():
+    """Cancela el proceso de comparación en vivo actual."""
+    global state_comp
+    async with state_comp_lock:
+        if state_comp.status != "running":
+            raise HTTPException(status_code=400, detail="No hay ningún proceso de comparación en ejecución.")
+        state_comp.cancel_requested = True
+        state_comp.status = "cancelling"
+    
+    # Actualizar estado en base de datos local inmediatamente
+    db = cargar_db()
+    if "proceso_comparacion" in db:
+        db["proceso_comparacion"]["status"] = "cancelling"
+    guardar_db(db)
+    
+    return {"mensaje": "Cancelación solicitada con éxito.", "status": "cancelling"}
 
 # ----------------- ARCHIVOS ESTÁTICOS Y PÁGINA PRINCIPAL -----------------
 

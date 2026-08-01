@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +8,15 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom Style -->
     <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body>
     <!-- Background glow elements -->
     <div class="glow-bg glow-1"></div>
@@ -30,7 +34,7 @@
                     <span>AI Exam Grader</span>
                 </div>
             </div>
-            
+
             <nav class="nav-links">
                 <button class="nav-btn active" data-tab="dashboard">
                     <i class="fa-solid fa-chart-line"></i> Evaluar Examen
@@ -40,6 +44,9 @@
                 </button>
                 <button class="nav-btn" data-tab="resultados">
                     <i class="fa-solid fa-square-poll-vertical"></i> Resultados
+                </button>
+                <button class="nav-btn" data-tab="comparacion">
+                    <i class="fa-solid fa-scale-balanced"></i> Comparación
                 </button>
             </nav>
 
@@ -69,14 +76,15 @@
                                 <i class="fa-solid fa-file-csv"></i>
                             </div>
                             <h3>Respuestas de Alumnos</h3>
-                            <p class="card-desc">Suba un archivo CSV con las columnas: <code>question_id</code>, <code>alumno_id</code>, <code>student_answer</code>.</p>
-                            
+                            <p class="card-desc">Suba un archivo CSV con las columnas: <code>question_id</code>,
+                                <code>alumno_id</code>, <code>student_answer</code>.</p>
+
                             <div class="drop-zone" id="drop-zone-respuestas">
                                 <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
                                 <span class="drop-text">Arrastre el CSV aquí o haga clic para buscar</span>
                                 <input type="file" id="file-respuestas" accept=".csv" class="file-input">
                             </div>
-                            
+
                             <div id="upload-status" class="status-alert hidden"></div>
                         </div>
 
@@ -86,16 +94,22 @@
                                 <i class="fa-solid fa-network-wired"></i>
                             </div>
                             <h3>Conexión al Agente LLM</h3>
-                            <p class="card-desc" style="margin-bottom: 1rem;">Configure la dirección del servidor de inferencia. Utilice su túnel ngrok activo o el servidor mock local (<code>http://localhost:8000</code>).</p>
-                            
+                            <p class="card-desc" style="margin-bottom: 1rem;">Configure la dirección del servidor de
+                                inferencia. Utilice su túnel ngrok activo o el servidor mock local
+                                (<code>http://localhost:8000</code>).</p>
+
                             <div class="form-group">
                                 <label for="input-url-llm">URL del Servidor LLM</label>
                                 <div style="display: flex; gap: 0.75rem; align-items: center; margin-top: 0.25rem;">
-                                    <input type="text" id="input-url-llm" placeholder="https://xxxxx.ngrok-free.dev" style="flex-grow: 1; padding: 0.65rem 0.85rem;">
-                                    <button id="btn-probar-conexion" class="btn btn-secondary" style="padding: 0.65rem 1rem; white-space: nowrap;" title="Verificar estado de conexión">
+                                    <input type="text" id="input-url-llm" placeholder="https://xxxxx.ngrok-free.dev"
+                                        style="flex-grow: 1; padding: 0.65rem 0.85rem;">
+                                    <button id="btn-probar-conexion" class="btn btn-secondary"
+                                        style="padding: 0.65rem 1rem; white-space: nowrap;"
+                                        title="Verificar estado de conexión">
                                         <i class="fa-solid fa-arrows-rotate"></i> Probar
                                     </button>
-                                    <button id="btn-guardar-conexion" class="btn btn-primary" style="padding: 0.65rem 1.2rem; white-space: nowrap;">
+                                    <button id="btn-guardar-conexion" class="btn btn-primary"
+                                        style="padding: 0.65rem 1.2rem; white-space: nowrap;">
                                         <i class="fa-solid fa-floppy-disk"></i> Guardar
                                     </button>
                                 </div>
@@ -107,7 +121,7 @@
                     <div class="card glass-card control-container">
                         <h3>Estado del Proceso</h3>
                         <p class="card-desc">Monitoree la corrección en tiempo real por el agente LLM.</p>
-                        
+
                         <div class="process-stats-grid">
                             <div class="stat-box">
                                 <span class="stat-val" id="stat-total">0</span>
@@ -145,12 +159,14 @@
                 <div class="panel-header-action">
                     <div>
                         <h2>Banco de Preguntas</h2>
-                        <p>Configure las preguntas, respuestas de referencia y los conceptos clave para la evaluación del LLM.</p>
+                        <p>Configure las preguntas, respuestas de referencia y los conceptos clave para la evaluación
+                            del LLM.</p>
                     </div>
                     <div class="header-buttons">
                         <label class="btn btn-secondary">
                             <i class="fa-solid fa-file-import"></i> Importar CSV
-                            <input type="file" id="file-preguntas" accept=".csv" class="file-input" style="display:none">
+                            <input type="file" id="file-preguntas" accept=".csv" class="file-input"
+                                style="display:none">
                         </label>
                         <button class="btn btn-primary" id="btn-nueva-pregunta">
                             <i class="fa-solid fa-plus"></i> Nueva Pregunta
@@ -169,7 +185,8 @@
                 <!-- Questions Grid -->
                 <div class="questions-grid" id="questions-grid">
                     <!-- Dynamic Cards -->
-                    <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i> Cargando banco de preguntas...</div>
+                    <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i> Cargando banco de
+                        preguntas...</div>
                 </div>
             </section>
 
@@ -178,7 +195,8 @@
                 <div class="panel-header-action">
                     <div>
                         <h2>Resultados Académicos</h2>
-                        <p>Consulte las calificaciones asignadas por el agente y el desglose de conceptos identificados por alumno.</p>
+                        <p>Consulte las calificaciones asignadas por el agente y el desglose de conceptos identificados
+                            por alumno.</p>
                     </div>
                     <div class="header-buttons">
                         <button class="btn btn-secondary" id="btn-exportar-csv">
@@ -234,8 +252,148 @@
                             </thead>
                             <tbody id="tabla-resultados-body">
                                 <tr>
-                                    <td colspan="5" class="empty-table">No hay resultados disponibles. Cargue respuestas y comience la corrección.</td>
+                                    <td colspan="5" class="empty-table">No hay resultados disponibles. Cargue respuestas
+                                        y comience la corrección.</td>
                                 </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB: COMPARACION -->
+            <section id="tab-comparacion" class="tab-panel">
+                <div class="panel-header">
+                    <h2>Comparación de Calificaciones</h2>
+                    <p>Suba un dataset con las calificaciones reales del profesor (por ejemplo, <code>dataset_filtrado.csv</code>) para contrastarlas con las del agente de IA y medir la precisión del sistema.</p>
+                </div>
+
+                <div class="grid-layout">
+                    <!-- Columna Izquierda: Opciones de Carga -->
+                    <div style="display: flex; flex-direction: column; gap: 2rem;">
+                        <!-- Opción A: Comparar con Resultados Existentes -->
+                        <div class="card glass-card upload-container" style="padding: 1.5rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                                <i class="fa-solid fa-scale-unbalanced" style="font-size: 1.5rem; color: var(--accent-primary);"></i>
+                                <h3 style="margin: 0; font-size: 1.15rem;">1. Comparar con Notas Existentes</h3>
+                            </div>
+                            <p class="card-desc" style="margin-bottom: 1rem;">Compara un CSV de calificaciones del profesor directamente con las respuestas del agente ya guardadas en la base de datos.</p>
+                            
+                            <div class="drop-zone" id="drop-zone-comparar" style="padding: 1rem 1.5rem;">
+                                <i class="fa-solid fa-cloud-arrow-up drop-icon" style="font-size: 1.75rem; margin-bottom: 0.5rem;"></i>
+                                <span class="drop-text" style="font-size: 0.85rem;">Arrastrar CSV aquí o hacer clic</span>
+                                <input type="file" id="file-comparar" accept=".csv" class="file-input">
+                            </div>
+                            
+                            <div id="comparar-status" class="status-alert hidden" style="margin-top: 1rem;"></div>
+                        </div>
+
+                        <!-- Opción B: Corregir y Comparar en Vivo -->
+                        <div class="card glass-card upload-container" style="padding: 1.5rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                                <i class="fa-solid fa-bolt" style="font-size: 1.5rem; color: var(--accent-secondary);"></i>
+                                <h3 style="margin: 0; font-size: 1.15rem;">2. Corregir y Comparar en Vivo</h3>
+                            </div>
+                            <p class="card-desc" style="margin-bottom: 1rem;">Sube un CSV (ej. <code>dataset_filtrado.csv</code>). Se ejecutarán los 3 pasos del agente en vivo para calificar cada respuesta y calcular el error medio en tiempo real.</p>
+                            
+                            <div class="drop-zone" id="drop-zone-vivo" style="padding: 1rem 1.5rem;">
+                                <i class="fa-solid fa-cloud-arrow-down drop-icon" style="font-size: 1.75rem; margin-bottom: 0.5rem; color: var(--accent-secondary);"></i>
+                                <span class="drop-text" style="font-size: 0.85rem;">Arrastrar dataset para evaluar aquí o hacer clic</span>
+                                <input type="file" id="file-vivo" accept=".csv" class="file-input">
+                            </div>
+                            
+                            <div style="display: flex; gap: 1rem; margin-top: 1rem; align-items: center;">
+                                <button class="btn btn-primary" id="btn-iniciar-vivo" disabled style="flex-grow: 1;">
+                                    <i class="fa-solid fa-play"></i> Iniciar Evaluación en Vivo
+                                </button>
+                                <button class="btn" id="btn-cancelar-vivo" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; font-weight: 600; padding: 0 1.25rem; height: 38px; border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.25)'" onmouseout="this.style.background='rgba(239, 68, 68, 0.15)'">
+                                    <i class="fa-solid fa-ban"></i> Cancelar
+                                </button>
+                            </div>
+
+                            <!-- Progress stats -->
+                            <div id="vivo-progress-container" style="display: none; margin-top: 1rem;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.25rem;">
+                                    <span>Progreso: <strong id="vivo-processed">0</strong> / <strong id="vivo-total">0</strong></span>
+                                    <span>Error Medio (MAE): <strong id="vivo-running-mae" style="color: var(--accent-secondary);">0.00</strong></span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="vivo-progress-fill" style="width: 0%; background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));"></div>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: 0.25rem; color: var(--text-muted);">
+                                    <span>Errores: <span id="vivo-errors">0</span></span>
+                                    <span id="vivo-percent">0%</span>
+                                </div>
+                            </div>
+                            
+                            <div id="vivo-status" class="status-alert hidden" style="margin-top: 1rem;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Resultados de Métricas -->
+                    <div class="card glass-card metrics-summary-container">
+                        <h3>Métricas de Comparación</h3>
+                        <p class="card-desc">Resultados de la validación entre calificaciones del Agente vs Profesor.</p>
+                        
+                        <div class="metrics-grid" id="comparar-metrics-grid" style="display:none; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem;">
+                            <div class="stat-box">
+                                <span class="stat-val" id="metric-mae">0.0</span>
+                                <span class="stat-lbl">Error Absoluto Medio (MAE)</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-val" id="metric-bias">0.0</span>
+                                <span class="stat-lbl">Sesgo (Bias)</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-val" id="metric-exact">0%</span>
+                                <span class="stat-lbl">Coincidencia Exacta</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-val" id="metric-tolerance">0%</span>
+                                <span class="stat-lbl">Tolerancia (&plusmn;1 punto)</span>
+                            </div>
+                        </div>
+                        
+                        <div id="metrics-placeholder" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                            <i class="fa-solid fa-chart-bar" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                            <p>Suba el archivo de comparación para ver las métricas estadísticas.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de Detalle de Comparación -->
+                <div class="card glass-card table-card" id="comparar-table-card" style="display:none; margin-top: 2rem;">
+                    <div style="padding: 1.5rem 2rem 0 2rem; display: flex; justify-content: space-between; align-items: center; wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;">Distribución de Errores y Detalle de Casos</h3>
+                            <p class="card-desc" style="margin-bottom: 0;">Análisis detallado de la diferencia de puntajes.</p>
+                        </div>
+                        <button class="btn btn-secondary" id="btn-exportar-comparacion" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); font-size: 0.85rem; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                            <i class="fa-solid fa-file-excel" style="color: #10b981; margin-right: 0.5rem;"></i> Exportar Comparación
+                        </button>
+                    </div>
+                    
+                    <!-- Distribución de errores -->
+                    <div id="error-distribution-container" style="margin: 1.5rem 2rem; padding: 1.5rem; background: rgba(255,255,255,0.01); border: 1px solid var(--border-glass); border-radius: 8px;">
+                        <h4 style="margin-bottom: 1rem; font-size: 0.95rem; font-weight: 600;">Distribución de la diferencia (Agente - Profesor)</h4>
+                        <div id="error-dist-bars" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <!-- Las barras se generarán dinámicamente -->
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="custom-table" id="tabla-comparacion-detalle">
+                            <thead>
+                                <tr>
+                                    <th>Pregunta ID</th>
+                                    <th>Respuesta (Resumen)</th>
+                                    <th>Nota Profesor</th>
+                                    <th>Nota Agente</th>
+                                    <th>Diferencia</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-comparacion-body">
+                                <!-- Filas dinámicas -->
                             </tbody>
                         </table>
                     </div>
@@ -258,11 +416,13 @@
                 </div>
                 <div class="form-group">
                     <label for="form-question-text">Enunciado de la Pregunta</label>
-                    <textarea id="form-question-text" rows="3" required placeholder="Escriba la consigna del examen..."></textarea>
+                    <textarea id="form-question-text" rows="3" required
+                        placeholder="Escriba la consigna del examen..."></textarea>
                 </div>
                 <div class="form-group">
                     <label for="form-ideal-answer">Respuesta de Referencia (Pauta de Corrección)</label>
-                    <textarea id="form-ideal-answer" rows="4" required placeholder="Escriba la respuesta esperada de la cátedra..."></textarea>
+                    <textarea id="form-ideal-answer" rows="4" required
+                        placeholder="Escriba la respuesta esperada de la cátedra..."></textarea>
                 </div>
 
                 <div class="concepts-section">
@@ -272,7 +432,8 @@
                             <i class="fa-solid fa-plus"></i> Agregar Concepto
                         </button>
                     </div>
-                    <p class="concepts-desc">Defina criterios específicos que la IA verificará (sí/no) en la respuesta del alumno.</p>
+                    <p class="concepts-desc">Defina criterios específicos que la IA verificará (sí/no) en la respuesta
+                        del alumno.</p>
                     <div class="concepts-rows" id="concepts-rows-container">
                         <!-- Dynamic rows of Tag + Desc -->
                     </div>
@@ -296,7 +457,7 @@
                 </div>
                 <button class="close-btn" id="close-modal-detalle"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            
+
             <div class="slide-modal-body" id="detail-answers-container">
                 <!-- Dynamic student answer details -->
             </div>
@@ -308,4 +469,5 @@
 
     <script src="/static/app.js"></script>
 </body>
+
 </html>

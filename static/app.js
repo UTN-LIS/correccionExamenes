@@ -13,26 +13,26 @@ const elements = {
     navBtns: document.querySelectorAll('.nav-btn'),
     tabPanels: document.querySelectorAll('.tab-panel'),
     serverStatus: document.getElementById('server-status'),
-    
+
     // Dashboard / Evaluation
     dropZoneRespuestas: document.getElementById('drop-zone-respuestas'),
     fileRespuestas: document.getElementById('file-respuestas'),
     uploadStatus: document.getElementById('upload-status'),
     btnIniciarCorreccion: document.getElementById('btn-iniciar-correccion'),
-    
+
     // Stats
     statTotal: document.getElementById('stat-total'),
     statProcesado: document.getElementById('stat-procesado'),
     statErrores: document.getElementById('stat-errores'),
     progressFill: document.getElementById('progress-fill'),
     progressPercent: document.getElementById('progress-percent'),
-    
+
     // Questions Bank
     questionsGrid: document.getElementById('questions-grid'),
     filterPreguntas: document.getElementById('filter-preguntas'),
     btnNuevaPregunta: document.getElementById('btn-nueva-pregunta'),
     filePreguntas: document.getElementById('file-preguntas'),
-    
+
     // Questions Modal
     modalPregunta: document.getElementById('modal-pregunta'),
     formPregunta: document.getElementById('form-pregunta'),
@@ -40,7 +40,7 @@ const elements = {
     btnCancelarPregunta: document.getElementById('btn-cancelar-pregunta'),
     btnAddConceptoRow: document.getElementById('btn-add-concepto-row'),
     conceptsRowsContainer: document.getElementById('concepts-rows-container'),
-    
+
     // Results
     filterResultados: document.getElementById('filter-resultados'),
     tablaResultadosBody: document.getElementById('tabla-resultados-body'),
@@ -48,19 +48,19 @@ const elements = {
     resTotalAlumnos: document.getElementById('res-total-alumnos'),
     resPromedioGeneral: document.getElementById('res-promedio-general'),
     resAprobados: document.getElementById('res-aprobados'),
-    
+
     // Student Detail Slide-Over
     modalDetalleAlumno: document.getElementById('modal-detalle-alumno'),
     closeModalDetalle: document.getElementById('close-modal-detalle'),
     detailAlumnoId: document.getElementById('detail-alumno-id'),
     detailAlumnoPromedio: document.getElementById('detail-alumno-promedio'),
     detailAnswersContainer: document.getElementById('detail-answers-container'),
-    
+
     // Connection settings
     inputUrlLlm: document.getElementById('input-url-llm'),
     btnProbarConexion: document.getElementById('btn-probar-conexion'),
     btnGuardarConexion: document.getElementById('btn-guardar-conexion'),
-    
+
     // Global Toast
     toast: document.getElementById('toast')
 };
@@ -85,11 +85,11 @@ async function checkServerConfig() {
         const res = await fetch('/api/config');
         if (!res.ok) throw new Error();
         const data = await res.json();
-        
+
         if (elements.inputUrlLlm) {
             elements.inputUrlLlm.value = data.url_llm || '';
         }
-        
+
         updateServerStatusUI(data.online, data.url_llm);
     } catch (err) {
         updateServerStatusUI(false, '');
@@ -139,7 +139,7 @@ function setupEventListeners() {
             switchTab(tabId);
         });
     });
-    
+
     // Drop zone drag events
     const dropZone = elements.dropZoneRespuestas;
     ['dragenter', 'dragover'].forEach(eventName => {
@@ -148,14 +148,14 @@ function setupEventListeners() {
             dropZone.classList.add('dragover');
         }, false);
     });
-    
+
     ['dragleave', 'drop'].forEach(eventName => {
         dropZone.addEventListener(eventName, (e) => {
             e.preventDefault();
             dropZone.classList.remove('dragover');
         }, false);
     });
-    
+
     dropZone.addEventListener('drop', (e) => {
         const dt = e.dataTransfer;
         const files = dt.files;
@@ -164,56 +164,56 @@ function setupEventListeners() {
             subirRespuestas(files[0]);
         }
     });
-    
+
     dropZone.addEventListener('click', () => {
         elements.fileRespuestas.click();
     });
-    
+
     elements.fileRespuestas.addEventListener('change', (e) => {
         if (e.target.files.length) {
             subirRespuestas(e.target.files[0]);
         }
     });
-    
+
     // Iniciar corrección
     elements.btnIniciarCorreccion.addEventListener('click', iniciarCorreccionIA);
-    
+
     // Banco de preguntas search & actions
     elements.filterPreguntas.addEventListener('input', renderPreguntas);
-    
+
     elements.btnNuevaPregunta.addEventListener('click', () => {
         elements.formPregunta.reset();
         elements.conceptsRowsContainer.innerHTML = '';
         elements.modalPregunta.classList.add('active');
     });
-    
+
     elements.closeModalPregunta.addEventListener('click', () => {
         elements.modalPregunta.classList.remove('active');
     });
     elements.btnCancelarPregunta.addEventListener('click', () => {
         elements.modalPregunta.classList.remove('active');
     });
-    
+
     elements.btnAddConceptoRow.addEventListener('click', () => addConceptoRow());
-    
+
     elements.formPregunta.addEventListener('submit', guardarPreguntaManual);
-    
+
     // Preguntas CSV Upload
     elements.filePreguntas.addEventListener('change', (e) => {
         if (e.target.files.length) {
             subirPreguntasCSV(e.target.files[0]);
         }
     });
-    
+
     // Resultados search & export
     elements.filterResultados.addEventListener('input', renderResultados);
     elements.btnExportarCsv.addEventListener('click', exportarResultadosCSV);
-    
+
     // Modales close
     elements.closeModalDetalle.addEventListener('click', () => {
         elements.modalDetalleAlumno.classList.remove('active');
     });
-    
+
     // Cierre al cliquear fuera del modal
     window.addEventListener('click', (e) => {
         if (e.target === elements.modalPregunta) {
@@ -234,7 +234,7 @@ function setupEventListeners() {
             }
             elements.btnProbarConexion.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Probando...`;
             elements.btnProbarConexion.disabled = true;
-            
+
             try {
                 const res = await fetch('/api/config', {
                     method: 'POST',
@@ -242,7 +242,7 @@ function setupEventListeners() {
                     body: JSON.stringify({ url_llm: url })
                 });
                 const data = await res.json();
-                
+
                 updateServerStatusUI(data.online, url);
                 if (data.online) {
                     showToast('¡Conexión exitosa con el agente LLM!', 'success');
@@ -269,7 +269,7 @@ function setupEventListeners() {
             }
             elements.btnGuardarConexion.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Guardando...`;
             elements.btnGuardarConexion.disabled = true;
-            
+
             try {
                 const res = await fetch('/api/config', {
                     method: 'POST',
@@ -277,7 +277,7 @@ function setupEventListeners() {
                     body: JSON.stringify({ url_llm: url })
                 });
                 const data = await res.json();
-                
+
                 updateServerStatusUI(data.online, url);
                 if (res.ok) {
                     showToast('URL del Agente configurada y guardada.', 'success');
@@ -292,6 +292,96 @@ function setupEventListeners() {
             }
         });
     }
+
+    // Event listeners para la pestaña de Comparación (Opción A: Estático)
+    const dropZoneComp = document.getElementById('drop-zone-comparar');
+    const fileComp = document.getElementById('file-comparar');
+    if (dropZoneComp && fileComp) {
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZoneComp.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropZoneComp.classList.add('dragover');
+            }, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZoneComp.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropZoneComp.classList.remove('dragover');
+            }, false);
+        });
+        
+        dropZoneComp.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length) {
+                fileComp.files = files;
+                ejecutarComparacion(files[0]);
+            }
+        });
+        
+        dropZoneComp.addEventListener('click', () => {
+            fileComp.click();
+        });
+        
+        fileComp.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                ejecutarComparacion(e.target.files[0]);
+            }
+        });
+    }
+
+    // Event listeners para la pestaña de Comparación (Opción B: En Vivo)
+    const dropZoneVivo = document.getElementById('drop-zone-vivo');
+    const fileVivo = document.getElementById('file-vivo');
+    const btnIniciarVivo = document.getElementById('btn-iniciar-vivo');
+    
+    if (dropZoneVivo && fileVivo) {
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZoneVivo.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropZoneVivo.classList.add('dragover');
+            }, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZoneVivo.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropZoneVivo.classList.remove('dragover');
+            }, false);
+        });
+        
+        dropZoneVivo.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length) {
+                fileVivo.files = files;
+                subirDatasetVivo(files[0]);
+            }
+        });
+        
+        dropZoneVivo.addEventListener('click', () => {
+            fileVivo.click();
+        });
+        
+        fileVivo.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                subirDatasetVivo(e.target.files[0]);
+            }
+        });
+    }
+    
+    if (btnIniciarVivo) {
+        btnIniciarVivo.addEventListener('click', iniciarEvaluacionVivo);
+    }
+    const btnCancelarVivo = document.getElementById('btn-cancelar-vivo');
+    if (btnCancelarVivo) {
+        btnCancelarVivo.addEventListener('click', cancelarEvaluacionVivo);
+    }
+    const btnExportarComparacion = document.getElementById('btn-exportar-comparacion');
+    if (btnExportarComparacion) {
+        btnExportarComparacion.addEventListener('click', exportarComparacionCSV);
+    }
 }
 
 function switchTab(tabId) {
@@ -299,15 +389,17 @@ function switchTab(tabId) {
     elements.navBtns.forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
     });
-    
+
     elements.tabPanels.forEach(panel => {
         panel.classList.toggle('active', panel.id === `tab-${tabId}`);
     });
-    
+
     if (tabId === 'preguntas') {
         cargarPreguntas();
     } else if (tabId === 'resultados') {
         cargarResultados();
+    } else if (tabId === 'comparacion') {
+        cargarResultadosComparacion();
     }
 }
 
@@ -316,18 +408,18 @@ function switchTab(tabId) {
 async function subirRespuestas(file) {
     elements.uploadStatus.className = 'status-alert hidden';
     elements.uploadStatus.innerHTML = '';
-    
+
     const formData = new FormData();
     formData.append('file', file);
-    
+
     try {
         const res = await fetch('/api/examenes/upload', {
             method: 'POST',
             body: formData
         });
-        
+
         const data = await res.json();
-        
+
         if (!res.ok) {
             // Error de validación estructurada
             let errorMsg = `<strong>La validación del CSV falló:</strong><br>`;
@@ -343,26 +435,26 @@ async function subirRespuestas(file) {
             } else {
                 errorMsg += data.error || 'Formato inválido.';
             }
-            
+
             elements.uploadStatus.className = 'status-alert error';
             elements.uploadStatus.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <div>${errorMsg}</div>`;
             elements.btnIniciarCorreccion.disabled = true;
             elements.statTotal.textContent = '0';
             return;
         }
-        
+
         elements.uploadStatus.className = 'status-alert success';
         elements.uploadStatus.innerHTML = `<i class="fa-solid fa-circle-check"></i> <div>Cargado con éxito: ${data.total_respuestas} respuestas de ${data.total_alumnos} alumnos listas para evaluar.</div>`;
-        
+
         elements.statTotal.textContent = data.total_respuestas;
         elements.statProcesado.textContent = '0';
         elements.statErrores.textContent = '0';
         elements.progressFill.style.width = '0%';
         elements.progressPercent.textContent = '0%';
-        
+
         elements.btnIniciarCorreccion.disabled = false;
         showToast('Respuestas cargadas y validadas.', 'success');
-        
+
     } catch (err) {
         elements.uploadStatus.className = 'status-alert error';
         elements.uploadStatus.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <div>Error al subir el archivo CSV.</div>`;
@@ -374,11 +466,11 @@ async function subirRespuestas(file) {
 
 async function iniciarCorreccionIA() {
     elements.btnIniciarCorreccion.disabled = true;
-    
+
     try {
         const res = await fetch('/api/examenes/corregir', { method: 'POST' });
         const data = await res.json();
-        
+
         showToast('Corrección iniciada en segundo plano.', 'success');
         verificarEstadoCorreccion();
     } catch (err) {
@@ -389,30 +481,30 @@ async function iniciarCorreccionIA() {
 
 function verificarEstadoCorreccion() {
     if (appState.pollingInterval) clearInterval(appState.pollingInterval);
-    
+
     appState.pollingInterval = setInterval(async () => {
         try {
             const res = await fetch('/api/examenes/estado');
             const status = await res.json();
-            
+
             elements.statTotal.textContent = status.total;
             elements.statProcesado.textContent = status.procesado;
             elements.statErrores.textContent = status.errores;
-            
+
             const percent = status.total > 0 ? Math.round((status.procesado / status.total) * 100) : 0;
             elements.progressFill.style.width = `${percent}%`;
             elements.progressPercent.textContent = `${percent}%`;
-            
+
             if (status.status === 'running') {
                 elements.btnIniciarCorreccion.disabled = true;
                 elements.btnIniciarCorreccion.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Evaluando (${percent}%)`;
             } else {
                 clearInterval(appState.pollingInterval);
                 appState.pollingInterval = null;
-                
+
                 elements.btnIniciarCorreccion.innerHTML = `<i class="fa-solid fa-play"></i> Iniciar Corrección con IA`;
                 elements.btnIniciarCorreccion.disabled = status.total === 0;
-                
+
                 if (status.status === 'completed') {
                     showToast('Corrección finalizada con éxito.', 'success');
                     cargarResultados();
@@ -432,17 +524,17 @@ function verificarEstadoCorreccion() {
 function renderPreguntas() {
     const filter = elements.filterPreguntas.value.toLowerCase();
     elements.questionsGrid.innerHTML = '';
-    
+
     const preguntasList = Object.entries(appState.preguntas);
     const filtered = preguntasList.filter(([qId, data]) => {
         return qId.toLowerCase().includes(filter) || data.question_text.toLowerCase().includes(filter);
     });
-    
+
     if (filtered.length === 0) {
         elements.questionsGrid.innerHTML = `<div class="loading-spinner">No se encontraron preguntas en el banco.</div>`;
         return;
     }
-    
+
     filtered.forEach(([qId, qData]) => {
         const card = document.createElement('div');
         card.className = 'card glass-card question-card';
@@ -459,7 +551,7 @@ function renderPreguntas() {
                 <span class="view-more-lbl">Ver Detalles <i class="fa-solid fa-chevron-right"></i></span>
             </div>
         `;
-        
+
         card.addEventListener('click', () => verDetallePregunta(qId, qData));
         elements.questionsGrid.appendChild(card);
     });
@@ -471,12 +563,12 @@ function verDetallePregunta(qId, qData) {
     document.getElementById('form-question-id').value = qId;
     document.getElementById('form-question-text').value = qData.question_text;
     document.getElementById('form-ideal-answer').value = qData.ideal_answer;
-    
+
     elements.conceptsRowsContainer.innerHTML = '';
     if (qData.conceptos && qData.conceptos.length) {
         qData.conceptos.forEach(c => addConceptoRow(c.tag, c.descripcion));
     }
-    
+
     elements.modalPregunta.querySelector('h3').textContent = `Editar Pregunta: ${qId}`;
     elements.modalPregunta.classList.add('active');
 }
@@ -489,21 +581,21 @@ function addConceptoRow(tag = '', desc = '') {
         <input type="text" placeholder="Descripción del concepto" class="concept-desc-input" required value="${desc}">
         <button type="button" class="delete-row-btn"><i class="fa-solid fa-trash-can"></i></button>
     `;
-    
+
     row.querySelector('.delete-row-btn').addEventListener('click', () => {
         row.remove();
     });
-    
+
     elements.conceptsRowsContainer.appendChild(row);
 }
 
 async function guardarPreguntaManual(e) {
     e.preventDefault();
-    
+
     const qId = document.getElementById('form-question-id').value.trim();
     const qText = document.getElementById('form-question-text').value.trim();
     const ideal = document.getElementById('form-ideal-answer').value.trim();
-    
+
     const conceptos = [];
     const rows = elements.conceptsRowsContainer.querySelectorAll('.concept-row');
     rows.forEach(row => {
@@ -513,21 +605,21 @@ async function guardarPreguntaManual(e) {
             conceptos.push({ tag, descripcion: desc });
         }
     });
-    
+
     const payload = {
         question_id: qId,
         question_text: qText,
         ideal_answer: ideal,
         conceptos: conceptos
     };
-    
+
     try {
         const res = await fetch('/api/preguntas', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-        
+
         if (res.ok) {
             showToast('Pregunta guardada correctamente.', 'success');
             elements.modalPregunta.classList.remove('active');
@@ -543,14 +635,14 @@ async function guardarPreguntaManual(e) {
 async function subirPreguntasCSV(file) {
     const formData = new FormData();
     formData.append('file', file);
-    
+
     try {
         const res = await fetch('/api/preguntas/upload', {
             method: 'POST',
             body: formData
         });
         const data = await res.json();
-        
+
         if (res.ok) {
             showToast(data.mensaje, 'success');
             cargarPreguntas();
@@ -567,27 +659,27 @@ async function subirPreguntasCSV(file) {
 function renderResultados() {
     const filter = elements.filterResultados.value.trim().toLowerCase();
     elements.tablaResultadosBody.innerHTML = '';
-    
+
     const alumnosEntries = Object.entries(appState.resultados);
     const filtered = alumnosEntries.filter(([alumnoId]) => alumnoId.toLowerCase().includes(filter));
-    
+
     // Calcular estadísticas globales
     const totalAlumnos = alumnosEntries.length;
     let sumaPromedios = 0;
     let totalAprobados = 0;
-    
+
     alumnosEntries.forEach(([_, data]) => {
         sumaPromedios += data.promedio;
         if (data.promedio >= 4.0) totalAprobados++;
     });
-    
+
     const promedioGeneral = totalAlumnos > 0 ? (sumaPromedios / totalAlumnos).toFixed(2) : '0.00';
     const tasaAprobacion = totalAlumnos > 0 ? Math.round((totalAprobados / totalAlumnos) * 100) : 0;
-    
+
     elements.resTotalAlumnos.textContent = totalAlumnos;
     elements.resPromedioGeneral.textContent = promedioGeneral;
     elements.resAprobados.textContent = `${tasaAprobacion}%`;
-    
+
     if (filtered.length === 0) {
         elements.tablaResultadosBody.innerHTML = `
             <tr>
@@ -596,10 +688,10 @@ function renderResultados() {
         `;
         return;
     }
-    
+
     filtered.forEach(([alumnoId, data]) => {
         const row = document.createElement('tr');
-        
+
         let badgeClass = 'insuficiente';
         let rango = 'INSUFICIENTE';
         if (data.promedio >= 9.0) {
@@ -612,7 +704,7 @@ function renderResultados() {
             badgeClass = 'aceptable';
             rango = 'ACEPTABLE';
         }
-        
+
         row.innerHTML = `
             <td><strong>${alumnoId}</strong></td>
             <td>${data.respuestas ? data.respuestas.length : 0}</td>
@@ -624,11 +716,11 @@ function renderResultados() {
                 </button>
             </td>
         `;
-        
+
         row.querySelector('.btn-ver-detalle').addEventListener('click', () => {
             verDetalleEstudiante(alumnoId, data);
         });
-        
+
         elements.tablaResultadosBody.appendChild(row);
     });
 }
@@ -636,18 +728,18 @@ function renderResultados() {
 function verDetalleEstudiante(alumnoId, data) {
     elements.detailAlumnoId.textContent = `Estudiante: ${alumnoId}`;
     elements.detailAlumnoPromedio.textContent = data.promedio.toFixed(2);
-    
+
     elements.detailAnswersContainer.innerHTML = '';
-    
+
     data.respuestas.forEach(ans => {
         const card = document.createElement('div');
         card.className = 'detail-card';
-        
+
         let badgeClass = 'insuficiente';
         if (ans.nota_final >= 9) badgeClass = 'excelente';
         else if (ans.nota_final >= 7) badgeClass = 'bueno';
         else if (ans.nota_final >= 4) badgeClass = 'aceptable';
-        
+
         // Concept tags html
         let conceptsHtml = '';
         if (ans.conceptos_evaluados && Object.keys(ans.conceptos_evaluados).length) {
@@ -665,7 +757,7 @@ function verDetalleEstudiante(alumnoId, data) {
         } else {
             conceptsHtml = `<p style="font-size:0.8rem; color:var(--text-muted);">No se detectaron conceptos para calificar.</p>`;
         }
-        
+
         card.innerHTML = `
             <div class="detail-section">
                 <h5 style="color: var(--accent-secondary)">Pregunta ${ans.question_id}</h5>
@@ -702,10 +794,10 @@ function verDetalleEstudiante(alumnoId, data) {
                 </div>
             </div>
         `;
-        
+
         elements.detailAnswersContainer.appendChild(card);
     });
-    
+
     elements.modalDetalleAlumno.classList.add('active');
 }
 
@@ -717,21 +809,21 @@ function exportarResultadosCSV() {
         showToast('No hay resultados cargados para exportar.', 'error');
         return;
     }
-    
+
     let csvContent = "data:text/csv;charset=utf-8,";
     // Encabezado del CSV
     csvContent += "alumno_id,promedio_general,preguntas_calificadas\n";
-    
+
     alumnosEntries.forEach(([alumnoId, data]) => {
         csvContent += `${alumnoId},${data.promedio},${data.respuestas.length}\n`;
     });
-    
+
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
     link.setAttribute("download", "resultados_notas_utn_lis.csv");
     document.body.appendChild(link); // Required for FF
-    
+
     link.click();
     document.body.removeChild(link);
     showToast('Notas exportadas como CSV.', 'success');
@@ -742,11 +834,303 @@ function exportarResultadosCSV() {
 function showToast(message, type = 'success') {
     elements.toast.className = 'toast';
     elements.toast.classList.add('active', type);
-    elements.toast.innerHTML = type === 'success' 
+    elements.toast.innerHTML = type === 'success'
         ? `<i class="fa-solid fa-circle-check" style="color:var(--color-excelente)"></i> <span>${message}</span>`
         : `<i class="fa-solid fa-circle-exclamation" style="color:var(--color-insuficiente)"></i> <span>${message}</span>`;
-        
+
     setTimeout(() => {
         elements.toast.classList.remove('active');
     }, 3500);
 }
+
+// --- METODOS DE COMPARACION (ESTATICO Y EN VIVO) ---
+
+async function ejecutarComparacion(file) {
+    const statusDiv = document.getElementById('comparar-status');
+    statusDiv.className = 'status-alert hidden';
+    statusDiv.innerHTML = '';
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    try {
+        const res = await fetch('/api/examenes/comparar', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await res.json();
+        
+        if (!res.ok) {
+            statusDiv.className = 'status-alert error';
+            statusDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <div>${data.detail || 'Error al procesar la comparación.'}</div>`;
+            return;
+        }
+        
+        statusDiv.className = 'status-alert success';
+        statusDiv.innerHTML = `<i class="fa-solid fa-circle-check"></i> <div>Comparación exitosa: ${data.total_comparados} respuestas emparejadas y evaluadas.</div>`;
+        
+        mostrarMetricasComparacion(data);
+        
+    } catch (err) {
+        statusDiv.className = 'status-alert error';
+        statusDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <div>Error de conexión al procesar la comparación.</div>`;
+        showToast('Error de red al comparar resultados.', 'error');
+    }
+}
+
+async function subirDatasetVivo(file) {
+    const statusDiv = document.getElementById('vivo-status');
+    const btnIniciar = document.getElementById('btn-iniciar-vivo');
+    const progContainer = document.getElementById('vivo-progress-container');
+    
+    statusDiv.className = 'status-alert hidden';
+    statusDiv.innerHTML = '';
+    progContainer.style.display = 'none';
+    btnIniciar.disabled = true;
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    try {
+        const res = await fetch('/api/examenes/comparar-upload', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await res.json();
+        
+        if (!res.ok) {
+            statusDiv.className = 'status-alert error';
+            statusDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <div>${data.detail || 'Error al subir el dataset.'}</div>`;
+            return;
+        }
+        
+        statusDiv.className = 'status-alert success';
+        statusDiv.innerHTML = `<i class="fa-solid fa-circle-check"></i> <div>Dataset cargado: ${data.total_registros} respuestas listas para corregir y comparar.</div>`;
+        
+        btnIniciar.disabled = false;
+        showToast('Dataset cargado para evaluar.', 'success');
+        
+    } catch (err) {
+        statusDiv.className = 'status-alert error';
+        statusDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <div>Error de conexión al subir el dataset.</div>`;
+        showToast('Error de red al subir dataset.', 'error');
+    }
+}
+
+async function iniciarEvaluacionVivo() {
+    const btnIniciar = document.getElementById('btn-iniciar-vivo');
+    btnIniciar.disabled = true;
+    
+    try {
+        const res = await fetch('/api/examenes/comparar-corregir', { method: 'POST' });
+        const data = await res.json();
+        
+        showToast('Evaluación y comparación en vivo iniciada.', 'success');
+        
+        document.getElementById('btn-cancelar-vivo').style.display = 'inline-block';
+        document.getElementById('btn-cancelar-vivo').disabled = false;
+        document.getElementById('btn-cancelar-vivo').innerHTML = `<i class="fa-solid fa-ban"></i> Cancelar`;
+        document.getElementById('vivo-progress-container').style.display = 'block';
+        verificarEstadoComparacion();
+    } catch (err) {
+        showToast('Error al iniciar la evaluación.', 'error');
+        btnIniciar.disabled = false;
+    }
+}
+
+function verificarEstadoComparacion() {
+    const interval = setInterval(async () => {
+        try {
+            const res = await fetch('/api/examenes/comparar-estado');
+            const status = await res.json();
+            
+            document.getElementById('vivo-processed').textContent = status.procesado;
+            document.getElementById('vivo-total').textContent = status.total;
+            document.getElementById('vivo-errors').textContent = status.errores;
+            document.getElementById('vivo-running-mae').textContent = status.mae.toFixed(2);
+            
+            const percent = status.total > 0 ? Math.round((status.procesado / status.total) * 100) : 0;
+            document.getElementById('vivo-progress-fill').style.width = `${percent}%`;
+            document.getElementById('vivo-percent').textContent = `${percent}%`;
+            
+            if (status.status === 'running') {
+                document.getElementById('btn-iniciar-vivo').innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Evaluando (${percent}%)`;
+                document.getElementById('btn-iniciar-vivo').disabled = true;
+                document.getElementById('btn-cancelar-vivo').style.display = 'inline-block';
+                document.getElementById('btn-cancelar-vivo').disabled = false;
+            } else if (status.status === 'cancelling') {
+                document.getElementById('btn-iniciar-vivo').innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Cancelando...`;
+                document.getElementById('btn-iniciar-vivo').disabled = true;
+                document.getElementById('btn-cancelar-vivo').style.display = 'inline-block';
+                document.getElementById('btn-cancelar-vivo').disabled = true;
+                document.getElementById('btn-cancelar-vivo').innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Cancelando...`;
+            } else {
+                clearInterval(interval);
+                document.getElementById('btn-iniciar-vivo').innerHTML = `<i class="fa-solid fa-play"></i> Iniciar Evaluación en Vivo`;
+                document.getElementById('btn-iniciar-vivo').disabled = false;
+                document.getElementById('btn-cancelar-vivo').style.display = 'none';
+                
+                if (status.status === 'completed') {
+                    showToast('Evaluación en vivo completada.', 'success');
+                    cargarResultadosComparacion();
+                } else if (status.status === 'failed') {
+                    showToast('La evaluación terminó con algunos fallos de conexión.', 'error');
+                    cargarResultadosComparacion();
+                } else if (status.status === 'cancelled') {
+                    showToast('La evaluación en vivo fue cancelada. Mostrando resultados parciales.', 'error');
+                    cargarResultadosComparacion();
+                }
+            }
+        } catch (err) {
+            console.error('Error sondeando estado de comparación:', err);
+        }
+    }, 1000);
+}
+
+async function cancelarEvaluacionVivo() {
+    const btnCancelar = document.getElementById('btn-cancelar-vivo');
+    btnCancelar.disabled = true;
+    btnCancelar.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Cancelando...`;
+    
+    try {
+        const res = await fetch('/api/examenes/comparar-cancelar', { method: 'POST' });
+        if (res.ok) {
+            showToast('Cancelación solicitada.', 'success');
+        } else {
+            const data = await res.json();
+            showToast(data.detail || 'Error al cancelar la evaluación.', 'error');
+            btnCancelar.disabled = false;
+            btnCancelar.innerHTML = `<i class="fa-solid fa-ban"></i> Cancelar`;
+        }
+    } catch (err) {
+        showToast('Error de red al intentar cancelar.', 'error');
+        btnCancelar.disabled = false;
+        btnCancelar.innerHTML = `<i class="fa-solid fa-ban"></i> Cancelar`;
+    }
+}
+
+async function cargarResultadosComparacion() {
+    try {
+        const res = await fetch('/api/examenes/comparar-resultados');
+        const data = await res.json();
+        appState.resultadosComparacion = data;
+        mostrarMetricasComparacion(data);
+    } catch (err) {
+        showToast('Error al obtener los resultados de comparación.', 'error');
+    }
+}
+
+function mostrarMetricasComparacion(data) {
+    // Actualizar Tarjetas de Métricas
+    document.getElementById('metric-mae').textContent = data.mae.toFixed(2);
+    document.getElementById('metric-bias').textContent = data.bias > 0 ? `+${data.bias.toFixed(2)}` : data.bias.toFixed(2);
+    document.getElementById('metric-exact').textContent = `${data.pct_exacto}%`;
+    document.getElementById('metric-tolerance').textContent = `${data.pct_tolerancia}%`;
+    
+    document.getElementById('metrics-placeholder').style.display = 'none';
+    document.getElementById('comparar-metrics-grid').style.display = 'grid';
+    
+    // Renderizar barra de distribución de errores
+    const distBars = document.getElementById('error-dist-bars');
+    distBars.innerHTML = '';
+    
+    const maxCount = Math.max(...Object.values(data.distribucion_errores), 1);
+    
+    Object.entries(data.distribucion_errores).forEach(([diff, count]) => {
+        const percentage = Math.round((count / data.total_comparados) * 100);
+        const widthPct = Math.round((count / maxCount) * 100);
+        
+        let barColor = 'rgba(255, 255, 255, 0.2)';
+        const diffVal = parseInt(diff);
+        if (diffVal === 0) barColor = 'var(--color-excelente)';
+        else if (Math.abs(diffVal) <= 1) barColor = 'var(--color-bueno)';
+        else if (Math.abs(diffVal) <= 2) barColor = 'var(--color-aceptable)';
+        else barColor = 'var(--color-insuficiente)';
+        
+        const row = document.createElement('div');
+        row.style.display = 'flex';
+        row.style.alignItems = 'center';
+        row.style.gap = '1rem';
+        row.style.fontSize = '0.85rem';
+        row.innerHTML = `
+            <span style="min-width: 60px; font-weight:600; text-align:right;">${diffVal > 0 ? '+' : ''}${diffVal} pts:</span>
+            <div style="flex-grow: 1; height: 12px; background: rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden;">
+                <div style="width: ${widthPct}%; height: 100%; background: ${barColor}; border-radius: 6px;"></div>
+            </div>
+            <span style="min-width: 100px; color: var(--text-secondary);">${count} casos (${percentage}%)</span>
+        `;
+        distBars.appendChild(row);
+    });
+    
+    // Renderizar tabla de detalle
+    const tableBody = document.getElementById('tabla-comparacion-body');
+    tableBody.innerHTML = '';
+    
+    data.comparaciones.forEach(c => {
+        const tr = document.createElement('tr');
+        const diffClass = c.diff === 0 ? 'color: var(--color-excelente); font-weight:700;' 
+                         : Math.abs(c.diff) <= 1 ? 'color: var(--color-bueno); font-weight:600;' 
+                         : Math.abs(c.diff) <= 2 ? 'color: var(--color-aceptable); font-weight:600;'
+                         : 'color: var(--color-insuficiente); font-weight:600;';
+        
+        tr.innerHTML = `
+            <td><strong>${c.question_id}</strong></td>
+            <td style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${c.student_answer_short}</td>
+            <td><span class="badge-grade" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); color:var(--text-primary); font-weight:600;">${c.teacher_grade}</span></td>
+            <td><span class="badge-grade" style="background:rgba(99, 102, 241, 0.08); border:1px solid rgba(99, 102, 241, 0.2); color:#818cf8; font-weight:600;">${c.agent_grade}</span></td>
+            <td><span style="${diffClass}">${c.diff > 0 ? '+' : ''}${c.diff}</span></td>
+        `;
+        tableBody.appendChild(tr);
+    });
+    
+    document.getElementById('comparar-table-card').style.display = 'block';
+    showToast('Métricas de comparación cargadas.', 'success');
+}
+
+function exportarComparacionCSV() {
+    const data = appState.resultadosComparacion;
+    if (!data || !data.comparaciones || data.comparaciones.length === 0) {
+        showToast('No hay resultados de comparación para exportar.', 'error');
+        return;
+    }
+    
+    // Generar cabeceras y filas del CSV con el desglose de los 3 experimentos
+    let csvContent = "\uFEFF"; // BOM para soportar caracteres utf-8 en Excel
+    csvContent += "Pregunta ID,Respuesta estudiante,Nota Profesor,Nota Agente (Ensamble),Diferencia,Rango de nota,Nota Conceptos (Exp 1),Nota Rango (Exp 2),Nota Directa (Exp 3)\n";
+    
+    data.comparaciones.forEach(c => {
+        const fullAnswer = c.student_answer || c.student_answer_short || "";
+        const studentAnsEscaped = `"${fullAnswer.replace(/"/g, '""')}"`;
+        
+        // Obtener las notas del desglose si están disponibles
+        const nConceptos = c.nota_conceptos !== undefined ? c.nota_conceptos : "";
+        const nRango = c.nota_rango !== undefined ? c.nota_rango : "";
+        const nDirecta = c.nota_directa !== undefined ? c.nota_directa : "";
+
+        const row = [
+            c.question_id,
+            studentAnsEscaped,
+            c.teacher_grade,
+            c.agent_grade,
+            c.diff,
+            c.rango_nota || "",
+            nConceptos,
+            nRango,
+            nDirecta
+        ].join(",");
+        csvContent += row + "\n";
+    });
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `resultados_comparacion_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast('Archivo CSV exportado con éxito.', 'success');
+}
+

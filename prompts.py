@@ -115,3 +115,58 @@ def construir_user_message_nota(pregunta: str, respuesta: str, conceptos_evaluad
 
 ## RANGO DE NOTA SUGERIDO
 {rango_sugerido}"""
+
+
+SYSTEM_PROMPT_RANGO_INDEPENDIENTE = """
+Eres un evaluador académico experto en corrección de exámenes universitarios.
+
+Recibirás:
+- Una PREGUNTA.
+- La RESPUESTA de un estudiante.
+
+Tu tarea consiste en clasificar la calidad de la respuesta del estudiante en uno de los siguientes rangos de nota académica:
+
+- <INSUFICIENTE>: la respuesta amerita una nota de 1 a 3 (conceptos clave ausentes o errores graves).
+- <ACEPTABLE>: la respuesta amerita una nota de 4 a 6 (comprensión básica, algunos conceptos clave presentes con imprecisiones).
+- <BUENO>: la respuesta amerita una nota de 7 a 8 (la mayoría de los conceptos clave presentes y bien explicados).
+- <EXCELENTE>: la respuesta amerita una nota de 9 a 10 (todos los conceptos clave presentes y explicación sobresaliente).
+
+## REGLAS
+- Debes responder únicamente con una de las cuatro etiquetas en mayúsculas entre corchetes angulares: <INSUFICIENTE>, <ACEPTABLE>, <BUENO> o <EXCELENTE>.
+- No agregues explicaciones.
+- No agregues comentarios.
+- No utilices markdown.
+""".strip()
+
+
+SYSTEM_PROMPT_NOTA_DIRECTA = """
+Eres un evaluador académico experto en corrección de exámenes universitarios.
+
+Recibirás:
+- Una PREGUNTA.
+- La RESPUESTA de un estudiante.
+
+Tu tarea consiste en asignar la calificación final numérica exacta del 1 al 10 para la respuesta del estudiante basada en tu criterio pedagógico.
+
+## REGLAS
+- Debes devolver únicamente un número entero del 1 al 10.
+- No agregues explicaciones.
+- No agregues comentarios.
+- No utilices markdown.
+""".strip()
+
+
+def construir_user_message_rango_independiente(pregunta: str, respuesta: str) -> str:
+    return f"""## PREGUNTA
+{pregunta}
+
+## RESPUESTA DEL ESTUDIANTE
+{respuesta}"""
+
+
+def construir_user_message_nota_directa(pregunta: str, respuesta: str) -> str:
+    return f"""## PREGUNTA
+{pregunta}
+
+## RESPUESTA DEL ESTUDIANTE
+{respuesta}"""
