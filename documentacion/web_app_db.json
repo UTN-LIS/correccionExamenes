@@ -2162,12 +2162,56 @@
   "proceso_comparacion": {
     "status": "cancelled",
     "total": 201,
-    "procesado": 74,
+    "procesado": 40,
     "errores": 0,
-    "mae": 0.68
+    "mae": 1.15
   },
   "resultados_comparacion": {
     "comparaciones": [
+      {
+        "question_id": "Q004474161",
+        "student_answer": "No sé qué es TDD ni el ciclo rojo verde, yo programo directamente el código y hago pruebas manuales. Queda claro su beneficio.",
+        "student_answer_short": "No sé qué es TDD ni el ciclo rojo verde, yo programo directamente el código y hago pruebas manuales. Queda claro su bene...",
+        "teacher_grade": 1.0,
+        "agent_grade": 0.0,
+        "diff": -1.0,
+        "conceptos_evaluados": {
+          "USA_TESTS": "no",
+          "CICLO_ITERATIVO": "no",
+          "CODIGO_ROJO": "no",
+          "CODIGO_VERDE": "no",
+          "VALIDACION_COMPORTAMIENTO": "no",
+          "FASES_TDD": "no",
+          "PROPOSITO_REFACTOR": "no",
+          "CALIDAD_SOFTWARE": "no",
+          "ERROR": "no"
+        },
+        "rango_nota": "<INSUFICIENTE>",
+        "nota_conceptos": 0.0,
+        "nota_rango": 0.0,
+        "nota_directa": 0.0
+      },
+      {
+        "question_id": "Q799823558",
+        "student_answer": "En mi opinión, La diferencia principal entre el enfoque tradicional de testing y el TDD consiste en el momento de elaboración de los tests, ya que en el primero se escribe el código y luego el test, al contrario que en el segundo. TDD ayuda a tener menos bugs porque los tests son obligatorios en cada fase. Esto es fundamental.",
+        "student_answer_short": "En mi opinión, La diferencia principal entre el enfoque tradicional de testing y el TDD consiste en el momento de elabor...",
+        "teacher_grade": 5.0,
+        "agent_grade": 7.0,
+        "diff": 2.0,
+        "conceptos_evaluados": {
+          "TESTS_PRIMERO": "sí",
+          "TRADICIONAL_TESTS_FINAL": "sí",
+          "USA_TESTS": "no",
+          "COMPARACION": "sí",
+          "TDD_PROACTIVO": "no",
+          "ESPECIFICACION": "no",
+          "ERROR": "no"
+        },
+        "rango_nota": "<BUENO>",
+        "nota_conceptos": 4.29,
+        "nota_rango": 7.5,
+        "nota_directa": 7.0
+      },
       {
         "question_id": "Q675600740",
         "student_answer": "Básicamente, Las buenas prácticas en TDD incluyen escribir únicamente el test mínimo necesario para que falle, evitar la duplicación de código en la fase de refactorización y mantener tests independientes y rápidos (regla FIRST). Estas prácticas tienen un impacto directo en la mantenibilidad y robustez del software, ya que reducen la complejidad técnica, aseguran una alta cobertura y permiten realizar cambios futuros con la confianza de no romper funcionalidades existentes. Es un concepto clave.",
@@ -2184,53 +2228,9 @@
           "ERROR": "no"
         },
         "rango_nota": "<BUENO>",
-        "nota_conceptos": 6.0,
+        "nota_conceptos": 5.0,
         "nota_rango": 7.5,
         "nota_directa": 7.0
-      },
-      {
-        "question_id": "Q799823558",
-        "student_answer": "En mi opinión, La diferencia principal entre el enfoque tradicional de testing y el TDD consiste en el momento de elaboración de los tests, ya que en el primero se escribe el código y luego el test, al contrario que en el segundo. TDD ayuda a tener menos bugs porque los tests son obligatorios en cada fase. Esto es fundamental.",
-        "student_answer_short": "En mi opinión, La diferencia principal entre el enfoque tradicional de testing y el TDD consiste en el momento de elabor...",
-        "teacher_grade": 5.0,
-        "agent_grade": 5.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "TESTS_PRIMERO": "sí",
-          "TRADICIONAL_TESTS_FINAL": "sí",
-          "USA_TESTS": "no",
-          "COMPARACION": "sí",
-          "TDD_PROACTIVO": "no",
-          "ESPECIFICACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 5.43,
-        "nota_rango": 5.0,
-        "nota_directa": 5.0
-      },
-      {
-        "question_id": "Q004474161",
-        "student_answer": "No sé qué es TDD ni el ciclo rojo verde, yo programo directamente el código y hago pruebas manuales. Queda claro su beneficio.",
-        "student_answer_short": "No sé qué es TDD ni el ciclo rojo verde, yo programo directamente el código y hago pruebas manuales. Queda claro su bene...",
-        "teacher_grade": 1.0,
-        "agent_grade": 2.0,
-        "diff": 1.0,
-        "conceptos_evaluados": {
-          "USA_TESTS": "no",
-          "CICLO_ITERATIVO": "no",
-          "CODIGO_ROJO": "no",
-          "CODIGO_VERDE": "no",
-          "VALIDACION_COMPORTAMIENTO": "no",
-          "FASES_TDD": "no",
-          "PROPOSITO_REFACTOR": "no",
-          "CALIDAD_SOFTWARE": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 2.0
       },
       {
         "question_id": "Q205293180",
@@ -2248,38 +2248,17 @@
           "ERROR": "no"
         },
         "rango_nota": "<BUENO>",
-        "nota_conceptos": 7.33,
+        "nota_conceptos": 6.67,
         "nota_rango": 7.5,
         "nota_directa": 7.0
-      },
-      {
-        "question_id": "Q799823558",
-        "student_answer": "En mi opinión, El testing tradicional sirve para instalar sistemas operativos como Windows en la computadora. Es un concepto clave.",
-        "student_answer_short": "En mi opinión, El testing tradicional sirve para instalar sistemas operativos como Windows en la computadora. Es un conc...",
-        "teacher_grade": 1.0,
-        "agent_grade": 2.0,
-        "diff": 1.0,
-        "conceptos_evaluados": {
-          "TESTS_PRIMERO": "no",
-          "TRADICIONAL_TESTS_FINAL": "no",
-          "USA_TESTS": "no",
-          "COMPARACION": "no",
-          "TDD_PROACTIVO": "no",
-          "ESPECIFICACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 2.0
       },
       {
         "question_id": "Q004474161",
         "student_answer": "Básicamente, El ciclo TDD consiste en Rojo, Verde y Refactor. En la fase roja escribimos un test que falle ya que la funcionalidad no existe. En la fase verde programamos el código justo para pasar ese test. En el refactor mejoramos el diseño del código sin alterar la funcionalidad. Es importante porque nos da un desarrollo guiado por pruebas, asegurando que todo lo que programamos esté verificado y sea más limpio. Esto es fundamental.",
         "student_answer_short": "Básicamente, El ciclo TDD consiste en Rojo, Verde y Refactor. En la fase roja escribimos un test que falle ya que la fun...",
         "teacher_grade": 8.0,
-        "agent_grade": 8.0,
-        "diff": 0.0,
+        "agent_grade": 7.0,
+        "diff": -1.0,
         "conceptos_evaluados": {
           "USA_TESTS": "sí",
           "CICLO_ITERATIVO": "sí",
@@ -2291,10 +2270,31 @@
           "CALIDAD_SOFTWARE": "sí",
           "ERROR": "no"
         },
-        "rango_nota": "<EXCELENTE>",
-        "nota_conceptos": 6.44,
-        "nota_rango": 9.5,
-        "nota_directa": 8.0
+        "rango_nota": "<BUENO>",
+        "nota_conceptos": 5.56,
+        "nota_rango": 7.5,
+        "nota_directa": 7.0
+      },
+      {
+        "question_id": "Q799823558",
+        "student_answer": "En mi opinión, El testing tradicional sirve para instalar sistemas operativos como Windows en la computadora. Es un concepto clave.",
+        "student_answer_short": "En mi opinión, El testing tradicional sirve para instalar sistemas operativos como Windows en la computadora. Es un conc...",
+        "teacher_grade": 1.0,
+        "agent_grade": 1.0,
+        "diff": 0.0,
+        "conceptos_evaluados": {
+          "TESTS_PRIMERO": "no",
+          "TRADICIONAL_TESTS_FINAL": "no",
+          "USA_TESTS": "no",
+          "COMPARACION": "no",
+          "TDD_PROACTIVO": "no",
+          "ESPECIFICACION": "no",
+          "ERROR": "no"
+        },
+        "rango_nota": "<INSUFICIENTE>",
+        "nota_conceptos": 0.0,
+        "nota_rango": 1.5,
+        "nota_directa": 1.0
       },
       {
         "question_id": "Q675600740",
@@ -2312,8 +2312,8 @@
           "ERROR": "no"
         },
         "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
+        "nota_conceptos": 0.0,
+        "nota_rango": 1.5,
         "nota_directa": 1.0
       },
       {
@@ -2321,8 +2321,8 @@
         "student_answer": "Considero que En TDD validamos las entradas haciendo pruebas para los casos en que el usuario ponga datos malos, por ejemplo letras en campos numéricos. Esto ayuda a la robustez del código ya que el programa no se colgará fácilmente. De esta manera funciona.",
         "student_answer_short": "Considero que En TDD validamos las entradas haciendo pruebas para los casos en que el usuario ponga datos malos, por eje...",
         "teacher_grade": 6.0,
-        "agent_grade": 6.0,
-        "diff": 0.0,
+        "agent_grade": 7.0,
+        "diff": 1.0,
         "conceptos_evaluados": {
           "VALIDACION_ENTRADA": "sí",
           "VALIDAR_PARA": "sí",
@@ -2331,10 +2331,33 @@
           "PROPOSITO_REFACTOR": "no",
           "ERROR": "no"
         },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 7.33,
-        "nota_rango": 5.0,
-        "nota_directa": 6.0
+        "rango_nota": "<BUENO>",
+        "nota_conceptos": 6.67,
+        "nota_rango": 7.5,
+        "nota_directa": 7.0
+      },
+      {
+        "question_id": "Q004474161",
+        "student_answer": "En el desarrollo, El ciclo TDD consiste en Rojo, Verde y Refactor. En la fase roja escribimos un test que falle ya que la funcionalidad no existe. En la fase verde programamos el código justo para pasar ese test. En el refactor mejoramos el diseño del código sin alterar la funcionalidad. Es importante porque nos da un desarrollo guiado por pruebas, asegurando que todo lo que programamos esté verificado y sea más limpio. De esta manera funciona.",
+        "student_answer_short": "En el desarrollo, El ciclo TDD consiste en Rojo, Verde y Refactor. En la fase roja escribimos un test que falle ya que l...",
+        "teacher_grade": 8.0,
+        "agent_grade": 7.0,
+        "diff": -1.0,
+        "conceptos_evaluados": {
+          "USA_TESTS": "sí",
+          "CICLO_ITERATIVO": "sí",
+          "CODIGO_ROJO": "no",
+          "CODIGO_VERDE": "sí",
+          "VALIDACION_COMPORTAMIENTO": "no",
+          "FASES_TDD": "sí",
+          "PROPOSITO_REFACTOR": "no",
+          "CALIDAD_SOFTWARE": "sí",
+          "ERROR": "no"
+        },
+        "rango_nota": "<BUENO>",
+        "nota_conceptos": 5.56,
+        "nota_rango": 7.5,
+        "nota_directa": 7.0
       },
       {
         "question_id": "Q799823558",
@@ -2352,41 +2375,18 @@
           "ESPECIFICACION": "sí",
           "ERROR": "no"
         },
-        "rango_nota": "<BUENO>",
-        "nota_conceptos": 7.71,
-        "nota_rango": 7.5,
+        "rango_nota": "<EXCELENTE>",
+        "nota_conceptos": 7.14,
+        "nota_rango": 9.5,
         "nota_directa": 7.0
-      },
-      {
-        "question_id": "Q004474161",
-        "student_answer": "En el desarrollo, El ciclo TDD consiste en Rojo, Verde y Refactor. En la fase roja escribimos un test que falle ya que la funcionalidad no existe. En la fase verde programamos el código justo para pasar ese test. En el refactor mejoramos el diseño del código sin alterar la funcionalidad. Es importante porque nos da un desarrollo guiado por pruebas, asegurando que todo lo que programamos esté verificado y sea más limpio. De esta manera funciona.",
-        "student_answer_short": "En el desarrollo, El ciclo TDD consiste en Rojo, Verde y Refactor. En la fase roja escribimos un test que falle ya que l...",
-        "teacher_grade": 8.0,
-        "agent_grade": 8.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "USA_TESTS": "sí",
-          "CICLO_ITERATIVO": "sí",
-          "CODIGO_ROJO": "no",
-          "CODIGO_VERDE": "sí",
-          "VALIDACION_COMPORTAMIENTO": "no",
-          "FASES_TDD": "sí",
-          "PROPOSITO_REFACTOR": "no",
-          "CALIDAD_SOFTWARE": "sí",
-          "ERROR": "no"
-        },
-        "rango_nota": "<BUENO>",
-        "nota_conceptos": 6.44,
-        "nota_rango": 7.5,
-        "nota_directa": 8.0
       },
       {
         "question_id": "Q675600740",
         "student_answer": "Básicamente, Las buenas prácticas de TDD son comentar los tests, ponerles nombres claros que describan qué hacen y correrlos siempre antes de hacer un commit. Esto ayuda a la calidad del código. De esta manera funciona.",
         "student_answer_short": "Básicamente, Las buenas prácticas de TDD son comentar los tests, ponerles nombres claros que describan qué hacen y corre...",
         "teacher_grade": 4.0,
-        "agent_grade": 3.0,
-        "diff": -1.0,
+        "agent_grade": 4.0,
+        "diff": 0.0,
         "conceptos_evaluados": {
           "PRACTICA_FUNDAMENTAL": "no",
           "PRACTICA_RECOMENDADA": "no",
@@ -2396,17 +2396,17 @@
           "ERROR": "no"
         },
         "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 2.0,
+        "nota_conceptos": 0.0,
         "nota_rango": 5.0,
-        "nota_directa": 3.0
+        "nota_directa": 4.0
       },
       {
         "question_id": "Q205293180",
         "student_answer": "Básicamente, Validar entradas en TDD es crucial para definir claramente el comportamiento de los métodos ante datos incorrectos o maliciosos desde la fase roja. Esto se relaciona directamente con la robustez del software, ya que previene fallos inesperados en tiempo de ejecución (como NullPointerExceptions o divisiones por cero) y asegura un diseño tolerante a fallos.",
         "student_answer_short": "Básicamente, Validar entradas en TDD es crucial para definir claramente el comportamiento de los métodos ante datos inco...",
         "teacher_grade": 8.0,
-        "agent_grade": 8.0,
-        "diff": 0.0,
+        "agent_grade": 7.0,
+        "diff": -1.0,
         "conceptos_evaluados": {
           "VALIDACION_ENTRADA": "sí",
           "VALIDAR_PARA": "sí",
@@ -2415,18 +2415,18 @@
           "PROPOSITO_REFACTOR": "no",
           "ERROR": "no"
         },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 6.0,
-        "nota_rango": 5.0,
-        "nota_directa": 8.0
+        "rango_nota": "<BUENO>",
+        "nota_conceptos": 5.0,
+        "nota_rango": 7.5,
+        "nota_directa": 7.0
       },
       {
         "question_id": "Q004474161",
         "student_answer": "Básicamente, El ciclo TDD es rojo, verde y refactor. Haces el test, luego el código y después mejoras lo que hiciste. Es importante porque hace que el software tenga menos fallas y ande mejor. De esta manera funciona.",
         "student_answer_short": "Básicamente, El ciclo TDD es rojo, verde y refactor. Haces el test, luego el código y después mejoras lo que hiciste. Es...",
         "teacher_grade": 4.0,
-        "agent_grade": 6.0,
-        "diff": 2.0,
+        "agent_grade": 7.0,
+        "diff": 3.0,
         "conceptos_evaluados": {
           "USA_TESTS": "sí",
           "CICLO_ITERATIVO": "sí",
@@ -2436,20 +2436,20 @@
           "FASES_TDD": "sí",
           "PROPOSITO_REFACTOR": "no",
           "CALIDAD_SOFTWARE": "sí",
-          "ERROR": "sí"
+          "ERROR": "no"
         },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 7.33,
-        "nota_rango": 5.0,
-        "nota_directa": 6.0
+        "rango_nota": "<BUENO>",
+        "nota_conceptos": 5.56,
+        "nota_rango": 7.5,
+        "nota_directa": 7.0
       },
       {
         "question_id": "Q799823558",
         "student_answer": "Básicamente, El testing tradicional sirve para instalar sistemas operativos como Windows en la computadora. Esto es fundamental.",
         "student_answer_short": "Básicamente, El testing tradicional sirve para instalar sistemas operativos como Windows en la computadora. Esto es fund...",
         "teacher_grade": 1.0,
-        "agent_grade": 2.0,
-        "diff": 1.0,
+        "agent_grade": 1.0,
+        "diff": 0.0,
         "conceptos_evaluados": {
           "TESTS_PRIMERO": "no",
           "TRADICIONAL_TESTS_FINAL": "no",
@@ -2460,9 +2460,9 @@
           "ERROR": "no"
         },
         "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 2.0
+        "nota_conceptos": 0.0,
+        "nota_rango": 1.5,
+        "nota_directa": 1.0
       },
       {
         "question_id": "Q675600740",
@@ -2480,7 +2480,7 @@
           "ERROR": "no"
         },
         "rango_nota": "<BUENO>",
-        "nota_conceptos": 6.0,
+        "nota_conceptos": 5.0,
         "nota_rango": 7.5,
         "nota_directa": 7.0
       },
@@ -2489,20 +2489,20 @@
         "student_answer": "En el desarrollo, Validar entradas sirve para que no pongas letras en lugar de números en el formulario. Eso hace que el programa ande mejor y sea más robusto. Esto es fundamental.",
         "student_answer_short": "En el desarrollo, Validar entradas sirve para que no pongas letras en lugar de números en el formulario. Eso hace que el...",
         "teacher_grade": 4.0,
-        "agent_grade": 4.0,
-        "diff": 0.0,
+        "agent_grade": 7.0,
+        "diff": 3.0,
         "conceptos_evaluados": {
           "VALIDACION_ENTRADA": "sí",
           "VALIDAR_PARA": "sí",
           "VALIDACION_RELACION": "no",
           "RELACION_ROBUSTEZ": "sí",
           "PROPOSITO_REFACTOR": "no",
-          "ERROR": "no"
+          "ERROR": "sí"
         },
         "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 6.0,
+        "nota_conceptos": 6.67,
         "nota_rango": 5.0,
-        "nota_directa": 4.0
+        "nota_directa": 7.0
       },
       {
         "question_id": "Q004474161",
@@ -2522,9 +2522,9 @@
           "CALIDAD_SOFTWARE": "sí",
           "ERROR": "no"
         },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 5.56,
-        "nota_rango": 5.0,
+        "rango_nota": "<BUENO>",
+        "nota_conceptos": 4.44,
+        "nota_rango": 7.5,
         "nota_directa": 7.0
       },
       {
@@ -2532,8 +2532,8 @@
         "student_answer": "En mi opinión, El testing tradicional sirve para instalar sistemas operativos como Windows en la computadora. De esta manera funciona.",
         "student_answer_short": "En mi opinión, El testing tradicional sirve para instalar sistemas operativos como Windows en la computadora. De esta ma...",
         "teacher_grade": 1.0,
-        "agent_grade": 2.0,
-        "diff": 1.0,
+        "agent_grade": 1.0,
+        "diff": 0.0,
         "conceptos_evaluados": {
           "TESTS_PRIMERO": "no",
           "TRADICIONAL_TESTS_FINAL": "no",
@@ -2544,17 +2544,17 @@
           "ERROR": "no"
         },
         "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 2.0
+        "nota_conceptos": 0.0,
+        "nota_rango": 1.5,
+        "nota_directa": 1.0
       },
       {
         "question_id": "Q675600740",
         "student_answer": "Desde mi punto de vista, Como buena práctica hay que intentar escribir los tests antes de escribir la funcionalidad. El impacto que esto genera en el software es que el código queda más ordenado y con menos fallos. De esta manera funciona.",
         "student_answer_short": "Desde mi punto de vista, Como buena práctica hay que intentar escribir los tests antes de escribir la funcionalidad. El ...",
         "teacher_grade": 4.0,
-        "agent_grade": 5.0,
-        "diff": 1.0,
+        "agent_grade": 7.0,
+        "diff": 3.0,
         "conceptos_evaluados": {
           "PRACTICA_FUNDAMENTAL": "sí",
           "PRACTICA_RECOMENDADA": "no",
@@ -2564,17 +2564,17 @@
           "ERROR": "no"
         },
         "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 4.67,
+        "nota_conceptos": 3.33,
         "nota_rango": 5.0,
-        "nota_directa": 5.0
+        "nota_directa": 7.0
       },
       {
         "question_id": "Q205293180",
         "student_answer": "Básicamente, La validación de entradas en TDD nos obliga a escribir pruebas para valores límite (números negativos, cadenas vacías, formatos incorrectos) antes de codificar la lógica del negocio. Al asegurar estas validaciones por test, evitamos errores imprevistos en producción. Esto hace que el código sea mucho más robusto frente a fallos y fácil de mantener. Queda claro su beneficio.",
         "student_answer_short": "Básicamente, La validación de entradas en TDD nos obliga a escribir pruebas para valores límite (números negativos, cade...",
         "teacher_grade": 8.0,
-        "agent_grade": 8.0,
-        "diff": 0.0,
+        "agent_grade": 7.0,
+        "diff": -1.0,
         "conceptos_evaluados": {
           "VALIDACION_ENTRADA": "sí",
           "VALIDAR_PARA": "sí",
@@ -2584,9 +2584,9 @@
           "ERROR": "no"
         },
         "rango_nota": "<BUENO>",
-        "nota_conceptos": 7.33,
+        "nota_conceptos": 6.67,
         "nota_rango": 7.5,
-        "nota_directa": 8.0
+        "nota_directa": 7.0
       },
       {
         "question_id": "Q004474161",
@@ -2606,9 +2606,9 @@
           "CALIDAD_SOFTWARE": "sí",
           "ERROR": "no"
         },
-        "rango_nota": "<EXCELENTE>",
-        "nota_conceptos": 6.44,
-        "nota_rango": 9.5,
+        "rango_nota": "<BUENO>",
+        "nota_conceptos": 5.56,
+        "nota_rango": 7.5,
         "nota_directa": 7.0
       },
       {
@@ -2616,8 +2616,8 @@
         "student_answer": "Desde mi punto de vista, La diferencia principal entre el enfoque tradicional de testing y el TDD consiste en el momento de elaboración de los tests, ya que en el primero se escribe el código y luego el test, al contrario que en el segundo. TDD ayuda a tener menos bugs porque los tests son obligatorios en cada fase. De esta manera funciona.",
         "student_answer_short": "Desde mi punto de vista, La diferencia principal entre el enfoque tradicional de testing y el TDD consiste en el momento...",
         "teacher_grade": 5.0,
-        "agent_grade": 6.0,
-        "diff": 1.0,
+        "agent_grade": 7.0,
+        "diff": 2.0,
         "conceptos_evaluados": {
           "TESTS_PRIMERO": "sí",
           "TRADICIONAL_TESTS_FINAL": "sí",
@@ -2627,10 +2627,10 @@
           "ESPECIFICACION": "no",
           "ERROR": "no"
         },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 5.43,
-        "nota_rango": 5.0,
-        "nota_directa": 6.0
+        "rango_nota": "<BUENO>",
+        "nota_conceptos": 4.29,
+        "nota_rango": 7.5,
+        "nota_directa": 7.0
       },
       {
         "question_id": "Q675600740",
@@ -2648,7 +2648,7 @@
           "ERROR": "no"
         },
         "rango_nota": "<BUENO>",
-        "nota_conceptos": 6.0,
+        "nota_conceptos": 5.0,
         "nota_rango": 7.5,
         "nota_directa": 8.0
       },
@@ -2657,8 +2657,8 @@
         "student_answer": "Considero que Es importante validar las entradas porque si el software recibe datos incorrectos puede dar un error en la base de datos.",
         "student_answer_short": "Considero que Es importante validar las entradas porque si el software recibe datos incorrectos puede dar un error en la...",
         "teacher_grade": 4.0,
-        "agent_grade": 3.0,
-        "diff": -1.0,
+        "agent_grade": 4.0,
+        "diff": 0.0,
         "conceptos_evaluados": {
           "VALIDACION_ENTRADA": "sí",
           "VALIDAR_PARA": "sí",
@@ -2668,38 +2668,17 @@
           "ERROR": "no"
         },
         "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 4.67,
+        "nota_conceptos": 3.33,
         "nota_rango": 5.0,
-        "nota_directa": 3.0
-      },
-      {
-        "question_id": "Q799823558",
-        "student_answer": "Desde mi punto de vista, TDD es para proyectos ágiles y tradicional es para proyectos con metodología en cascada donde se testea al final. Es un concepto clave.",
-        "student_answer_short": "Desde mi punto de vista, TDD es para proyectos ágiles y tradicional es para proyectos con metodología en cascada donde s...",
-        "teacher_grade": 3.0,
-        "agent_grade": 3.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "TESTS_PRIMERO": "no",
-          "TRADICIONAL_TESTS_FINAL": "sí",
-          "USA_TESTS": "no",
-          "COMPARACION": "no",
-          "TDD_PROACTIVO": "no",
-          "ESPECIFICACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 3.14,
-        "nota_rango": 5.0,
-        "nota_directa": 3.0
+        "nota_directa": 4.0
       },
       {
         "question_id": "Q004474161",
         "student_answer": "En mi opinión, En TDD seguimos el ciclo de: 1. Rojo (escribir test que falla), 2. Verde (hacer código para que pase el test), 3. Refactor (mejorar y limpiar el código sin cambiar su funcionalidad). Es crucial en desarrollo porque previene errores y nos da confianza al hacer cambios futuros sobre el sistema. Queda claro su beneficio.",
         "student_answer_short": "En mi opinión, En TDD seguimos el ciclo de: 1. Rojo (escribir test que falla), 2. Verde (hacer código para que pase el t...",
         "teacher_grade": 8.0,
-        "agent_grade": 6.0,
-        "diff": -2.0,
+        "agent_grade": 7.0,
+        "diff": -1.0,
         "conceptos_evaluados": {
           "USA_TESTS": "sí",
           "CICLO_ITERATIVO": "sí",
@@ -2711,18 +2690,39 @@
           "CALIDAD_SOFTWARE": "sí",
           "ERROR": "no"
         },
+        "rango_nota": "<BUENO>",
+        "nota_conceptos": 5.56,
+        "nota_rango": 7.5,
+        "nota_directa": 7.0
+      },
+      {
+        "question_id": "Q799823558",
+        "student_answer": "Desde mi punto de vista, TDD es para proyectos ágiles y tradicional es para proyectos con metodología en cascada donde se testea al final. Es un concepto clave.",
+        "student_answer_short": "Desde mi punto de vista, TDD es para proyectos ágiles y tradicional es para proyectos con metodología en cascada donde s...",
+        "teacher_grade": 3.0,
+        "agent_grade": 4.0,
+        "diff": 1.0,
+        "conceptos_evaluados": {
+          "TESTS_PRIMERO": "no",
+          "TRADICIONAL_TESTS_FINAL": "sí",
+          "USA_TESTS": "no",
+          "COMPARACION": "no",
+          "TDD_PROACTIVO": "no",
+          "ESPECIFICACION": "no",
+          "ERROR": "no"
+        },
         "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 6.44,
+        "nota_conceptos": 1.43,
         "nota_rango": 5.0,
-        "nota_directa": 6.0
+        "nota_directa": 4.0
       },
       {
         "question_id": "Q675600740",
         "student_answer": "En mi opinión, Las buenas prácticas son: hacer tests independientes, que no dependan del orden de ejecución, escribir código simple para pasar la prueba verde, y refactorizar siempre en cada ciclo. Esto impacta haciendo que el software sea robusto y libre de errores graves. Esto es fundamental.",
         "student_answer_short": "En mi opinión, Las buenas prácticas son: hacer tests independientes, que no dependan del orden de ejecución, escribir có...",
         "teacher_grade": 6.0,
-        "agent_grade": 6.0,
-        "diff": 0.0,
+        "agent_grade": 7.0,
+        "diff": 1.0,
         "conceptos_evaluados": {
           "PRACTICA_FUNDAMENTAL": "sí",
           "PRACTICA_RECOMENDADA": "sí",
@@ -2731,18 +2731,18 @@
           "SIRVE_VALIDACION": "no",
           "ERROR": "no"
         },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 6.0,
-        "nota_rango": 5.0,
-        "nota_directa": 6.0
+        "rango_nota": "<BUENO>",
+        "nota_conceptos": 5.0,
+        "nota_rango": 7.5,
+        "nota_directa": 7.0
       },
       {
         "question_id": "Q205293180",
         "student_answer": "Desde mi punto de vista, La validación de entradas sirve para configurar la base de datos de Oracle en un servidor Linux local. Así lo veo yo.",
         "student_answer_short": "Desde mi punto de vista, La validación de entradas sirve para configurar la base de datos de Oracle en un servidor Linux...",
         "teacher_grade": 1.0,
-        "agent_grade": 2.0,
-        "diff": 1.0,
+        "agent_grade": 0.0,
+        "diff": -1.0,
         "conceptos_evaluados": {
           "VALIDACION_ENTRADA": "no",
           "VALIDAR_PARA": "no",
@@ -2752,38 +2752,17 @@
           "ERROR": "no"
         },
         "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 2.0
-      },
-      {
-        "question_id": "Q799823558",
-        "student_answer": "La diferencia es que TDD es proactivo (haces los tests antes de codificar la lógica) y el tradicional es reactivo (haces pruebas después de codificar). TDD asegura que escribas solo el código necesario, en cambio el enfoque tradicional puede llevar a escribir código de más que luego es difícil de testear.",
-        "student_answer_short": "La diferencia es que TDD es proactivo (haces los tests antes de codificar la lógica) y el tradicional es reactivo (haces...",
-        "teacher_grade": 7.0,
-        "agent_grade": 6.0,
-        "diff": -1.0,
-        "conceptos_evaluados": {
-          "TESTS_PRIMERO": "sí",
-          "TRADICIONAL_TESTS_FINAL": "no",
-          "USA_TESTS": "no",
-          "COMPARACION": "no",
-          "TDD_PROACTIVO": "sí",
-          "ESPECIFICACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 4.29,
-        "nota_rango": 5.0,
-        "nota_directa": 6.0
+        "nota_conceptos": 0.0,
+        "nota_rango": 1.5,
+        "nota_directa": 0.0
       },
       {
         "question_id": "Q004474161",
         "student_answer": "Considero que El ciclo TDD tiene 3 pasos: hacer el test para que falle (rojo), programar el código (verde) y después mejorar el código (refactor). La importancia es que ayuda a que el código esté más ordenado. Esto es fundamental.",
         "student_answer_short": "Considero que El ciclo TDD tiene 3 pasos: hacer el test para que falle (rojo), programar el código (verde) y después mej...",
         "teacher_grade": 4.0,
-        "agent_grade": 6.0,
-        "diff": 2.0,
+        "agent_grade": 7.0,
+        "diff": 3.0,
         "conceptos_evaluados": {
           "USA_TESTS": "sí",
           "CICLO_ITERATIVO": "sí",
@@ -2795,10 +2774,31 @@
           "CALIDAD_SOFTWARE": "no",
           "ERROR": "no"
         },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 5.56,
-        "nota_rango": 5.0,
-        "nota_directa": 6.0
+        "rango_nota": "<BUENO>",
+        "nota_conceptos": 4.44,
+        "nota_rango": 7.5,
+        "nota_directa": 7.0
+      },
+      {
+        "question_id": "Q799823558",
+        "student_answer": "La diferencia es que TDD es proactivo (haces los tests antes de codificar la lógica) y el tradicional es reactivo (haces pruebas después de codificar). TDD asegura que escribas solo el código necesario, en cambio el enfoque tradicional puede llevar a escribir código de más que luego es difícil de testear.",
+        "student_answer_short": "La diferencia es que TDD es proactivo (haces los tests antes de codificar la lógica) y el tradicional es reactivo (haces...",
+        "teacher_grade": 7.0,
+        "agent_grade": 7.0,
+        "diff": 0.0,
+        "conceptos_evaluados": {
+          "TESTS_PRIMERO": "sí",
+          "TRADICIONAL_TESTS_FINAL": "no",
+          "USA_TESTS": "no",
+          "COMPARACION": "no",
+          "TDD_PROACTIVO": "sí",
+          "ESPECIFICACION": "no",
+          "ERROR": "no"
+        },
+        "rango_nota": "<BUENO>",
+        "nota_conceptos": 2.86,
+        "nota_rango": 7.5,
+        "nota_directa": 7.0
       },
       {
         "question_id": "Q675600740",
@@ -2816,7 +2816,7 @@
           "ERROR": "no"
         },
         "rango_nota": "<BUENO>",
-        "nota_conceptos": 6.0,
+        "nota_conceptos": 5.0,
         "nota_rango": 7.5,
         "nota_directa": 7.0
       },
@@ -2825,8 +2825,8 @@
         "student_answer": "Para responder a esto: Validar entradas sirve para que el usuario no pueda ingresar números negativos en los campos de texto del formulario HTML. Es un concepto clave.",
         "student_answer_short": "Para responder a esto: Validar entradas sirve para que el usuario no pueda ingresar números negativos en los campos de t...",
         "teacher_grade": 2.0,
-        "agent_grade": 3.0,
-        "diff": 1.0,
+        "agent_grade": 2.0,
+        "diff": 0.0,
         "conceptos_evaluados": {
           "VALIDACION_ENTRADA": "sí",
           "VALIDAR_PARA": "sí",
@@ -2836,29 +2836,8 @@
           "ERROR": "no"
         },
         "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 4.67,
-        "nota_rango": 2.0,
-        "nota_directa": 3.0
-      },
-      {
-        "question_id": "Q799823558",
-        "student_answer": "Desde mi punto de vista, TDD y tradicional son dos herramientas para compilar programas de computadora. Queda claro su beneficio.",
-        "student_answer_short": "Desde mi punto de vista, TDD y tradicional son dos herramientas para compilar programas de computadora. Queda claro su b...",
-        "teacher_grade": 2.0,
-        "agent_grade": 2.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "TESTS_PRIMERO": "no",
-          "TRADICIONAL_TESTS_FINAL": "no",
-          "USA_TESTS": "no",
-          "COMPARACION": "no",
-          "TDD_PROACTIVO": "no",
-          "ESPECIFICACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
+        "nota_conceptos": 3.33,
+        "nota_rango": 1.5,
         "nota_directa": 2.0
       },
       {
@@ -2866,8 +2845,8 @@
         "student_answer": "Básicamente, El ciclo TDD consiste en testear el código del programa usando un archivo de tests que verifica las variables. De esta manera funciona.",
         "student_answer_short": "Básicamente, El ciclo TDD consiste en testear el código del programa usando un archivo de tests que verifica las variabl...",
         "teacher_grade": 3.0,
-        "agent_grade": 2.0,
-        "diff": -1.0,
+        "agent_grade": 4.0,
+        "diff": 1.0,
         "conceptos_evaluados": {
           "USA_TESTS": "sí",
           "CICLO_ITERATIVO": "no",
@@ -2879,10 +2858,31 @@
           "CALIDAD_SOFTWARE": "no",
           "ERROR": "no"
         },
+        "rango_nota": "<ACEPTABLE>",
+        "nota_conceptos": 1.11,
+        "nota_rango": 5.0,
+        "nota_directa": 4.0
+      },
+      {
+        "question_id": "Q799823558",
+        "student_answer": "Desde mi punto de vista, TDD y tradicional son dos herramientas para compilar programas de computadora. Queda claro su beneficio.",
+        "student_answer_short": "Desde mi punto de vista, TDD y tradicional son dos herramientas para compilar programas de computadora. Queda claro su b...",
+        "teacher_grade": 2.0,
+        "agent_grade": 1.0,
+        "diff": -1.0,
+        "conceptos_evaluados": {
+          "TESTS_PRIMERO": "no",
+          "TRADICIONAL_TESTS_FINAL": "no",
+          "USA_TESTS": "no",
+          "COMPARACION": "no",
+          "TDD_PROACTIVO": "no",
+          "ESPECIFICACION": "no",
+          "ERROR": "no"
+        },
         "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.89,
-        "nota_rango": 2.0,
-        "nota_directa": 2.0
+        "nota_conceptos": 0.0,
+        "nota_rango": 1.5,
+        "nota_directa": 1.0
       },
       {
         "question_id": "Q675600740",
@@ -2900,7 +2900,7 @@
           "ERROR": "no"
         },
         "rango_nota": "<BUENO>",
-        "nota_conceptos": 4.67,
+        "nota_conceptos": 3.33,
         "nota_rango": 7.5,
         "nota_directa": 7.0
       },
@@ -2909,8 +2909,8 @@
         "student_answer": "Considero que Validar entradas sirve para que no pongas letras en lugar de números en el formulario. Eso hace que el programa ande mejor y sea más robusto. Es un concepto clave.",
         "student_answer_short": "Considero que Validar entradas sirve para que no pongas letras en lugar de números en el formulario. Eso hace que el pro...",
         "teacher_grade": 4.0,
-        "agent_grade": 4.0,
-        "diff": 0.0,
+        "agent_grade": 7.0,
+        "diff": 3.0,
         "conceptos_evaluados": {
           "VALIDACION_ENTRADA": "sí",
           "VALIDAR_PARA": "sí",
@@ -2920,30 +2920,9 @@
           "ERROR": "sí"
         },
         "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 7.33,
+        "nota_conceptos": 6.67,
         "nota_rango": 5.0,
-        "nota_directa": 4.0
-      },
-      {
-        "question_id": "Q799823558",
-        "student_answer": "Básicamente, El testing tradicional sirve para instalar sistemas operativos como Windows en la computadora. Esto es fundamental.",
-        "student_answer_short": "Básicamente, El testing tradicional sirve para instalar sistemas operativos como Windows en la computadora. Esto es fund...",
-        "teacher_grade": 1.0,
-        "agent_grade": 2.0,
-        "diff": 1.0,
-        "conceptos_evaluados": {
-          "TESTS_PRIMERO": "no",
-          "TRADICIONAL_TESTS_FINAL": "no",
-          "USA_TESTS": "no",
-          "COMPARACION": "no",
-          "TDD_PROACTIVO": "no",
-          "ESPECIFICACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 2.0
+        "nota_directa": 7.0
       },
       {
         "question_id": "Q004474161",
@@ -2963,10 +2942,31 @@
           "CALIDAD_SOFTWARE": "sí",
           "ERROR": "no"
         },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 6.44,
-        "nota_rango": 5.0,
+        "rango_nota": "<BUENO>",
+        "nota_conceptos": 5.56,
+        "nota_rango": 7.5,
         "nota_directa": 7.0
+      },
+      {
+        "question_id": "Q799823558",
+        "student_answer": "Básicamente, El testing tradicional sirve para instalar sistemas operativos como Windows en la computadora. Esto es fundamental.",
+        "student_answer_short": "Básicamente, El testing tradicional sirve para instalar sistemas operativos como Windows en la computadora. Esto es fund...",
+        "teacher_grade": 1.0,
+        "agent_grade": 1.0,
+        "diff": 0.0,
+        "conceptos_evaluados": {
+          "TESTS_PRIMERO": "no",
+          "TRADICIONAL_TESTS_FINAL": "no",
+          "USA_TESTS": "no",
+          "COMPARACION": "no",
+          "TDD_PROACTIVO": "no",
+          "ESPECIFICACION": "no",
+          "ERROR": "no"
+        },
+        "rango_nota": "<INSUFICIENTE>",
+        "nota_conceptos": 0.0,
+        "nota_rango": 1.5,
+        "nota_directa": 1.0
       },
       {
         "question_id": "Q675600740",
@@ -2984,8 +2984,8 @@
           "ERROR": "no"
         },
         "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
+        "nota_conceptos": 0.0,
+        "nota_rango": 1.5,
         "nota_directa": 1.0
       },
       {
@@ -2993,344 +2993,8 @@
         "student_answer": "En mi opinión, Validar entradas sirve para que no pongas letras en lugar de números en el formulario. Eso hace que el programa ande mejor y sea más robusto. De esta manera funciona.",
         "student_answer_short": "En mi opinión, Validar entradas sirve para que no pongas letras en lugar de números en el formulario. Eso hace que el pr...",
         "teacher_grade": 4.0,
-        "agent_grade": 4.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "VALIDACION_ENTRADA": "sí",
-          "VALIDAR_PARA": "sí",
-          "VALIDACION_RELACION": "no",
-          "RELACION_ROBUSTEZ": "sí",
-          "PROPOSITO_REFACTOR": "no",
-          "ERROR": "sí"
-        },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 7.33,
-        "nota_rango": 5.0,
-        "nota_directa": 4.0
-      },
-      {
-        "question_id": "Q004474161",
-        "student_answer": "Básicamente, El ciclo TDD consiste en Rojo, Verde y Refactor. En la fase roja escribimos un test que falle ya que la funcionalidad no existe. En la fase verde programamos el código justo para pasar ese test. En el refactor mejoramos el diseño del código sin alterar la funcionalidad. Es importante porque nos da un desarrollo guiado por pruebas, asegurando que todo lo que programamos esté verificado y sea más limpio. De esta manera funciona.",
-        "student_answer_short": "Básicamente, El ciclo TDD consiste en Rojo, Verde y Refactor. En la fase roja escribimos un test que falle ya que la fun...",
-        "teacher_grade": 8.0,
         "agent_grade": 7.0,
-        "diff": -1.0,
-        "conceptos_evaluados": {
-          "USA_TESTS": "sí",
-          "CICLO_ITERATIVO": "sí",
-          "CODIGO_ROJO": "no",
-          "CODIGO_VERDE": "sí",
-          "VALIDACION_COMPORTAMIENTO": "no",
-          "FASES_TDD": "sí",
-          "PROPOSITO_REFACTOR": "no",
-          "CALIDAD_SOFTWARE": "sí",
-          "ERROR": "no"
-        },
-        "rango_nota": "<BUENO>",
-        "nota_conceptos": 6.44,
-        "nota_rango": 7.5,
-        "nota_directa": 7.0
-      },
-      {
-        "question_id": "Q799823558",
-        "student_answer": "El enfoque tradicional es mejor porque no pierdes tiempo haciendo tests antes de saber si el código funciona. TDD es más lento y requiere escribir el doble de código. De esta manera funciona.",
-        "student_answer_short": "El enfoque tradicional es mejor porque no pierdes tiempo haciendo tests antes de saber si el código funciona. TDD es más...",
-        "teacher_grade": 3.0,
-        "agent_grade": 3.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "TESTS_PRIMERO": "no",
-          "TRADICIONAL_TESTS_FINAL": "no",
-          "USA_TESTS": "no",
-          "COMPARACION": "no",
-          "TDD_PROACTIVO": "no",
-          "ESPECIFICACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 3.0
-      },
-      {
-        "question_id": "Q675600740",
-        "student_answer": "Como buena práctica hay que intentar escribir los tests antes de escribir la funcionalidad. El impacto que esto genera en el software es que el código queda más ordenado y con menos fallos. Esto es fundamental.",
-        "student_answer_short": "Como buena práctica hay que intentar escribir los tests antes de escribir la funcionalidad. El impacto que esto genera e...",
-        "teacher_grade": 4.0,
-        "agent_grade": 5.0,
-        "diff": 1.0,
-        "conceptos_evaluados": {
-          "PRACTICA_FUNDAMENTAL": "sí",
-          "PRACTICA_RECOMENDADA": "no",
-          "PREVIENE_ERRORES": "sí",
-          "SOLO_NECESARIOS": "no",
-          "SIRVE_VALIDACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 4.67,
-        "nota_rango": 5.0,
-        "nota_directa": 5.0
-      },
-      {
-        "question_id": "Q205293180",
-        "student_answer": "No comprendo cómo se validan las entradas ni qué relación tiene con la robustez del software. Queda claro su beneficio.",
-        "student_answer_short": "No comprendo cómo se validan las entradas ni qué relación tiene con la robustez del software. Queda claro su beneficio.",
-        "teacher_grade": 1.0,
-        "agent_grade": 2.0,
-        "diff": 1.0,
-        "conceptos_evaluados": {
-          "VALIDACION_ENTRADA": "no",
-          "VALIDAR_PARA": "no",
-          "VALIDACION_RELACION": "no",
-          "RELACION_ROBUSTEZ": "no",
-          "PROPOSITO_REFACTOR": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 2.0
-      },
-      {
-        "question_id": "Q004474161",
-        "student_answer": "En el desarrollo, El ciclo TDD es rojo, verde y refactor. Haces el test, luego el código y después mejoras lo que hiciste. Es importante porque hace que el software tenga menos fallas y ande mejor. Así lo veo yo.",
-        "student_answer_short": "En el desarrollo, El ciclo TDD es rojo, verde y refactor. Haces el test, luego el código y después mejoras lo que hicist...",
-        "teacher_grade": 4.0,
-        "agent_grade": 4.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "USA_TESTS": "sí",
-          "CICLO_ITERATIVO": "sí",
-          "CODIGO_ROJO": "no",
-          "CODIGO_VERDE": "sí",
-          "VALIDACION_COMPORTAMIENTO": "no",
-          "FASES_TDD": "sí",
-          "PROPOSITO_REFACTOR": "no",
-          "CALIDAD_SOFTWARE": "sí",
-          "ERROR": "no"
-        },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 6.44,
-        "nota_rango": 5.0,
-        "nota_directa": 4.0
-      },
-      {
-        "question_id": "Q799823558",
-        "student_answer": "Desde mi punto de vista, En TDD primero se hacen las pruebas antes de escribir el código de producción, y en el tradicional primero se programa todo y después se prueban las funciones. La diferencia principal es el momento en que se escribe cada cosa. Además, en TDD los tests guían la escritura del código de producción mientras que en el tradicional solo validan. Es un concepto clave.",
-        "student_answer_short": "Desde mi punto de vista, En TDD primero se hacen las pruebas antes de escribir el código de producción, y en el tradicio...",
-        "teacher_grade": 7.0,
-        "agent_grade": 6.0,
-        "diff": -1.0,
-        "conceptos_evaluados": {
-          "TESTS_PRIMERO": "sí",
-          "TRADICIONAL_TESTS_FINAL": "sí",
-          "USA_TESTS": "sí",
-          "COMPARACION": "sí",
-          "TDD_PROACTIVO": "sí",
-          "ESPECIFICACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 7.71,
-        "nota_rango": 5.0,
-        "nota_directa": 6.0
-      },
-      {
-        "question_id": "Q675600740",
-        "student_answer": "Considero que TDD no tiene buenas prácticas, es simplemente escribir código sin importar el diseño. Así lo veo yo.",
-        "student_answer_short": "Considero que TDD no tiene buenas prácticas, es simplemente escribir código sin importar el diseño. Así lo veo yo.",
-        "teacher_grade": 1.0,
-        "agent_grade": 1.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "PRACTICA_FUNDAMENTAL": "no",
-          "PRACTICA_RECOMENDADA": "no",
-          "PREVIENE_ERRORES": "no",
-          "SOLO_NECESARIOS": "no",
-          "SIRVE_VALIDACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 1.0
-      },
-      {
-        "question_id": "Q205293180",
-        "student_answer": "En mi opinión, La validación de entradas sirve para configurar la base de datos de Oracle en un servidor Linux local. Así lo veo yo.",
-        "student_answer_short": "En mi opinión, La validación de entradas sirve para configurar la base de datos de Oracle en un servidor Linux local. As...",
-        "teacher_grade": 1.0,
-        "agent_grade": 1.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "VALIDACION_ENTRADA": "no",
-          "VALIDAR_PARA": "no",
-          "VALIDACION_RELACION": "no",
-          "RELACION_ROBUSTEZ": "no",
-          "PROPOSITO_REFACTOR": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 1.0
-      },
-      {
-        "question_id": "Q004474161",
-        "student_answer": "Desde mi punto de vista, No sé qué es TDD ni el ciclo rojo verde, yo programo directamente el código y hago pruebas manuales. De esta manera funciona.",
-        "student_answer_short": "Desde mi punto de vista, No sé qué es TDD ni el ciclo rojo verde, yo programo directamente el código y hago pruebas manu...",
-        "teacher_grade": 1.0,
-        "agent_grade": 2.0,
-        "diff": 1.0,
-        "conceptos_evaluados": {
-          "USA_TESTS": "no",
-          "CICLO_ITERATIVO": "no",
-          "CODIGO_ROJO": "no",
-          "CODIGO_VERDE": "no",
-          "VALIDACION_COMPORTAMIENTO": "no",
-          "FASES_TDD": "no",
-          "PROPOSITO_REFACTOR": "no",
-          "CALIDAD_SOFTWARE": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 2.0
-      },
-      {
-        "question_id": "Q799823558",
-        "student_answer": "Para responder a esto: TDD es para proyectos ágiles y tradicional es para proyectos con metodología en cascada donde se testea al final. Así lo veo yo.",
-        "student_answer_short": "Para responder a esto: TDD es para proyectos ágiles y tradicional es para proyectos con metodología en cascada donde se ...",
-        "teacher_grade": 3.0,
-        "agent_grade": 3.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "TESTS_PRIMERO": "no",
-          "TRADICIONAL_TESTS_FINAL": "sí",
-          "USA_TESTS": "no",
-          "COMPARACION": "no",
-          "TDD_PROACTIVO": "no",
-          "ESPECIFICACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 3.14,
-        "nota_rango": 2.0,
-        "nota_directa": 3.0
-      },
-      {
-        "question_id": "Q675600740",
-        "student_answer": "En mi opinión, Las buenas prácticas en TDD son tener una computadora rápida para correr las pruebas y usar un buen IDE para refactorizar de forma automática. Esto es fundamental.",
-        "student_answer_short": "En mi opinión, Las buenas prácticas en TDD son tener una computadora rápida para correr las pruebas y usar un buen IDE p...",
-        "teacher_grade": 2.0,
-        "agent_grade": 2.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "PRACTICA_FUNDAMENTAL": "no",
-          "PRACTICA_RECOMENDADA": "no",
-          "PREVIENE_ERRORES": "no",
-          "SOLO_NECESARIOS": "no",
-          "SIRVE_VALIDACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 2.0
-      },
-      {
-        "question_id": "Q205293180",
-        "student_answer": "Validar entradas en TDD es crucial para definir claramente el comportamiento de los métodos ante datos incorrectos o maliciosos desde la fase roja. Esto se relaciona directamente con la robustez del software, ya que previene fallos inesperados en tiempo de ejecución (como NullPointerExceptions o divisiones por cero) y asegura un diseño tolerante a fallos. Así lo veo yo.",
-        "student_answer_short": "Validar entradas en TDD es crucial para definir claramente el comportamiento de los métodos ante datos incorrectos o mal...",
-        "teacher_grade": 8.0,
-        "agent_grade": 7.0,
-        "diff": -1.0,
-        "conceptos_evaluados": {
-          "VALIDACION_ENTRADA": "sí",
-          "VALIDAR_PARA": "sí",
-          "VALIDACION_RELACION": "sí",
-          "RELACION_ROBUSTEZ": "sí",
-          "PROPOSITO_REFACTOR": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 7.33,
-        "nota_rango": 5.0,
-        "nota_directa": 7.0
-      },
-      {
-        "question_id": "Q799823558",
-        "student_answer": "Desde mi punto de vista, En TDD, los tests se escriben al inicio y actúan como especificación de diseño, mientras que en el tradicional se escriben al final del desarrollo. Esto hace que TDD sea preventivo y guíe la arquitectura del código (menos acoplamiento). En el tradicional, el testing es reactivo y a veces opcional. Además, TDD asegura una cobertura del 100% de la funcionalidad implementada, mientras que en el tradicional suele ser parcial y más propensa a omitir casos críticos. Queda claro su beneficio.",
-        "student_answer_short": "Desde mi punto de vista, En TDD, los tests se escriben al inicio y actúan como especificación de diseño, mientras que en...",
-        "teacher_grade": 9.0,
-        "agent_grade": 7.0,
-        "diff": -2.0,
-        "conceptos_evaluados": {
-          "TESTS_PRIMERO": "sí",
-          "TRADICIONAL_TESTS_FINAL": "sí",
-          "USA_TESTS": "sí",
-          "COMPARACION": "sí",
-          "TDD_PROACTIVO": "sí",
-          "ESPECIFICACION": "sí",
-          "ERROR": "no"
-        },
-        "rango_nota": "<BUENO>",
-        "nota_conceptos": 8.86,
-        "nota_rango": 7.5,
-        "nota_directa": 7.0
-      },
-      {
-        "question_id": "Q004474161",
-        "student_answer": "Básicamente, TDD es un ciclo donde haces pruebas unitarias para ver que el código no tenga bugs antes de subirlo a producción. Esto es fundamental.",
-        "student_answer_short": "Básicamente, TDD es un ciclo donde haces pruebas unitarias para ver que el código no tenga bugs antes de subirlo a produ...",
-        "teacher_grade": 3.0,
-        "agent_grade": 3.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "USA_TESTS": "sí",
-          "CICLO_ITERATIVO": "no",
-          "CODIGO_ROJO": "no",
-          "CODIGO_VERDE": "no",
-          "VALIDACION_COMPORTAMIENTO": "no",
-          "FASES_TDD": "no",
-          "PROPOSITO_REFACTOR": "no",
-          "CALIDAD_SOFTWARE": "sí",
-          "ERROR": "no"
-        },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 3.78,
-        "nota_rango": 5.0,
-        "nota_directa": 3.0
-      },
-      {
-        "question_id": "Q675600740",
-        "student_answer": "Las buenas prácticas en TDD incluyen escribir únicamente el test mínimo necesario para que falle, evitar la duplicación de código en la fase de refactorización y mantener tests independientes y rápidos (regla FIRST). Estas prácticas tienen un impacto directo en la mantenibilidad y robustez del software, ya que reducen la complejidad técnica, aseguran una alta cobertura y permiten realizar cambios futuros con la confianza de no romper funcionalidades existentes.",
-        "student_answer_short": "Las buenas prácticas en TDD incluyen escribir únicamente el test mínimo necesario para que falle, evitar la duplicación ...",
-        "teacher_grade": 8.0,
-        "agent_grade": 8.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "PRACTICA_FUNDAMENTAL": "sí",
-          "PRACTICA_RECOMENDADA": "sí",
-          "PREVIENE_ERRORES": "no",
-          "SOLO_NECESARIOS": "sí",
-          "SIRVE_VALIDACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<BUENO>",
-        "nota_conceptos": 6.0,
-        "nota_rango": 7.5,
-        "nota_directa": 8.0
-      },
-      {
-        "question_id": "Q205293180",
-        "student_answer": "Básicamente, Validar entradas sirve para que no pongas letras en lugar de números en el formulario. Eso hace que el programa ande mejor y sea más robusto. Esto es fundamental.",
-        "student_answer_short": "Básicamente, Validar entradas sirve para que no pongas letras en lugar de números en el formulario. Eso hace que el prog...",
-        "teacher_grade": 4.0,
-        "agent_grade": 5.0,
-        "diff": 1.0,
+        "diff": 3.0,
         "conceptos_evaluados": {
           "VALIDACION_ENTRADA": "sí",
           "VALIDAR_PARA": "sí",
@@ -3340,393 +3004,13 @@
           "ERROR": "no"
         },
         "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 6.0,
-        "nota_rango": 5.0,
-        "nota_directa": 5.0
-      },
-      {
-        "question_id": "Q799823558",
-        "student_answer": "En mi opinión, La diferencia es que TDD es proactivo (haces los tests antes de codificar la lógica) y el tradicional es reactivo (haces pruebas después de codificar). TDD asegura que escribas solo el código necesario, en cambio el enfoque tradicional puede llevar a escribir código de más que luego es difícil de testear. Es un concepto clave.",
-        "student_answer_short": "En mi opinión, La diferencia es que TDD es proactivo (haces los tests antes de codificar la lógica) y el tradicional es ...",
-        "teacher_grade": 7.0,
-        "agent_grade": 6.0,
-        "diff": -1.0,
-        "conceptos_evaluados": {
-          "TESTS_PRIMERO": "sí",
-          "TRADICIONAL_TESTS_FINAL": "no",
-          "USA_TESTS": "no",
-          "COMPARACION": "no",
-          "TDD_PROACTIVO": "sí",
-          "ESPECIFICACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 4.29,
-        "nota_rango": 5.0,
-        "nota_directa": 6.0
-      },
-      {
-        "question_id": "Q004474161",
-        "student_answer": "En mi opinión, El ciclo TDD consiste en hacer primero las pruebas en rojo para ver que fallen, después hacer la implementación en verde para que pasen y finalmente refactorizar para limpiar el código. Ayuda a mejorar la calidad del software significativamente. Así lo veo yo.",
-        "student_answer_short": "En mi opinión, El ciclo TDD consiste en hacer primero las pruebas en rojo para ver que fallen, después hacer la implemen...",
-        "teacher_grade": 6.0,
-        "agent_grade": 7.0,
-        "diff": 1.0,
-        "conceptos_evaluados": {
-          "USA_TESTS": "sí",
-          "CICLO_ITERATIVO": "sí",
-          "CODIGO_ROJO": "no",
-          "CODIGO_VERDE": "sí",
-          "VALIDACION_COMPORTAMIENTO": "sí",
-          "FASES_TDD": "sí",
-          "PROPOSITO_REFACTOR": "no",
-          "CALIDAD_SOFTWARE": "sí",
-          "ERROR": "no"
-        },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 7.33,
+        "nota_conceptos": 5.0,
         "nota_rango": 5.0,
         "nota_directa": 7.0
-      },
-      {
-        "question_id": "Q675600740",
-        "student_answer": "Las buenas prácticas en TDD son tener una computadora rápida para correr las pruebas y usar un buen IDE para refactorizar de forma automática.",
-        "student_answer_short": "Las buenas prácticas en TDD son tener una computadora rápida para correr las pruebas y usar un buen IDE para refactoriza...",
-        "teacher_grade": 2.0,
-        "agent_grade": 2.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "PRACTICA_FUNDAMENTAL": "no",
-          "PRACTICA_RECOMENDADA": "no",
-          "PREVIENE_ERRORES": "no",
-          "SOLO_NECESARIOS": "no",
-          "SIRVE_VALIDACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 2.0
-      },
-      {
-        "question_id": "Q205293180",
-        "student_answer": "Para responder a esto: En TDD las validaciones de entrada se hacen de forma manual al final del proyecto. Es un concepto clave.",
-        "student_answer_short": "Para responder a esto: En TDD las validaciones de entrada se hacen de forma manual al final del proyecto. Es un concepto...",
-        "teacher_grade": 2.0,
-        "agent_grade": 2.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "VALIDACION_ENTRADA": "no",
-          "VALIDAR_PARA": "no",
-          "VALIDACION_RELACION": "no",
-          "RELACION_ROBUSTEZ": "no",
-          "PROPOSITO_REFACTOR": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 2.0
-      },
-      {
-        "question_id": "Q004474161",
-        "student_answer": "Desde mi punto de vista, El ciclo TDD es rojo, verde y refactor. Haces el test, luego el código y después mejoras lo que hiciste. Es importante porque hace que el software tenga menos fallas y ande mejor. Queda claro su beneficio.",
-        "student_answer_short": "Desde mi punto de vista, El ciclo TDD es rojo, verde y refactor. Haces el test, luego el código y después mejoras lo que...",
-        "teacher_grade": 4.0,
-        "agent_grade": 6.0,
-        "diff": 2.0,
-        "conceptos_evaluados": {
-          "USA_TESTS": "sí",
-          "CICLO_ITERATIVO": "sí",
-          "CODIGO_ROJO": "no",
-          "CODIGO_VERDE": "sí",
-          "VALIDACION_COMPORTAMIENTO": "no",
-          "FASES_TDD": "sí",
-          "PROPOSITO_REFACTOR": "no",
-          "CALIDAD_SOFTWARE": "sí",
-          "ERROR": "no"
-        },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 6.44,
-        "nota_rango": 5.0,
-        "nota_directa": 6.0
-      },
-      {
-        "question_id": "Q799823558",
-        "student_answer": "No sé cómo comparar el testing tradicional con TDD, no conozco ninguno de esos conceptos. Es un concepto clave.",
-        "student_answer_short": "No sé cómo comparar el testing tradicional con TDD, no conozco ninguno de esos conceptos. Es un concepto clave.",
-        "teacher_grade": 1.0,
-        "agent_grade": 2.0,
-        "diff": 1.0,
-        "conceptos_evaluados": {
-          "TESTS_PRIMERO": "no",
-          "TRADICIONAL_TESTS_FINAL": "no",
-          "USA_TESTS": "no",
-          "COMPARACION": "no",
-          "TDD_PROACTIVO": "no",
-          "ESPECIFICACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 2.0
-      },
-      {
-        "question_id": "Q675600740",
-        "student_answer": "En mi opinión, Como buena práctica hay que intentar escribir los tests antes de escribir la funcionalidad. El impacto que esto genera en el software es que el código queda más ordenado y con menos fallos. Esto es fundamental.",
-        "student_answer_short": "En mi opinión, Como buena práctica hay que intentar escribir los tests antes de escribir la funcionalidad. El impacto qu...",
-        "teacher_grade": 4.0,
-        "agent_grade": 5.0,
-        "diff": 1.0,
-        "conceptos_evaluados": {
-          "PRACTICA_FUNDAMENTAL": "sí",
-          "PRACTICA_RECOMENDADA": "no",
-          "PREVIENE_ERRORES": "sí",
-          "SOLO_NECESARIOS": "no",
-          "SIRVE_VALIDACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 4.67,
-        "nota_rango": 5.0,
-        "nota_directa": 5.0
-      },
-      {
-        "question_id": "Q205293180",
-        "student_answer": "En mi opinión, En TDD validamos las entradas haciendo pruebas para los casos en que el usuario ponga datos malos, por ejemplo letras en campos numéricos. Esto ayuda a la robustez del código ya que el programa no se colgará fácilmente. Es un concepto clave.",
-        "student_answer_short": "En mi opinión, En TDD validamos las entradas haciendo pruebas para los casos en que el usuario ponga datos malos, por ej...",
-        "teacher_grade": 6.0,
-        "agent_grade": 6.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "VALIDACION_ENTRADA": "sí",
-          "VALIDAR_PARA": "sí",
-          "VALIDACION_RELACION": "sí",
-          "RELACION_ROBUSTEZ": "sí",
-          "PROPOSITO_REFACTOR": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 7.33,
-        "nota_rango": 5.0,
-        "nota_directa": 6.0
-      },
-      {
-        "question_id": "Q799823558",
-        "student_answer": "En el desarrollo, La diferencia principal radica en la secuencia: TDD es 'test-first' (pruebas antes que código) y el tradicional es 'test-after' (código antes que pruebas). TDD utiliza los tests como una herramienta de diseño y especificación, logrando código más desacoplado y modular. Por otro lado, el enfoque tradicional valida el código de forma reactiva, donde los tests suelen ser opcionales y el diseño ya está predefinido, lo que dificulta hacer cambios. Así lo veo yo.",
-        "student_answer_short": "En el desarrollo, La diferencia principal radica en la secuencia: TDD es 'test-first' (pruebas antes que código) y el tr...",
-        "teacher_grade": 9.0,
-        "agent_grade": 8.0,
-        "diff": -1.0,
-        "conceptos_evaluados": {
-          "TESTS_PRIMERO": "sí",
-          "TRADICIONAL_TESTS_FINAL": "no",
-          "USA_TESTS": "sí",
-          "COMPARACION": "no",
-          "TDD_PROACTIVO": "sí",
-          "ESPECIFICACION": "sí",
-          "ERROR": "no"
-        },
-        "rango_nota": "<BUENO>",
-        "nota_conceptos": 6.57,
-        "nota_rango": 7.5,
-        "nota_directa": 8.0
-      },
-      {
-        "question_id": "Q004474161",
-        "student_answer": "Para responder a esto: En TDD seguimos el ciclo de: 1. Rojo (escribir test que falla), 2. Verde (hacer código para que pase el test), 3. Refactor (mejorar y limpiar el código sin cambiar su funcionalidad). Es crucial en desarrollo porque previene errores y nos da confianza al hacer cambios futuros sobre el sistema. Esto es fundamental.",
-        "student_answer_short": "Para responder a esto: En TDD seguimos el ciclo de: 1. Rojo (escribir test que falla), 2. Verde (hacer código para que p...",
-        "teacher_grade": 8.0,
-        "agent_grade": 7.0,
-        "diff": -1.0,
-        "conceptos_evaluados": {
-          "USA_TESTS": "sí",
-          "CICLO_ITERATIVO": "sí",
-          "CODIGO_ROJO": "no",
-          "CODIGO_VERDE": "sí",
-          "VALIDACION_COMPORTAMIENTO": "no",
-          "FASES_TDD": "sí",
-          "PROPOSITO_REFACTOR": "no",
-          "CALIDAD_SOFTWARE": "sí",
-          "ERROR": "no"
-        },
-        "rango_nota": "<BUENO>",
-        "nota_conceptos": 6.44,
-        "nota_rango": 7.5,
-        "nota_directa": 7.0
-      },
-      {
-        "question_id": "Q675600740",
-        "student_answer": "Desde mi punto de vista, Las buenas prácticas en TDD incluyen escribir únicamente el test mínimo necesario para que falle, evitar la duplicación de código en la fase de refactorización y mantener tests independientes y rápidos (regla FIRST). Estas prácticas tienen un impacto directo en la mantenibilidad y robustez del software, ya que reducen la complejidad técnica, aseguran una alta cobertura y permiten realizar cambios futuros con la confianza de no romper funcionalidades existentes. Así lo veo yo.",
-        "student_answer_short": "Desde mi punto de vista, Las buenas prácticas en TDD incluyen escribir únicamente el test mínimo necesario para que fall...",
-        "teacher_grade": 8.0,
-        "agent_grade": 8.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "PRACTICA_FUNDAMENTAL": "no",
-          "PRACTICA_RECOMENDADA": "sí",
-          "PREVIENE_ERRORES": "no",
-          "SOLO_NECESARIOS": "sí",
-          "SIRVE_VALIDACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<BUENO>",
-        "nota_conceptos": 4.67,
-        "nota_rango": 7.5,
-        "nota_directa": 8.0
-      },
-      {
-        "question_id": "Q205293180",
-        "student_answer": "En el desarrollo, La validación de entradas en TDD nos obliga a escribir pruebas para valores límite (números negativos, cadenas vacías, formatos incorrectos) antes de codificar la lógica del negocio. Al asegurar estas validaciones por test, evitamos errores imprevistos en producción. Esto hace que el código sea mucho más robusto frente a fallos y fácil de mantener. Esto es fundamental.",
-        "student_answer_short": "En el desarrollo, La validación de entradas en TDD nos obliga a escribir pruebas para valores límite (números negativos,...",
-        "teacher_grade": 8.0,
-        "agent_grade": 8.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "VALIDACION_ENTRADA": "sí",
-          "VALIDAR_PARA": "sí",
-          "VALIDACION_RELACION": "sí",
-          "RELACION_ROBUSTEZ": "sí",
-          "PROPOSITO_REFACTOR": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<BUENO>",
-        "nota_conceptos": 7.33,
-        "nota_rango": 7.5,
-        "nota_directa": 8.0
-      },
-      {
-        "question_id": "Q799823558",
-        "student_answer": "La diferencia es que TDD es proactivo (haces los tests antes de codificar la lógica) y el tradicional es reactivo (haces pruebas después de codificar). TDD asegura que escribas solo el código necesario, en cambio el enfoque tradicional puede llevar a escribir código de más que luego es difícil de testear. Esto es fundamental.",
-        "student_answer_short": "La diferencia es que TDD es proactivo (haces los tests antes de codificar la lógica) y el tradicional es reactivo (haces...",
-        "teacher_grade": 7.0,
-        "agent_grade": 7.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "TESTS_PRIMERO": "sí",
-          "TRADICIONAL_TESTS_FINAL": "sí",
-          "USA_TESTS": "no",
-          "COMPARACION": "no",
-          "TDD_PROACTIVO": "sí",
-          "ESPECIFICACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 5.43,
-        "nota_rango": 5.0,
-        "nota_directa": 7.0
-      },
-      {
-        "question_id": "Q004474161",
-        "student_answer": "Para responder a esto: En TDD seguimos el ciclo de: 1. Rojo (escribir test que falla), 2. Verde (hacer código para que pase el test), 3. Refactor (mejorar y limpiar el código sin cambiar su funcionalidad). Es crucial en desarrollo porque previene errores y nos da confianza al hacer cambios futuros sobre el sistema. Es un concepto clave.",
-        "student_answer_short": "Para responder a esto: En TDD seguimos el ciclo de: 1. Rojo (escribir test que falla), 2. Verde (hacer código para que p...",
-        "teacher_grade": 8.0,
-        "agent_grade": 7.0,
-        "diff": -1.0,
-        "conceptos_evaluados": {
-          "USA_TESTS": "sí",
-          "CICLO_ITERATIVO": "sí",
-          "CODIGO_ROJO": "no",
-          "CODIGO_VERDE": "sí",
-          "VALIDACION_COMPORTAMIENTO": "no",
-          "FASES_TDD": "sí",
-          "PROPOSITO_REFACTOR": "no",
-          "CALIDAD_SOFTWARE": "sí",
-          "ERROR": "no"
-        },
-        "rango_nota": "<BUENO>",
-        "nota_conceptos": 6.44,
-        "nota_rango": 7.5,
-        "nota_directa": 7.0
-      },
-      {
-        "question_id": "Q675600740",
-        "student_answer": "Para responder a esto: Las buenas prácticas en TDD son tener una computadora rápida para correr las pruebas y usar un buen IDE para refactorizar de forma automática. De esta manera funciona.",
-        "student_answer_short": "Para responder a esto: Las buenas prácticas en TDD son tener una computadora rápida para correr las pruebas y usar un bu...",
-        "teacher_grade": 2.0,
-        "agent_grade": 2.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "PRACTICA_FUNDAMENTAL": "no",
-          "PRACTICA_RECOMENDADA": "no",
-          "PREVIENE_ERRORES": "no",
-          "SOLO_NECESARIOS": "no",
-          "SIRVE_VALIDACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 2.0
-      },
-      {
-        "question_id": "Q205293180",
-        "student_answer": "Para responder a esto: En TDD las validaciones de entrada se hacen de forma manual al final del proyecto. Queda claro su beneficio.",
-        "student_answer_short": "Para responder a esto: En TDD las validaciones de entrada se hacen de forma manual al final del proyecto. Queda claro su...",
-        "teacher_grade": 2.0,
-        "agent_grade": 2.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "VALIDACION_ENTRADA": "no",
-          "VALIDAR_PARA": "no",
-          "VALIDACION_RELACION": "no",
-          "RELACION_ROBUSTEZ": "no",
-          "PROPOSITO_REFACTOR": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 2.0
-      },
-      {
-        "question_id": "Q004474161",
-        "student_answer": "En mi opinión, El ciclo TDD sirve para compilar el código de forma automática usando el compilador de Java. Esto es fundamental.",
-        "student_answer_short": "En mi opinión, El ciclo TDD sirve para compilar el código de forma automática usando el compilador de Java. Esto es fund...",
-        "teacher_grade": 1.0,
-        "agent_grade": 2.0,
-        "diff": 1.0,
-        "conceptos_evaluados": {
-          "USA_TESTS": "no",
-          "CICLO_ITERATIVO": "no",
-          "CODIGO_ROJO": "no",
-          "CODIGO_VERDE": "no",
-          "VALIDACION_COMPORTAMIENTO": "no",
-          "FASES_TDD": "no",
-          "PROPOSITO_REFACTOR": "no",
-          "CALIDAD_SOFTWARE": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<INSUFICIENTE>",
-        "nota_conceptos": 2.0,
-        "nota_rango": 2.0,
-        "nota_directa": 2.0
-      },
-      {
-        "question_id": "Q799823558",
-        "student_answer": "La diferencia principal entre el enfoque tradicional de testing y el TDD consiste en el momento de elaboración de los tests, ya que en el primero se escribe el código y luego el test, al contrario que en el segundo. TDD ayuda a tener menos bugs porque los tests son obligatorios en cada fase. Así lo veo yo.",
-        "student_answer_short": "La diferencia principal entre el enfoque tradicional de testing y el TDD consiste en el momento de elaboración de los te...",
-        "teacher_grade": 5.0,
-        "agent_grade": 5.0,
-        "diff": 0.0,
-        "conceptos_evaluados": {
-          "TESTS_PRIMERO": "sí",
-          "TRADICIONAL_TESTS_FINAL": "sí",
-          "USA_TESTS": "no",
-          "COMPARACION": "sí",
-          "TDD_PROACTIVO": "sí",
-          "ESPECIFICACION": "no",
-          "ERROR": "no"
-        },
-        "rango_nota": "<ACEPTABLE>",
-        "nota_conceptos": 6.57,
-        "nota_rango": 5.0,
-        "nota_directa": 5.0
       }
     ],
-    "total_comparados": 74,
-    "mae": 0.68,
+    "total_comparados": 40,
+    "mae": 1.15,
     "status": "cancelled"
   },
   "pesos_ensamble": {

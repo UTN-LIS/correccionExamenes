@@ -350,14 +350,16 @@ async def corregir_respuesta_individual(
     w3 = pesos.get("w3", 0.85)
 
 
-    # Lanzar los tres experimentos atómicos en hilos separados para concurrencia
-    task_conceptos = asyncio.to_thread(evaluar_conceptos, cliente_llm, pregunta_text, conceptos, respuesta_estudiante)
-    task_rango = asyncio.to_thread(evaluar_rango, cliente_llm, pregunta_text, respuesta_estudiante)
-    task_nota_directa = asyncio.to_thread(evaluar_nota_directa, cliente_llm, pregunta_text, respuesta_estudiante)
+    # Ejecutar los tres experimentos secuencialmente para evitar congestionar el servidor LLM (Colab/ngrok)
+    res_conceptos = await asyncio.to_thread(evaluar_conceptos, cliente_llm, pregunta_text, conceptos, respuesta_estudiante)
+    if check_cancellation and check_cancellation():
+        return {"estado": "cancelado"}
 
-    res_conceptos, res_rango, res_nota_directa = await asyncio.gather(
-        task_conceptos, task_rango, task_nota_directa
-    )
+    res_rango = await asyncio.to_thread(evaluar_rango, cliente_llm, pregunta_text, respuesta_estudiante)
+    if check_cancellation and check_cancellation():
+        return {"estado": "cancelado"}
+
+    res_nota_directa = await asyncio.to_thread(evaluar_nota_directa, cliente_llm, pregunta_text, respuesta_estudiante)
 
     if check_cancellation and check_cancellation():
         return {"estado": "cancelado"}
@@ -404,8 +406,8 @@ async def tarea_correccion_lote():
     cliente_llm = ClienteLLM()
     resultados_temp = {}
     
-    # Semáforo para limitar la concurrencia a un máximo de 3 llamadas paralelas al servidor LLM
-    sem = asyncio.Semaphore(3)
+    # Semáforo de concurrencia 1 para procesar alumno por alumno de forma estrictamente secuencial y evitar saturar el LLM
+    sem = asyncio.Semaphore(1)
     
     async def procesar_item(idx: int, resp: Dict[str, Any]):
         global state
@@ -500,8 +502,8 @@ async def tarea_comparar_correccion_lote():
     comparaciones_temp = []
     mae_acumulado = 0.0
     
-    # Semáforo para limitar la concurrencia a un máximo de 3 llamadas paralelas al servidor LLM
-    sem = asyncio.Semaphore(3)
+    # Semáforo de concurrencia 1 para procesar alumno por alumno de forma estrictamente secuencial y evitar saturar el LLM
+    sem = asyncio.Semaphore(1)
     
     async def procesar_item(idx: int, resp: Dict[str, Any]):
         global state_comp

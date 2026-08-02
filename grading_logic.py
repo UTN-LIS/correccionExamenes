@@ -10,21 +10,47 @@ from prompts import (
 
 # Mapeo de rangos a valores numéricos (centro de cada intervalo)
 RANGO_A_NOTA = {
-    "<INSUFICIENTE>": 2.0,   # Rango 1 a 3
+    "<INSUFICIENTE>": 1.5,   # Rango 0 a 3 (el centro es 1.5)
     "<ACEPTABLE>": 5.0,      # Rango 4 a 6
     "<BUENO>": 7.5,          # Rango 7 a 8
     "<EXCELENTE>": 9.5       # Rango 9 a 10
 }
 
+def es_respuesta_vacia_o_evasiva(respuesta: str) -> bool:
+    """
+    Detecta si una respuesta está vacía, es extremadamente corta o es evasiva (ej: 'No lo sé').
+    """
+    if not respuesta:
+        return True
+    clean_resp = respuesta.strip().lower()
+    
+    # Eliminar puntuación al final para facilitar coincidencia de prefijos
+    clean_resp = clean_resp.rstrip(".?!, ")
+    
+    # Si tiene menos de 12 caracteres (ej: "no sé", "no se", "vacio", "nada", "ni idea")
+    if len(clean_resp) < 12:
+        return True
+        
+    # Frases de evasión comunes que significan que no sabe o no responde
+    frases_evasivas = [
+        "no lo se", "no sé", "no se", "ni idea", "no tengo idea", "no tengo ni idea",
+        "no respondo", "no se nada", "no sé nada", "no respondo a la pregunta",
+        "no se que es", "no sé qué es", "no se como", "no sé cómo", "no conozco",
+        "no comprendo", "escribo para no dejarlo en blanco", "escribo para no dejar en blanco"
+    ]
+    
+    for frase in frases_evasivas:
+        if clean_resp.startswith(frase):
+            return True
+            
+    return False
+
 def evaluar_conceptos(cliente_llm, pregunta_text: str, conceptos: list, respuesta_estudiante: str) -> dict:
     """
     Experimento 1 (Etiquetas): Evalúa la presencia/ausencia de conceptos clave.
     Retorna un diccionario con los resultados individuales por concepto, 
-    la cobertura (0.0 a 1.0) y la nota proporcional (1.0 a 10.0).
+    la cobertura (0.0 a 1.0) y la nota proporcional (0.0 a 10.0).
     """
-    conceptos_evaluados = {}
-    tiempo_total = 0.0
-    
     if not conceptos:
         return {
             "conceptos_evaluados": {},
@@ -33,6 +59,17 @@ def evaluar_conceptos(cliente_llm, pregunta_text: str, conceptos: list, respuest
             "tiempo": 0.0
         }
         
+    if es_respuesta_vacia_o_evasiva(respuesta_estudiante):
+        return {
+            "conceptos_evaluados": {c['tag']: "no" for c in conceptos},
+            "cobertura": 0.0,
+            "nota_conceptos": 0.0,
+            "tiempo": 0.0
+        }
+        
+    conceptos_evaluados = {}
+    tiempo_total = 0.0
+    
     for concepto in conceptos:
         tag = concepto['tag']
         user_msg = construir_user_message_conceptos(pregunta_text, concepto, respuesta_estudiante)
@@ -51,8 +88,8 @@ def evaluar_conceptos(cliente_llm, pregunta_text: str, conceptos: list, respuest
     conceptos_si = sum(1 for v in conceptos_evaluados.values() if v == "sí")
     cobertura = conceptos_si / total_conceptos
     
-    # Mapear linealmente cobertura [0.0, 1.0] a la nota [2.0, 10.0]
-    nota_conceptos = 2.0 + 8.0 * cobertura
+    # Mapear linealmente cobertura [0.0, 1.0] a la nota [0.0, 10.0]
+    nota_conceptos = 10.0 * cobertura
     
     return {
         "conceptos_evaluados": conceptos_evaluados,
@@ -66,6 +103,13 @@ def evaluar_rango(cliente_llm, pregunta_text: str, respuesta_estudiante: str) ->
     Experimento 2 (Rango): Clasifica la respuesta dentro de los rangos de calificación.
     Retorna la etiqueta del rango y el valor numérico correspondiente.
     """
+    if es_respuesta_vacia_o_evasiva(respuesta_estudiante):
+        return {
+            "rango": "<INSUFICIENTE>",
+            "nota_rango": 0.0,
+            "tiempo": 0.0
+        }
+        
     user_msg = construir_user_message_rango_independiente(pregunta_text, respuesta_estudiante)
     salida, tiempo = cliente_llm.generar_salida(SYSTEM_PROMPT_RANGO_INDEPENDIENTE, user_msg)
     
@@ -84,6 +128,7 @@ def evaluar_rango(cliente_llm, pregunta_text: str, respuesta_estudiante: str) ->
     if not hubo_coincidencia:
         print(f"Advertencia: Respuesta de rango no válida o fallida ('{salida}'). Usando fallback '<INSUFICIENTE>'.")
         
+    # Si detectó insuficiente y es evasiva o nula, o si es normal
     nota_rango = RANGO_A_NOTA[rango_detectado]
     
     return {
@@ -94,9 +139,15 @@ def evaluar_rango(cliente_llm, pregunta_text: str, respuesta_estudiante: str) ->
 
 def evaluar_nota_directa(cliente_llm, pregunta_text: str, respuesta_estudiante: str) -> dict:
     """
-    Experimento 3 (Nota directa): Pide al LLM una calificación directa de 1 a 10
+    Experimento 3 (Nota directa): Pide al LLM una calificación directa de 0 a 10
     basada en su criterio pedagógico.
     """
+    if es_respuesta_vacia_o_evasiva(respuesta_estudiante):
+        return {
+            "nota_directa": 0.0,
+            "tiempo": 0.0
+        }
+        
     user_msg = construir_user_message_nota_directa(pregunta_text, respuesta_estudiante)
     salida, tiempo = cliente_llm.generar_salida(SYSTEM_PROMPT_NOTA_DIRECTA, user_msg)
     
@@ -104,20 +155,20 @@ def evaluar_nota_directa(cliente_llm, pregunta_text: str, respuesta_estudiante: 
     
     try:
         nota_directa = float(clean_n)
-        if nota_directa < 1.0 or nota_directa > 10.0:
-            print(f"Advertencia: Nota directa '{nota_directa}' fuera de rango [1.0, 10.0]. Usando fallback 1.0.")
-            nota_directa = 1.0
+        if nota_directa < 0.0 or nota_directa > 10.0:
+            print(f"Advertencia: Nota directa '{nota_directa}' fuera de rango [0.0, 10.0]. Usando fallback 0.0.")
+            nota_directa = 0.0
     except ValueError:
         # Intentar extraer el primer número
         numeros = re.findall(r'\d+', clean_n)
         if numeros:
             nota_directa = float(numeros[0])
-            if nota_directa < 1.0 or nota_directa > 10.0:
-                print(f"Advertencia: Nota directa extraída '{nota_directa}' fuera de rango. Usando fallback 1.0.")
-                nota_directa = 1.0
+            if nota_directa < 0.0 or nota_directa > 10.0:
+                print(f"Advertencia: Nota directa extraída '{nota_directa}' fuera de rango. Usando fallback 0.0.")
+                nota_directa = 0.0
         else:
-            print(f"Advertencia: No se pudo extraer número de nota directa ('{salida}'). Usando fallback 1.0.")
-            nota_directa = 1.0
+            print(f"Advertencia: No se pudo extraer número de nota directa ('{salida}'). Usando fallback 0.0.")
+            nota_directa = 0.0
         
     return {
         "nota_directa": nota_directa,
@@ -141,7 +192,7 @@ def ensamblar_nota_final(
     # Validar que los pesos sumen aproximadamente 1
     suma_pesos = w1 + w2 + w3
     if not (0.99 <= suma_pesos <= 1.01):
-        # Si no están normalizados, advertir o normalizar
+        # Si no están normalizados, normalizar
         w1, w2, w3 = w1/suma_pesos, w2/suma_pesos, w3/suma_pesos
 
     n_conceptos = res_conceptos["nota_conceptos"]
@@ -152,9 +203,8 @@ def ensamblar_nota_final(
     # Redondear al entero más cercano
     nota_final_redondeada = int(round(nota_final))
     
-    # Asegurar límites del examen
-    nota_final_redondeada = max(1, min(10, nota_final_redondeada))
-
+    # Asegurar límites del examen (0 a 10)
+    nota_final_redondeada = max(0, min(10, nota_final_redondeada))
     
     return {
         "nota_final": nota_final_redondeada,
@@ -189,7 +239,7 @@ if __name__ == "__main__":
     conceptos_simulados = {
         "conceptos_evaluados": {"TDD_ROJO": "sí", "TDD_VERDE": "sí", "TDD_REFACTOR": "no"},
         "cobertura": 0.67,
-        "nota_conceptos": 7.03,
+        "nota_conceptos": 6.7,
         "tiempo": 0.8
     }
     
@@ -209,9 +259,9 @@ if __name__ == "__main__":
         conceptos_simulados, 
         rango_simulado, 
         nota_directa_simulada, 
-        w1=0.4, 
-        w2=0.3, 
-        w3=0.3
+        w1=0.10, 
+        w2=0.05, 
+        w3=0.85
     )
     
     import json

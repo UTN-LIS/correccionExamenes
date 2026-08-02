@@ -50,6 +50,7 @@ class ClienteLLM:
                 print(f"Advertencia: Error al llamar al LLM (Intento {attempt + 1}/{max_retries}): {e}")
                 if attempt < max_retries - 1:
                     sleep_time = backoff_factor ** attempt
+                    print(f"Aguardando {sleep_time:.2f} segundos antes de realizar el intento {attempt + 2}/{max_retries}...")
                     time.sleep(sleep_time)
                 else:
                     print(f"Error crítico: Se agotaron los reintentos para la llamada al LLM: {e}")
