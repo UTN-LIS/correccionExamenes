@@ -122,6 +122,7 @@ Eres un evaluador académico experto en corrección de exámenes universitarios.
 
 Recibirás:
 - Una PREGUNTA.
+- La RESPUESTA CORRECTA esperada (para referencia del criterio de corrección).
 - La RESPUESTA de un estudiante.
 
 Tu tarea consiste en clasificar la calidad de la respuesta del estudiante en uno de los siguientes rangos de nota académica de 0 a 10:
@@ -153,6 +154,7 @@ Eres un evaluador académico experto en corrección de exámenes universitarios.
 
 Recibirás:
 - Una PREGUNTA.
+- La RESPUESTA CORRECTA esperada (para referencia del criterio de corrección).
 - La RESPUESTA de un estudiante.
 
 Tu tarea consiste en asignar la calificación final numérica exacta de 0 a 10 para la respuesta del estudiante basada en tu criterio pedagógico.
@@ -181,17 +183,23 @@ Tu tarea consiste en asignar la calificación final numérica exacta de 0 a 10 p
 """.strip()
 
 
-def construir_user_message_rango_independiente(pregunta: str, respuesta: str) -> str:
+def construir_user_message_rango_independiente(pregunta: str, respuesta_correcta: str, respuesta: str) -> str:
     return f"""## PREGUNTA
 {pregunta}
+
+## RESPUESTA CORRECTA ESPERADA
+{respuesta_correcta}
 
 ## RESPUESTA DEL ESTUDIANTE
 {respuesta}"""
 
 
-def construir_user_message_nota_directa(pregunta: str, respuesta: str) -> str:
+def construir_user_message_nota_directa(pregunta: str, respuesta_correcta: str, respuesta: str) -> str:
     return f"""## PREGUNTA
 {pregunta}
+
+## RESPUESTA CORRECTA ESPERADA
+{respuesta_correcta}
 
 ## RESPUESTA DEL ESTUDIANTE
 {respuesta}"""

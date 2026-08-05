@@ -98,7 +98,7 @@ def evaluar_conceptos(cliente_llm, pregunta_text: str, conceptos: list, respuest
         "tiempo": round(tiempo_total, 3)
     }
 
-def evaluar_rango(cliente_llm, pregunta_text: str, respuesta_estudiante: str) -> dict:
+def evaluar_rango(cliente_llm, pregunta_text: str, respuesta_correcta: str, respuesta_estudiante: str) -> dict:
     """
     Experimento 2 (Rango): Clasifica la respuesta dentro de los rangos de calificación.
     Retorna la etiqueta del rango y el valor numérico correspondiente.
@@ -110,7 +110,7 @@ def evaluar_rango(cliente_llm, pregunta_text: str, respuesta_estudiante: str) ->
             "tiempo": 0.0
         }
         
-    user_msg = construir_user_message_rango_independiente(pregunta_text, respuesta_estudiante)
+    user_msg = construir_user_message_rango_independiente(pregunta_text, respuesta_correcta, respuesta_estudiante)
     salida, tiempo = cliente_llm.generar_salida(SYSTEM_PROMPT_RANGO_INDEPENDIENTE, user_msg)
     
     clean_r = salida.strip().replace("\n", "").strip()
@@ -137,7 +137,7 @@ def evaluar_rango(cliente_llm, pregunta_text: str, respuesta_estudiante: str) ->
         "tiempo": round(tiempo, 3)
     }
 
-def evaluar_nota_directa(cliente_llm, pregunta_text: str, respuesta_estudiante: str) -> dict:
+def evaluar_nota_directa(cliente_llm, pregunta_text: str, respuesta_correcta: str, respuesta_estudiante: str) -> dict:
     """
     Experimento 3 (Nota directa): Pide al LLM una calificación directa de 0 a 10
     basada en su criterio pedagógico.
@@ -148,7 +148,7 @@ def evaluar_nota_directa(cliente_llm, pregunta_text: str, respuesta_estudiante: 
             "tiempo": 0.0
         }
         
-    user_msg = construir_user_message_nota_directa(pregunta_text, respuesta_estudiante)
+    user_msg = construir_user_message_nota_directa(pregunta_text, respuesta_correcta, respuesta_estudiante)
     salida, tiempo = cliente_llm.generar_salida(SYSTEM_PROMPT_NOTA_DIRECTA, user_msg)
     
     clean_n = salida.strip().replace("\n", "").strip()
