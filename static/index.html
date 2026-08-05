@@ -336,9 +336,21 @@
                         <p class="card-desc">Resultados de la validación entre calificaciones del Agente vs Profesor.</p>
                         
                         <div class="metrics-grid" id="comparar-metrics-grid" style="display:none; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem;">
-                            <div class="stat-box">
-                                <span class="stat-val" id="metric-mae">0.0</span>
-                                <span class="stat-lbl">Error Absoluto Medio (MAE)</span>
+                            <div class="stat-box" style="grid-column: span 2; display: flex; justify-content: space-between; align-items: center; padding: 1.25rem;">
+                                <div style="text-align: left;">
+                                    <span class="stat-val" id="metric-mae" style="font-size: 2rem;">0.0</span>
+                                    <span class="stat-lbl" style="font-size: 0.8rem; margin-top: 0.25rem;">MAE General Total</span>
+                                </div>
+                                <div style="display: flex; gap: 0.75rem;">
+                                    <div class="stat-sub-box" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); padding: 0.5rem 0.75rem; border-radius: 6px; text-align: center; min-width: 90px;">
+                                        <span id="metric-mae-menor-2" style="font-size: 1.15rem; font-weight: 700; color: #a7f3d0; display: block;">0.0</span>
+                                        <span class="stat-lbl" style="font-size: 0.65rem; margin-top: 0.15rem;">MAE (Diff &lt; 2)</span>
+                                    </div>
+                                    <div class="stat-sub-box" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass); padding: 0.5rem 0.75rem; border-radius: 6px; text-align: center; min-width: 90px;">
+                                        <span id="metric-mae-mayor-2" style="font-size: 1.15rem; font-weight: 700; color: #fca5a5; display: block;">0.0</span>
+                                        <span class="stat-lbl" style="font-size: 0.65rem; margin-top: 0.15rem;">MAE (Diff &ge; 2)</span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="stat-box">
                                 <span class="stat-val" id="metric-bias">0.0</span>
@@ -348,7 +360,7 @@
                                 <span class="stat-val" id="metric-exact">0%</span>
                                 <span class="stat-lbl">Coincidencia Exacta</span>
                             </div>
-                            <div class="stat-box">
+                            <div class="stat-box" style="grid-column: span 2;">
                                 <span class="stat-val" id="metric-tolerance">0%</span>
                                 <span class="stat-lbl">Tolerancia (&plusmn;1 punto)</span>
                             </div>
@@ -422,6 +434,7 @@
                                     <th>Respuesta (Resumen)</th>
                                     <th>Nota Profesor</th>
                                     <th>Nota Agente</th>
+                                    <th>Algoritmo</th>
                                     <th>Diferencia</th>
                                 </tr>
                             </thead>
@@ -429,6 +442,56 @@
                                 <!-- Filas dinámicas -->
                             </tbody>
                         </table>
+                    </div>
+                    
+                    <div class="table-container" style="margin: 0 2rem 2rem 2rem;">
+                        <table class="custom-table" id="tabla-comparacion-detalle">
+                            <thead>
+                                <tr>
+                                    <th>Pregunta ID</th>
+                                    <th>Respuesta (Resumen)</th>
+                                    <th>Nota Profesor</th>
+                                    <th>Nota Agente</th>
+                                    <th>Algoritmo</th>
+                                    <th>Diferencia</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-comparacion-body">
+                                <!-- Filas dinámicas -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Historial y Evolución del MAE -->
+                <div class="card glass-card" id="comparar-historial-card" style="margin-top: 2rem;">
+                    <div style="padding: 1.5rem 2rem;">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 0;">
+                            <div>
+                                <h3 style="font-size: 1.25rem;">Evolución del Error Medio (MAE)</h3>
+                                <p class="card-desc">Historial de precisión de las evaluaciones ejecutadas en esta sesión.</p>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" onclick="limpiarHistorialMAE()" style="padding: 0.35rem 0.6rem; font-size: 0.75rem; display: flex; align-items: center; gap: 0.35rem;">
+                                <i class="fa-solid fa-trash"></i> Limpiar Historial
+                            </button>
+                        </div>
+                        <div class="table-container" style="max-height: 250px; overflow-y: auto; margin-top: 1rem;">
+                            <table class="custom-table" id="tabla-historial-mae">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha / Hora</th>
+                                        <th>Origen / Archivo</th>
+                                        <th>Casos</th>
+                                        <th>MAE Total</th>
+                                        <th>MAE (Diff &lt; 2)</th>
+                                        <th>MAE (Diff &ge; 2)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-historial-mae-body">
+                                    <!-- Filas dinámicas -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </section>

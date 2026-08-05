@@ -558,6 +558,13 @@ async def tarea_comparar_correccion_lote():
         diff = agent_grade - teacher_grade
         abs_error = abs(diff)
         
+        n_conceptos = float(resultado.get("desglose", {}).get("experimento_conceptos", {}).get("nota_obtenida", 0.0))
+        n_rango = float(resultado.get("desglose", {}).get("experimento_rango", {}).get("nota_obtenida", 0.0))
+        n_directa = float(resultado.get("desglose", {}).get("experimento_nota_directa", {}).get("nota_obtenida", 0.0))
+        
+        d1 = abs(n_directa - n_conceptos)
+        d2 = abs(n_directa - n_rango)
+        
         item_comparado = {
             "question_id": q_id,
             "student_answer": student_ans,
@@ -567,9 +574,10 @@ async def tarea_comparar_correccion_lote():
             "diff": round(diff, 2),
             "conceptos_evaluados": resultado.get("conceptos_evaluados", {}),
             "rango_nota": resultado.get("rango_nota", ""),
-            "nota_conceptos": resultado.get("desglose", {}).get("experimento_conceptos", {}).get("nota_obtenida", 1.0),
-            "nota_rango": resultado.get("desglose", {}).get("experimento_rango", {}).get("nota_obtenida", 1.0),
-            "nota_directa": resultado.get("desglose", {}).get("experimento_nota_directa", {}).get("nota_obtenida", 1.0)
+            "nota_conceptos": n_conceptos,
+            "nota_rango": n_rango,
+            "nota_directa": n_directa,
+            "usó_promedio": (d1 < 2.0 and d2 < 2.0)
         }
 
         
@@ -598,6 +606,34 @@ async def tarea_comparar_correccion_lote():
         "errores": state_comp.errores,
         "mae": state_comp.mae if comparaciones_temp else 0.0
     }
+    
+    if status_final == "completed" and comparaciones_temp:
+        # Calcular los MAEs segmentados para el historial
+        errores_menor_2 = []
+        errores_mayor_2 = []
+        for c in comparaciones_temp:
+            if c.get("usó_promedio") is True:
+                errores_menor_2.append(abs(c["diff"]))
+            else:
+                errores_mayor_2.append(abs(c["diff"]))
+        
+        m_total = round(mae_acumulado / len(comparaciones_temp), 2)
+        m_menor = round(sum(errores_menor_2) / len(errores_menor_2), 2) if errores_menor_2 else 0.0
+        m_mayor = round(sum(errores_mayor_2) / len(errores_mayor_2), 2) if errores_mayor_2 else 0.0
+        
+        historial = db.get("historial_mae", [])
+        import datetime
+        historial.append({
+            "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "origen": "live",
+            "filename": "Comparación en Vivo",
+            "mae": m_total,
+            "mae_menor_2": m_menor,
+            "mae_mayor_2": m_mayor,
+            "total_casos": len(comparaciones_temp)
+        })
+        db["historial_mae"] = historial
+        
     guardar_db(db)
     
     async with state_comp_lock:
@@ -755,7 +791,7 @@ async def comparar_resultados(file: UploadFile = File(...)):
         for r in respuestas:
             q_id = str(r.get("question_id")).strip()
             ans = str(r.get("student_answer")).strip()
-            agente_lookup[(q_id, ans)] = r.get("nota_final")
+            agente_lookup[(q_id, ans)] = r
 
     comparaciones = []
     mae_acumulado = 0.0
@@ -774,9 +810,9 @@ async def comparar_resultados(file: UploadFile = File(...)):
         except (ValueError, TypeError):
             continue
 
-        nota_agente = agente_lookup.get((q_id, ans))
-        if nota_agente is not None:
-            nota_agente = float(nota_agente)
+        r_info = agente_lookup.get((q_id, ans))
+        if r_info is not None:
+            nota_agente = float(r_info.get("nota_final", 0.0))
             diff = nota_agente - teacher_grade
             abs_error = abs(diff)
             
@@ -791,14 +827,28 @@ async def comparar_resultados(file: UploadFile = File(...)):
             error_key = int(round(diff))
             distribucion_errores[error_key] = distribucion_errores.get(error_key, 0) + 1
             
-            comparaciones.append({
+            desglose = r_info.get("desglose", {})
+            n_directa = desglose.get("experimento_nota_directa", {}).get("nota_obtenida")
+            n_conceptos = desglose.get("experimento_conceptos", {}).get("nota_obtenida")
+            n_rango = desglose.get("experimento_rango", {}).get("nota_obtenida")
+            
+            comp_item = {
                 "question_id": q_id,
                 "student_answer": ans,
                 "student_answer_short": ans[:120] + "..." if len(ans) > 120 else ans,
                 "teacher_grade": teacher_grade,
                 "agent_grade": nota_agente,
                 "diff": round(diff, 2)
-            })
+            }
+            
+            if n_directa is not None and n_conceptos is not None and n_rango is not None:
+                d1 = abs(float(n_directa) - float(n_conceptos))
+                d2 = abs(float(n_directa) - float(n_rango))
+                comp_item["usó_promedio"] = (d1 < 2.0 and d2 < 2.0)
+            else:
+                comp_item["usó_promedio"] = None
+                
+            comparaciones.append(comp_item)
 
     total_comparados = len(comparaciones)
     if total_comparados == 0:
@@ -814,14 +864,37 @@ async def comparar_resultados(file: UploadFile = File(...)):
 
     dist_ordenada = {k: distribucion_errores[k] for k in sorted(distribucion_errores.keys())}
 
+    errores_menor_2 = [abs(c["diff"]) for c in comparaciones if c.get("usó_promedio") is True]
+    errores_mayor_2 = [abs(c["diff"]) for c in comparaciones if c.get("usó_promedio") is False]
+    mae_menor_2 = round(sum(errores_menor_2) / len(errores_menor_2), 2) if errores_menor_2 else 0.0
+    mae_mayor_2 = round(sum(errores_mayor_2) / len(errores_mayor_2), 2) if errores_mayor_2 else 0.0
+
     cm = calcular_confusion_matrix_aprobacion([{
         "teacher_grade": c["teacher_grade"],
         "agent_grade": c["agent_grade"]
     } for c in comparaciones])
 
+    import datetime
+    historial = db.get("historial_mae", [])
+    historial.append({
+        "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "origen": "csv",
+        "filename": file.filename,
+        "mae": mae,
+        "mae_menor_2": mae_menor_2,
+        "mae_mayor_2": mae_mayor_2,
+        "total_casos": total_comparados
+    })
+    db["historial_mae"] = historial
+    guardar_db(db)
+
     return {
         "total_comparados": total_comparados,
         "mae": mae,
+        "mae_menor_2": mae_menor_2,
+        "mae_mayor_2": mae_mayor_2,
+        "total_menor_2": len(errores_menor_2),
+        "total_mayor_2": len(errores_mayor_2),
         "bias": bias,
         "pct_exacto": pct_exacto,
         "pct_tolerancia": pct_tolerancia,
@@ -995,6 +1068,24 @@ async def get_resultados_comparacion():
 
     dist_ordenada = {k: distribucion_errores[k] for k in sorted(distribucion_errores.keys())}
 
+    # Segmentación MAE para comparación en vivo
+    errores_menor_2 = []
+    errores_mayor_2 = []
+    for c in comparaciones:
+        nd = c.get("nota_directa")
+        nc = c.get("nota_conceptos")
+        nr = c.get("nota_rango")
+        if nd is not None and nc is not None and nr is not None:
+            d1 = abs(float(nd) - float(nc))
+            d2 = abs(float(nd) - float(nr))
+            if d1 < 2.0 and d2 < 2.0:
+                errores_menor_2.append(abs(c["diff"]))
+            else:
+                errores_mayor_2.append(abs(c["diff"]))
+
+    mae_menor_2 = round(sum(errores_menor_2) / len(errores_menor_2), 2) if errores_menor_2 else 0.0
+    mae_mayor_2 = round(sum(errores_mayor_2) / len(errores_mayor_2), 2) if errores_mayor_2 else 0.0
+
     cm = calcular_confusion_matrix_aprobacion([{
         "teacher_grade": c["teacher_grade"],
         "agent_grade": c["agent_grade"]
@@ -1003,6 +1094,10 @@ async def get_resultados_comparacion():
     return {
         "total_comparados": total_comparados,
         "mae": mae,
+        "mae_menor_2": mae_menor_2,
+        "mae_mayor_2": mae_mayor_2,
+        "total_menor_2": len(errores_menor_2),
+        "total_mayor_2": len(errores_mayor_2),
         "bias": bias,
         "pct_exacto": pct_exacto,
         "pct_tolerancia": pct_tolerancia,
@@ -1010,6 +1105,20 @@ async def get_resultados_comparacion():
         "confusion_matrix": cm,
         "comparaciones": comparaciones
     }
+
+@app.get("/api/examenes/comparar-historial")
+async def get_historial_comparaciones():
+    """Devuelve la lista histórica de MAEs calculados."""
+    db = cargar_db()
+    return db.get("historial_mae", [])
+
+@app.post("/api/examenes/comparar-historial/clear")
+async def clear_historial_comparaciones():
+    """Limpia el historial de comparaciones de MAE."""
+    db = cargar_db()
+    db["historial_mae"] = []
+    guardar_db(db)
+    return {"mensaje": "Historial de MAE limpiado con éxito."}
 
 @app.post("/api/examenes/comparar-cancelar")
 async def cancelar_comparacion():

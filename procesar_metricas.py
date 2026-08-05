@@ -238,6 +238,16 @@ def calcular_metricas(datos):
     mae_raw = sum(abs_diffs_raw) / n
     mae_norm = sum(abs_diffs_norm) / n
     
+    # Segmentación MAE (Diff < 2 y Diff >= 2)
+    datos_menor_2 = [d for d in datos if d.get('usó_promedio') is True]
+    datos_mayor_2 = [d for d in datos if d.get('usó_promedio') is False]
+    
+    mae_menor_2_raw = (sum(d['abs_diff_raw'] for d in datos_menor_2) / len(datos_menor_2)) if datos_menor_2 else 0.0
+    mae_menor_2_norm = (sum(d['abs_diff_norm'] for d in datos_menor_2) / len(datos_menor_2)) if datos_menor_2 else 0.0
+    
+    mae_mayor_2_raw = (sum(d['abs_diff_raw'] for d in datos_mayor_2) / len(datos_mayor_2)) if datos_mayor_2 else 0.0
+    mae_mayor_2_norm = (sum(d['abs_diff_norm'] for d in datos_mayor_2) / len(datos_mayor_2)) if datos_mayor_2 else 0.0
+    
     # 3. Sesgo del cálculo (Bias = Promedio de nota_modelo - esperado)
     # Nota: Si el sesgo es positivo, el modelo sobrecalifica. Si es negativo, subcalifica.
     bias_raw = sum(d['nota_raw'] - d['esperado'] for d in datos) / n
@@ -294,6 +304,10 @@ def calcular_metricas(datos):
         'raw': {
             'max_error': max_err_raw,
             'mae': mae_raw,
+            'mae_menor_2': mae_menor_2_raw,
+            'mae_mayor_2': mae_mayor_2_raw,
+            'total_menor_2': len(datos_menor_2),
+            'total_mayor_2': len(datos_mayor_2),
             'bias': bias_raw,
             'exact_match': exact_match_raw,
             'match_within_1': match_1_raw,
@@ -304,6 +318,10 @@ def calcular_metricas(datos):
         'norm': {
             'max_error': max_err_norm,
             'mae': mae_norm,
+            'mae_menor_2': mae_menor_2_norm,
+            'mae_mayor_2': mae_mayor_2_norm,
+            'total_menor_2': len(datos_menor_2),
+            'total_mayor_2': len(datos_mayor_2),
             'bias': bias_norm,
             'exact_match': exact_match_norm,
             'match_within_1': match_1_norm,
@@ -441,6 +459,21 @@ def procesar_csv(ruta_csv):
             diff_norm_str = f"{diff_norm:.2f}"
             abs_diff_norm_str = f"{abs_diff_norm:.2f}"
             
+            # Obtener valores de sub-experimentos si existen
+            nota_directa_val = row.get("nota_directa")
+            nota_conceptos_val = row.get("nota_conceptos")
+            nota_rango_val = row.get("nota_rango")
+            
+            usó_promedio = None
+            if nota_directa_val is not None and nota_conceptos_val is not None and nota_rango_val is not None:
+                try:
+                    nd = float(nota_directa_val)
+                    nc = float(nota_conceptos_val)
+                    nr = float(nota_rango_val)
+                    usó_promedio = (abs(nd - nc) < 2.0 and abs(nd - nr) < 2.0)
+                except (ValueError, TypeError):
+                    pass
+            
             # Guardar para cálculo de métricas generales
             datos_calculo.append({
                 'step': step_val,
@@ -450,7 +483,8 @@ def procesar_csv(ruta_csv):
                 'diff_raw': diff_raw,
                 'abs_diff_raw': abs_diff_raw,
                 'diff_norm': diff_norm,
-                'abs_diff_norm': abs_diff_norm
+                'abs_diff_norm': abs_diff_norm,
+                'usó_promedio': usó_promedio
             })
         else:
             filas_fallidas.append({
@@ -563,7 +597,9 @@ Presentamos dos conjuntos de métricas:
 | Métrica | Notas Raw (Directas) | Notas Normalizadas (Escala 10) | Descripción |
 | :--- | :---: | :---: | :--- |
 | **Error Máximo** | `{metricas['raw']['max_error']:.2f}` | `{metricas['norm']['max_error']:.2f}` | Mayor desviación absoluta respecto al profesor. |
-| **Error Medio (MAE)** | `{metricas['raw']['mae']:.2f}` | `{metricas['norm']['mae']:.2f}` | Promedio de las desviaciones absolutas. |
+| **Error Medio (MAE) total** | `{metricas['raw']['mae']:.2f}` | `{metricas['norm']['mae']:.2f}` | Promedio de las desviaciones absolutas. |
+| **- MAE (Diferencia < 2)** | `{metricas['raw']['mae_menor_2']:.2f}` | `{metricas['norm']['mae_menor_2']:.2f}` | MAE cuando las diferencias del ensamble son menores a 2 puntos. |
+| **- MAE (Diferencia >= 2)** | `{metricas['raw']['mae_mayor_2']:.2f}` | `{metricas['norm']['mae_mayor_2']:.2f}` | MAE cuando alguna diferencia del ensamble es mayor o igual a 2 puntos. |
 | **Sesgo del cálculo (Bias)** | `{metricas['raw']['bias']:.2f}` | `{metricas['norm']['bias']:.2f}` | Promedio de error con signo. > 0 sobrecalifica, < 0 subcalifica. |
 | **Coincidencia Exacta** | `{metricas['raw']['exact_match']:.1f}%` | `{metricas['norm']['exact_match']:.1f}%` | Porcentaje de coincidencias exactas (Diferencia = 0). |
 | **Coincidencia ±1 Punto** | `{metricas['raw']['match_within_1']:.1f}%` | `{metricas['norm']['match_within_1']:.1f}%` | Porcentaje de calificaciones que difieren en 1 punto o menos. |
@@ -667,10 +703,18 @@ def mostrar_resumen_consola(nombre_archivo, metricas, total_filas, total_fallida
                       f"{metricas['raw']['max_error']:.2f}", 
                       f"{metricas['norm']['max_error']:.2f}",
                       "Menor es mejor (menor desvío extremo)")
-        table.add_row("Error Medio (MAE)", 
+        table.add_row("Error Medio (MAE) Total", 
                       f"{metricas['raw']['mae']:.2f}", 
                       f"{metricas['norm']['mae']:.2f}",
                       "Menor es mejor (desviación promedio)")
+        table.add_row("  - MAE (Diferencia < 2)", 
+                      f"{metricas['raw']['mae_menor_2']:.2f}", 
+                      f"{metricas['norm']['mae_menor_2']:.2f}",
+                      "Promedio de error si dif. experimentos < 2")
+        table.add_row("  - MAE (Diferencia >= 2)", 
+                      f"{metricas['raw']['mae_mayor_2']:.2f}", 
+                      f"{metricas['norm']['mae_mayor_2']:.2f}",
+                      "Promedio de error si algún experimento difiere >= 2")
         table.add_row("Sesgo (Bias)", 
                       f"{metricas['raw']['bias']:.2f}", 
                       f"{metricas['norm']['bias']:.2f}",
@@ -725,7 +769,9 @@ def mostrar_resumen_consola(nombre_archivo, metricas, total_filas, total_fallida
         print(f"{'Métrica':<30} | {'Raw':<10} | {'Normalizado':<12}")
         print("-"*60)
         print(f"{'Error Máximo':<30} | {metricas['raw']['max_error']:<10.2f} | {metricas['norm']['max_error']:<12.2f}")
-        print(f"{'Error Medio (MAE)':<30} | {metricas['raw']['mae']:<10.2f} | {metricas['norm']['mae']:<12.2f}")
+        print(f"{'Error Medio (MAE) Total':<30} | {metricas['raw']['mae']:<10.2f} | {metricas['norm']['mae']:<12.2f}")
+        print(f"{'  - MAE (Diferencia < 2)':<30} | {metricas['raw']['mae_menor_2']:<10.2f} | {metricas['norm']['mae_menor_2']:<12.2f}")
+        print(f"{'  - MAE (Diferencia >= 2)':<30} | {metricas['raw']['mae_mayor_2']:<10.2f} | {metricas['norm']['mae_mayor_2']:<12.2f}")
         print(f"{'Sesgo (Bias)':<30} | {metricas['raw']['bias']:<10.2f} | {metricas['norm']['bias']:<12.2f}")
         print(f"{'Coincidencia Exacta':<30} | {metricas['raw']['exact_match']:<9.1f}% | {metricas['norm']['exact_match']:<11.1f}%")
         print(f"{'Coincidencia ±1 Punto':<30} | {metricas['raw']['match_within_1']:<9.1f}% | {metricas['norm']['match_within_1']:<11.1f}%")

@@ -400,6 +400,7 @@ function switchTab(tabId) {
         cargarResultados();
     } else if (tabId === 'comparacion') {
         cargarResultadosComparacion();
+        cargarHistorialMAE();
     }
 }
 
@@ -1025,6 +1026,8 @@ async function cargarResultadosComparacion() {
 function mostrarMetricasComparacion(data) {
     // Actualizar Tarjetas de Métricas
     document.getElementById('metric-mae').textContent = data.mae.toFixed(2);
+    document.getElementById('metric-mae-menor-2').textContent = data.mae_menor_2 !== undefined ? data.mae_menor_2.toFixed(2) : '-';
+    document.getElementById('metric-mae-mayor-2').textContent = data.mae_mayor_2 !== undefined ? data.mae_mayor_2.toFixed(2) : '-';
     document.getElementById('metric-bias').textContent = data.bias > 0 ? `+${data.bias.toFixed(2)}` : data.bias.toFixed(2);
     document.getElementById('metric-exact').textContent = `${data.pct_exacto}%`;
     document.getElementById('metric-tolerance').textContent = `${data.pct_tolerancia}%`;
@@ -1089,15 +1092,30 @@ function mostrarMetricasComparacion(data) {
                          : Math.abs(c.diff) <= 2 ? 'color: var(--color-aceptable); font-weight:600;'
                          : 'color: var(--color-insuficiente); font-weight:600;';
         
+        // Determinar badge para algoritmo
+        let algoText = 'Pesos';
+        let algoStyle = 'background:rgba(245, 158, 11, 0.08); border:1px solid rgba(245, 158, 11, 0.2); color:#fbbf24;';
+        if (c.usó_promedio === true) {
+            algoText = 'Promedio';
+            algoStyle = 'background:rgba(16, 185, 129, 0.08); border:1px solid rgba(16, 185, 129, 0.2); color:#34d399;';
+        } else if (c.usó_promedio === null) {
+            algoText = 'N/A';
+            algoStyle = 'background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); color:var(--text-secondary);';
+        }
+
         tr.innerHTML = `
             <td><strong>${c.question_id}</strong></td>
             <td style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${c.student_answer_short}</td>
             <td><span class="badge-grade" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); color:var(--text-primary); font-weight:600;">${c.teacher_grade}</span></td>
             <td><span class="badge-grade" style="background:rgba(99, 102, 241, 0.08); border:1px solid rgba(99, 102, 241, 0.2); color:#818cf8; font-weight:600;">${c.agent_grade}</span></td>
+            <td><span class="badge-grade" style="${algoStyle} font-weight:600;">${algoText}</span></td>
             <td><span style="${diffClass}">${c.diff > 0 ? '+' : ''}${c.diff}</span></td>
         `;
         tableBody.appendChild(tr);
     });
+    
+    // Cargar historial de MAEs
+    cargarHistorialMAE();
     
     document.getElementById('comparar-table-card').style.display = 'block';
     showToast('Métricas de comparación cargadas.', 'success');
@@ -1146,5 +1164,58 @@ function exportarComparacionCSV() {
     link.click();
     document.body.removeChild(link);
     showToast('Archivo CSV exportado con éxito.', 'success');
+}
+
+async function cargarHistorialMAE() {
+    try {
+        const res = await fetch('/api/examenes/comparar-historial');
+        if (!res.ok) throw new Error('Error al cargar historial');
+        const historial = await res.json();
+        
+        const tbody = document.getElementById('tabla-historial-mae-body');
+        tbody.innerHTML = '';
+        
+        if (historial.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-secondary);">No hay historial registrado aún.</td></tr>`;
+            return;
+        }
+        
+        historial.forEach(h => {
+            const tr = document.createElement('tr');
+            
+            // Origen con badge
+            const badgeStyle = h.origen === 'live' 
+                ? 'background:rgba(99, 102, 241, 0.08); border:1px solid rgba(99, 102, 241, 0.2); color:#818cf8;'
+                : 'background:rgba(139, 92, 246, 0.08); border:1px solid rgba(139, 92, 246, 0.2); color:#a78bfa;';
+            const labelText = h.origen === 'live' ? 'En Vivo' : h.filename;
+            
+            // Color para MAE total
+            const maeColor = h.mae <= 1.0 ? '#34d399' : (h.mae <= 1.5 ? '#a7f3d0' : (h.mae <= 2.0 ? '#fbbf24' : '#f87171'));
+            
+            tr.innerHTML = `
+                <td><small>${h.timestamp}</small></td>
+                <td><span class="badge-grade" style="${badgeStyle}">${labelText}</span></td>
+                <td>${h.total_casos}</td>
+                <td><strong style="color: ${maeColor}; font-size:1rem;">${h.mae.toFixed(2)}</strong></td>
+                <td><span style="color:#a7f3d0; font-weight:600;">${h.mae_menor_2 !== undefined ? h.mae_menor_2.toFixed(2) : '-'}</span></td>
+                <td><span style="color:#fca5a5; font-weight:600;">${h.mae_mayor_2 !== undefined ? h.mae_mayor_2.toFixed(2) : '-'}</span></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (e) {
+        console.error("Error cargando historial de MAE:", e);
+    }
+}
+
+async function limpiarHistorialMAE() {
+    if (!confirm('¿Estás seguro de que deseas vaciar el historial de MAE?')) return;
+    try {
+        const res = await fetch('/api/examenes/comparar-historial/clear', { method: 'POST' });
+        if (!res.ok) throw new Error('Error al limpiar historial');
+        showToast('Historial de MAE eliminado.', 'success');
+        cargarHistorialMAE();
+    } catch (e) {
+        showToast('Error al limpiar el historial.', 'error');
+    }
 }
 

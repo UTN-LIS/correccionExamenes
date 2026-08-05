@@ -199,7 +199,17 @@ def ensamblar_nota_final(
     n_rango = res_rango["nota_rango"]
     n_directa = res_nota_directa["nota_directa"]
     
-    nota_final = (w1 * n_conceptos) + (w2 * n_rango) + (w3 * n_directa)
+    diff_conceptos = abs(n_directa - n_conceptos)
+    diff_rango = abs(n_directa - n_rango)
+    
+    if diff_conceptos >= 2.0 or diff_rango >= 2.0:
+        nota_final = (w1 * n_conceptos) + (w2 * n_rango) + (w3 * n_directa)
+        algoritmo_usado = "pesos"
+    else:
+        # Promedio entre nota directa y conceptos (los dos valores principales de nota)
+        nota_final = (n_directa + n_conceptos) / 2.0
+        algoritmo_usado = "promedio"
+        
     # Redondear al entero más cercano
     nota_final_redondeada = int(round(nota_final))
     
@@ -223,6 +233,7 @@ def ensamblar_nota_final(
             }
         },
         "configuracion": {
+            "algoritmo_usado": algoritmo_usado,
             "pesos": {
                 "w1_conceptos": round(w1, 3),
                 "w2_rango": round(w2, 3),
