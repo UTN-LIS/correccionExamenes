@@ -350,15 +350,18 @@ async def corregir_respuesta_individual(
     w3 = pesos.get("w3", 0.85)
 
 
-    # Ejecutar los tres experimentos secuencialmente para evitar congestionar el servidor LLM (Colab/ngrok)
-    res_conceptos = await asyncio.to_thread(evaluar_conceptos, cliente_llm, pregunta_text, conceptos, respuesta_estudiante)
-    if check_cancellation and check_cancellation():
-        return {"estado": "cancelado"}
-
-    res_rango = await asyncio.to_thread(evaluar_rango, cliente_llm, pregunta_text, respuesta_estudiante)
-    if check_cancellation and check_cancellation():
-        return {"estado": "cancelado"}
-
+    # En esta rama, solo ejecutamos evaluar_nota_directa para ahorrar tiempo y llamadas
+    res_conceptos = {
+        "conceptos_evaluados": {},
+        "cobertura": 0.0,
+        "nota_conceptos": 0.0,
+        "tiempo": 0.0
+    }
+    res_rango = {
+        "rango": "<INSUFICIENTE>",
+        "nota_rango": 0.0,
+        "tiempo": 0.0
+    }
     res_nota_directa = await asyncio.to_thread(evaluar_nota_directa, cliente_llm, pregunta_text, respuesta_estudiante)
 
     if check_cancellation and check_cancellation():
@@ -577,7 +580,8 @@ async def tarea_comparar_correccion_lote():
             "nota_conceptos": n_conceptos,
             "nota_rango": n_rango,
             "nota_directa": n_directa,
-            "usó_promedio": (d1 < 2.0 and d2 < 2.0)
+            "usó_promedio": (d1 < 2.0 and d2 < 2.0) if resultado.get("configuracion", {}).get("algoritmo_usado") != "nota_directa" else False,
+            "algoritmo_usado": resultado.get("configuracion", {}).get("algoritmo_usado")
         }
 
         
@@ -838,10 +842,13 @@ async def comparar_resultados(file: UploadFile = File(...)):
                 "student_answer_short": ans[:120] + "..." if len(ans) > 120 else ans,
                 "teacher_grade": teacher_grade,
                 "agent_grade": nota_agente,
-                "diff": round(diff, 2)
+                "diff": round(diff, 2),
+                "algoritmo_usado": r_info.get("configuracion", {}).get("algoritmo_usado")
             }
             
-            if n_directa is not None and n_conceptos is not None and n_rango is not None:
+            if comp_item["algoritmo_usado"] == "nota_directa":
+                comp_item["usó_promedio"] = False
+            elif n_directa is not None and n_conceptos is not None and n_rango is not None:
                 d1 = abs(float(n_directa) - float(n_conceptos))
                 d2 = abs(float(n_directa) - float(n_rango))
                 comp_item["usó_promedio"] = (d1 < 2.0 and d2 < 2.0)

@@ -62,8 +62,18 @@ class Experimento:
                 fila_resultado[tag] = ""
 
             # ---- EJECUTAR EXPERIMENTOS INDEPENDIENTES ----
-            res_conceptos = evaluar_conceptos(self.cliente_llm, pregunta, conceptos, respuesta)
-            res_rango = evaluar_rango(self.cliente_llm, pregunta, respuesta)
+            # En esta rama, solo ejecutamos evaluar_nota_directa para ahorrar tiempo y llamadas
+            res_conceptos = {
+                "conceptos_evaluados": {},
+                "cobertura": 0.0,
+                "nota_conceptos": 0.0,
+                "tiempo": 0.0
+            }
+            res_rango = {
+                "rango": "<INSUFICIENTE>",
+                "nota_rango": 0.0,
+                "tiempo": 0.0
+            }
             res_nota_directa = evaluar_nota_directa(self.cliente_llm, pregunta, respuesta)
 
             # ---- ENSAMBLE PONDERADO ----
