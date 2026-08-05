@@ -353,6 +353,39 @@
                                 <span class="stat-lbl">Tolerancia (&plusmn;1 punto)</span>
                             </div>
                         </div>
+
+                        <!-- Matriz de Confusión de Aprobación -->
+                        <div id="confusion-matrix-container" style="display:none; margin-top: 1.5rem; border-top: 1px solid var(--border-glass); padding-top: 1.5rem;">
+                            <h4 style="font-size: 0.95rem; font-weight: 600; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa-solid fa-table-cells-large" style="color: var(--accent-primary);"></i>
+                                Matriz de Confusión de Aprobación (Umbral &ge; 4.0)
+                            </h4>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                                <div class="stat-box" style="background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.2); text-align: left; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+                                    <span class="stat-val" id="metric-cm-tp" style="color: var(--color-excelente); font-size: 1.35rem; line-height: 1.2;">0</span>
+                                    <span class="stat-lbl" style="color: #a7f3d0; font-weight: 600; font-size: 0.7rem; margin-top: 0.25rem;">Merecían aprobar y aprobaron (TP)</span>
+                                </div>
+                                <div class="stat-box" style="background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.2); text-align: left; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+                                    <span class="stat-val" id="metric-cm-fn" style="color: var(--color-insuficiente); font-size: 1.35rem; line-height: 1.2;">0</span>
+                                    <span class="stat-lbl" style="color: #fca5a5; font-weight: 600; font-size: 0.7rem; margin-top: 0.25rem;">Merecían aprobar y NO aprobaron (FN)</span>
+                                </div>
+                                <div class="stat-box" style="background: rgba(245, 158, 11, 0.05); border-color: rgba(245, 158, 11, 0.2); text-align: left; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+                                    <span class="stat-val" id="metric-cm-fp" style="color: var(--color-aceptable); font-size: 1.35rem; line-height: 1.2;">0</span>
+                                    <span class="stat-lbl" style="color: #fde047; font-weight: 600; font-size: 0.7rem; margin-top: 0.25rem;">NO merecían aprobar pero aprobaron (FP)</span>
+                                </div>
+                                <div class="stat-box" style="background: rgba(255, 255, 255, 0.02); border-color: var(--border-glass); text-align: left; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+                                    <span class="stat-val" id="metric-cm-tn" style="font-size: 1.35rem; color: #94a3b8; line-height: 1.2;">0</span>
+                                    <span class="stat-lbl" style="color: #cbd5e1; font-weight: 600; font-size: 0.7rem; margin-top: 0.25rem;">NO merecían aprobar y NO aprobaron (TN)</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Derived Metrics -->
+                            <div style="margin-top: 1.25rem; display: flex; gap: 0.5rem; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); background: rgba(255,255,255,0.02); padding: 0.65rem 0.85rem; border-radius: 8px; border: 1px solid var(--border-glass);">
+                                <span>Precisión Aprob. (Accuracy): <strong id="metric-cm-accuracy" style="color: var(--text-primary);">0%</strong></span>
+                                <span>Exhaustividad (Recall): <strong id="metric-cm-recall" style="color: var(--text-primary);">0%</strong></span>
+                            </div>
+                        </div>
                         
                         <div id="metrics-placeholder" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
                             <i class="fa-solid fa-chart-bar" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>

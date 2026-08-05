@@ -269,6 +269,26 @@ def calcular_metricas(datos):
     dist_raw_pct = {k: (v / n * 100) for k, v in sorted(dist_raw.items())}
     dist_norm_pct = {k: (v / n * 100) for k, v in sorted(dist_norm.items())}
     
+    # Matriz de Confusión para aprobación (Umbral >= 4.0)
+    def cm_stats(key_modelo):
+        tp = sum(1 for d in datos if d['esperado'] >= 4.0 and d[key_modelo] >= 4.0)
+        fn = sum(1 for d in datos if d['esperado'] >= 4.0 and d[key_modelo] < 4.0)
+        fp = sum(1 for d in datos if d['esperado'] < 4.0 and d[key_modelo] >= 4.0)
+        tn = sum(1 for d in datos if d['esperado'] < 4.0 and d[key_modelo] < 4.0)
+        total = tp + fn + fp + tn
+        pct = lambda val: (val / total * 100) if total > 0 else 0.0
+        acc = ((tp + tn) / total * 100) if total > 0 else 0.0
+        rec = (tp / (tp + fn) * 100) if (tp + fn) > 0 else 0.0
+        prec = (tp / (tp + fp) * 100) if (tp + fp) > 0 else 0.0
+        f1 = (2 * prec * rec / (prec + rec)) if (prec + rec) > 0 else 0.0
+        return {
+            'tp': tp, 'tp_pct': pct(tp),
+            'fn': fn, 'fn_pct': pct(fn),
+            'fp': fp, 'fp_pct': pct(fp),
+            'tn': tn, 'tn_pct': pct(tn),
+            'accuracy': acc, 'recall': rec, 'precision': prec, 'f1': f1
+        }
+
     return {
         'n': n,
         'raw': {
@@ -278,7 +298,8 @@ def calcular_metricas(datos):
             'exact_match': exact_match_raw,
             'match_within_1': match_1_raw,
             'distribution': dist_raw_pct,
-            'distribution_counts': {k: dist_raw[k] for k in sorted(dist_raw.keys())}
+            'distribution_counts': {k: dist_raw[k] for k in sorted(dist_raw.keys())},
+            'confusion_matrix': cm_stats('nota_raw')
         },
         'norm': {
             'max_error': max_err_norm,
@@ -287,7 +308,8 @@ def calcular_metricas(datos):
             'exact_match': exact_match_norm,
             'match_within_1': match_1_norm,
             'distribution': dist_norm_pct,
-            'distribution_counts': {k: dist_norm[k] for k in sorted(dist_norm.keys())}
+            'distribution_counts': {k: dist_norm[k] for k in sorted(dist_norm.keys())},
+            'confusion_matrix': cm_stats('nota_norm')
         }
     }
 
@@ -548,6 +570,25 @@ Presentamos dos conjuntos de métricas:
 
 ---
 
+## 🎯 Matriz de Confusión de Aprobación (Umbral >= 4.0)
+
+Esta métrica evalúa la capacidad del modelo para clasificar correctamente el estado de aprobación (nota >= 4.0) de los estudiantes.
+
+### Notas Normalizadas (Recomendado)
+- **Verdaderos Positivos (TP - Merecía aprobar y aprobó):** {metricas['norm']['confusion_matrix']['tp']} ({metricas['norm']['confusion_matrix']['tp_pct']:.1f}%)
+- **Falsos Negativos (FN - Merecía aprobar y desaprobó):** {metricas['norm']['confusion_matrix']['fn']} ({metricas['norm']['confusion_matrix']['fn_pct']:.1f}%)
+- **Falsos Positivos (FP - No merecía aprobar y aprobó):** {metricas['norm']['confusion_matrix']['fp']} ({metricas['norm']['confusion_matrix']['fp_pct']:.1f}%)
+- **Verdaderos Negativos (TN - No merecía aprobar y desaprobó):** {metricas['norm']['confusion_matrix']['tn']} ({metricas['norm']['confusion_matrix']['tn_pct']:.1f}%)
+
+| Métrica de Clasificación | Notas Raw | Notas Normalizadas |
+| :--- | :---: | :---: |
+| **Exactitud de Aprobación (Accuracy)** | `{metricas['raw']['confusion_matrix']['accuracy']:.1f}%` | `{metricas['norm']['confusion_matrix']['accuracy']:.1f}%` |
+| **Sensibilidad (Recall)** | `{metricas['raw']['confusion_matrix']['recall']:.1f}%` | `{metricas['norm']['confusion_matrix']['recall']:.1f}%` |
+| **Precisión (Precision)** | `{metricas['raw']['confusion_matrix']['precision']:.1f}%` | `{metricas['norm']['confusion_matrix']['precision']:.1f}%` |
+| **F1-Score** | `{metricas['raw']['confusion_matrix']['f1']:.1f}%` | `{metricas['norm']['confusion_matrix']['f1']:.1f}%` |
+
+---
+
 ## 🎯 Distribución de Diferencias (Esperado - Modelo)
 
 Esta métrica responde a: *"¿Con qué frecuencia la calificación difiere por X puntos?"*  
@@ -645,6 +686,25 @@ def mostrar_resumen_consola(nombre_archivo, metricas, total_filas, total_fallida
         
         console.print(table)
         
+        # Tabla de matriz de confusión
+        cm_table = Table(show_header=True, header_style="bold yellow", title="Matriz de Confusión de Aprobación (Umbral >= 4.0)")
+        cm_table.add_column("Métrica de Clasificación", style="cyan")
+        cm_table.add_column("Notas Raw", justify="right", style="green")
+        cm_table.add_column("Notas Normalizadas", justify="right", style="bold green")
+        
+        raw_cm = metricas['raw']['confusion_matrix']
+        norm_cm = metricas['norm']['confusion_matrix']
+        
+        cm_table.add_row("Verdaderos Positivos (TP)", f"{raw_cm['tp']} ({raw_cm['tp_pct']:.1f}%)", f"{norm_cm['tp']} ({norm_cm['tp_pct']:.1f}%)")
+        cm_table.add_row("Falsos Negativos (FN)", f"{raw_cm['fn']} ({raw_cm['fn_pct']:.1f}%)", f"{norm_cm['fn']} ({norm_cm['fn_pct']:.1f}%)")
+        cm_table.add_row("Falsos Positivos (FP)", f"{raw_cm['fp']} ({raw_cm['fp_pct']:.1f}%)", f"{norm_cm['fp']} ({norm_cm['fp_pct']:.1f}%)")
+        cm_table.add_row("Verdaderos Negativos (TN)", f"{raw_cm['tn']} ({raw_cm['tn_pct']:.1f}%)", f"{norm_cm['tn']} ({norm_cm['tn_pct']:.1f}%)")
+        cm_table.add_row("Exactitud (Accuracy)", f"{raw_cm['accuracy']:.1f}%", f"{norm_cm['accuracy']:.1f}%")
+        cm_table.add_row("Sensibilidad (Recall)", f"{raw_cm['recall']:.1f}%", f"{norm_cm['recall']:.1f}%")
+        cm_table.add_row("F1-Score", f"{raw_cm['f1']:.1f}%", f"{norm_cm['f1']:.1f}%")
+        
+        console.print(cm_table)
+        
         # Mostrar histograma normalizado
         console.print("\n[bold]Distribución de diferencias (Esperado - Modelo Normalizado):[/bold]")
         for diff, pct in metricas['norm']['distribution'].items():
@@ -652,6 +712,7 @@ def mostrar_resumen_consola(nombre_archivo, metricas, total_filas, total_fallida
             barras = "█" * int(round(pct / 2.5))
             signo = "+" if diff > 0 else ""
             console.print(f"  [bold]{signo}{diff:2d} pts[/bold]: {count:3d} casos ({pct:5.1f}%) {barras}")
+            
         console.print()
     else:
         # Fallback sin Rich
@@ -668,6 +729,21 @@ def mostrar_resumen_consola(nombre_archivo, metricas, total_filas, total_fallida
         print(f"{'Sesgo (Bias)':<30} | {metricas['raw']['bias']:<10.2f} | {metricas['norm']['bias']:<12.2f}")
         print(f"{'Coincidencia Exacta':<30} | {metricas['raw']['exact_match']:<9.1f}% | {metricas['norm']['exact_match']:<11.1f}%")
         print(f"{'Coincidencia ±1 Punto':<30} | {metricas['raw']['match_within_1']:<9.1f}% | {metricas['norm']['match_within_1']:<11.1f}%")
+        print("="*60)
+        
+        print("\nMATRIZ DE CONFUSIÓN DE APROBACIÓN (Umbral >= 4.0):")
+        print("-" * 60)
+        print(f"{'Métrica':<30} | {'Raw':<10} | {'Normalizado':<12}")
+        print("-" * 60)
+        raw_cm = metricas['raw']['confusion_matrix']
+        norm_cm = metricas['norm']['confusion_matrix']
+        print(f"{'Verdaderos Positivos (TP)':<30} | {raw_cm['tp']:<3} ({raw_cm['tp_pct']:4.1f}%) | {norm_cm['tp']:<3} ({norm_cm['tp_pct']:4.1f}%)")
+        print(f"{'Falsos Negativos (FN)':<30} | {raw_cm['fn']:<3} ({raw_cm['fn_pct']:4.1f}%) | {norm_cm['fn']:<3} ({norm_cm['fn_pct']:4.1f}%)")
+        print(f"{'Falsos Positivos (FP)':<30} | {raw_cm['fp']:<3} ({raw_cm['fp_pct']:4.1f}%) | {norm_cm['fp']:<3} ({norm_cm['fp_pct']:4.1f}%)")
+        print(f"{'Verdaderos Negativos (TN)':<30} | {raw_cm['tn']:<3} ({raw_cm['tn_pct']:4.1f}%) | {norm_cm['tn']:<3} ({norm_cm['tn_pct']:4.1f}%)")
+        print(f"{'Exactitud (Accuracy)':<30} | {raw_cm['accuracy']:<9.1f}% | {norm_cm['accuracy']:<11.1f}%")
+        print(f"{'Sensibilidad (Recall)':<30} | {raw_cm['recall']:<9.1f}% | {norm_cm['recall']:<11.1f}%")
+        print(f"{'F1-Score':<30} | {raw_cm['f1']:<9.1f}% | {norm_cm['f1']:<11.1f}%")
         print("="*60)
         
         print("\nDistribución de diferencias (Esperado - Modelo Normalizado):")

@@ -1031,6 +1031,20 @@ function mostrarMetricasComparacion(data) {
     
     document.getElementById('metrics-placeholder').style.display = 'none';
     document.getElementById('comparar-metrics-grid').style.display = 'grid';
+
+    // Actualizar Matriz de Confusión de Aprobación
+    if (data.confusion_matrix) {
+        const cm = data.confusion_matrix;
+        document.getElementById('metric-cm-tp').textContent = `${cm.tp} (${cm.tp_pct}%)`;
+        document.getElementById('metric-cm-fn').textContent = `${cm.fn} (${cm.fn_pct}%)`;
+        document.getElementById('metric-cm-fp').textContent = `${cm.fp} (${cm.fp_pct}%)`;
+        document.getElementById('metric-cm-tn').textContent = `${cm.tn} (${cm.tn_pct}%)`;
+        document.getElementById('metric-cm-accuracy').textContent = `${cm.accuracy}%`;
+        document.getElementById('metric-cm-recall').textContent = `${cm.recall}%`;
+        document.getElementById('confusion-matrix-container').style.display = 'block';
+    } else {
+        document.getElementById('confusion-matrix-container').style.display = 'none';
+    }
     
     // Renderizar barra de distribución de errores
     const distBars = document.getElementById('error-dist-bars');

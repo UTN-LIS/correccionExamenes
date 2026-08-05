@@ -688,6 +688,47 @@ async def get_resultados():
         "status": db.get("proceso_correccion", {}).get("status", "idle")
     }
 
+def calcular_confusion_matrix_aprobacion(comparaciones, threshold=4.0):
+    tp = 0
+    fn = 0
+    fp = 0
+    tn = 0
+    for c in comparaciones:
+        real_aprobado = float(c["teacher_grade"]) >= threshold
+        agente_aprobado = float(c["agent_grade"]) >= threshold
+        if real_aprobado and agente_aprobado:
+            tp += 1
+        elif real_aprobado and not agente_aprobado:
+            fn += 1
+        elif not real_aprobado and agente_aprobado:
+            fp += 1
+        else:
+            tn += 1
+    total = len(comparaciones)
+    if total > 0:
+        tp_pct = round((tp / total) * 100, 1)
+        fn_pct = round((fn / total) * 100, 1)
+        fp_pct = round((fp / total) * 100, 1)
+        tn_pct = round((tn / total) * 100, 1)
+        accuracy = round(((tp + tn) / total) * 100, 1)
+        recall = round((tp / (tp + fn) * 100) if (tp + fn) > 0 else 0.0, 1)
+    else:
+        tp_pct = fn_pct = fp_pct = tn_pct = accuracy = recall = 0.0
+        
+    return {
+        "tp": tp,
+        "tp_pct": tp_pct,
+        "fn": fn,
+        "fn_pct": fn_pct,
+        "fp": fp,
+        "fp_pct": fp_pct,
+        "tn": tn,
+        "tn_pct": tn_pct,
+        "accuracy": accuracy,
+        "recall": recall,
+        "threshold": threshold
+    }
+
 @app.post("/api/examenes/comparar")
 async def comparar_resultados(file: UploadFile = File(...)):
     """
@@ -773,6 +814,11 @@ async def comparar_resultados(file: UploadFile = File(...)):
 
     dist_ordenada = {k: distribucion_errores[k] for k in sorted(distribucion_errores.keys())}
 
+    cm = calcular_confusion_matrix_aprobacion([{
+        "teacher_grade": c["teacher_grade"],
+        "agent_grade": c["agent_grade"]
+    } for c in comparaciones])
+
     return {
         "total_comparados": total_comparados,
         "mae": mae,
@@ -780,6 +826,7 @@ async def comparar_resultados(file: UploadFile = File(...)):
         "pct_exacto": pct_exacto,
         "pct_tolerancia": pct_tolerancia,
         "distribucion_errores": dist_ordenada,
+        "confusion_matrix": cm,
         "comparaciones": comparaciones
     }
 
@@ -948,6 +995,11 @@ async def get_resultados_comparacion():
 
     dist_ordenada = {k: distribucion_errores[k] for k in sorted(distribucion_errores.keys())}
 
+    cm = calcular_confusion_matrix_aprobacion([{
+        "teacher_grade": c["teacher_grade"],
+        "agent_grade": c["agent_grade"]
+    } for c in comparaciones])
+
     return {
         "total_comparados": total_comparados,
         "mae": mae,
@@ -955,6 +1007,7 @@ async def get_resultados_comparacion():
         "pct_exacto": pct_exacto,
         "pct_tolerancia": pct_tolerancia,
         "distribucion_errores": dist_ordenada,
+        "confusion_matrix": cm,
         "comparaciones": comparaciones
     }
 
