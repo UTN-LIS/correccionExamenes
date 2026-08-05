@@ -617,6 +617,15 @@ async def tarea_comparar_correccion_lote():
         m_menor = round(sum(errores_menor_2) / len(errores_menor_2), 2) if errores_menor_2 else 0.0
         m_mayor = round(sum(errores_mayor_2) / len(errores_mayor_2), 2) if errores_mayor_2 else 0.0
         
+        # Calcular MAEs de sub-experimentos
+        valid_conceptos = [abs(float(c["nota_conceptos"]) - float(c["teacher_grade"])) for c in comparaciones_temp if c.get("nota_conceptos") is not None]
+        valid_rango = [abs(float(c["nota_rango"]) - float(c["teacher_grade"])) for c in comparaciones_temp if c.get("nota_rango") is not None and c.get("nota_rango") != 0.0]
+        valid_directa = [abs(float(c["nota_directa"]) - float(c["teacher_grade"])) for c in comparaciones_temp if c.get("nota_directa") is not None]
+        
+        m_conceptos = round(sum(valid_conceptos) / len(valid_conceptos), 2) if valid_conceptos else 0.0
+        m_rango = round(sum(valid_rango) / len(valid_rango), 2) if valid_rango else 0.0
+        m_directa = round(sum(valid_directa) / len(valid_directa), 2) if valid_directa else 0.0
+
         historial = db.get("historial_mae", [])
         import datetime
         historial.append({
@@ -626,6 +635,9 @@ async def tarea_comparar_correccion_lote():
             "mae": m_total,
             "mae_menor_2": m_menor,
             "mae_mayor_2": m_mayor,
+            "mae_conceptos": m_conceptos,
+            "mae_rango": m_rango,
+            "mae_directa": m_directa,
             "total_casos": len(comparaciones_temp)
         })
         db["historial_mae"] = historial
@@ -864,6 +876,15 @@ async def comparar_resultados(file: UploadFile = File(...)):
     mae_menor_2 = round(sum(errores_menor_2) / len(errores_menor_2), 2) if errores_menor_2 else 0.0
     mae_mayor_2 = round(sum(errores_mayor_2) / len(errores_mayor_2), 2) if errores_mayor_2 else 0.0
 
+    # Calcular MAEs de sub-experimentos
+    valid_conceptos = [abs(float(c["nota_conceptos"]) - float(c["teacher_grade"])) for c in comparaciones if c.get("nota_conceptos") is not None]
+    valid_rango = [abs(float(c["nota_rango"]) - float(c["teacher_grade"])) for c in comparaciones if c.get("nota_rango") is not None and c.get("nota_rango") != 0.0]
+    valid_directa = [abs(float(c["nota_directa"]) - float(c["teacher_grade"])) for c in comparaciones if c.get("nota_directa") is not None]
+    
+    mae_conceptos = round(sum(valid_conceptos) / len(valid_conceptos), 2) if valid_conceptos else 0.0
+    mae_rango = round(sum(valid_rango) / len(valid_rango), 2) if valid_rango else 0.0
+    mae_directa = round(sum(valid_directa) / len(valid_directa), 2) if valid_directa else 0.0
+
     cm = calcular_confusion_matrix_aprobacion([{
         "teacher_grade": c["teacher_grade"],
         "agent_grade": c["agent_grade"]
@@ -878,6 +899,9 @@ async def comparar_resultados(file: UploadFile = File(...)):
         "mae": mae,
         "mae_menor_2": mae_menor_2,
         "mae_mayor_2": mae_mayor_2,
+        "mae_conceptos": mae_conceptos,
+        "mae_rango": mae_rango,
+        "mae_directa": mae_directa,
         "total_casos": total_comparados
     })
     db["historial_mae"] = historial
@@ -888,6 +912,9 @@ async def comparar_resultados(file: UploadFile = File(...)):
         "mae": mae,
         "mae_menor_2": mae_menor_2,
         "mae_mayor_2": mae_mayor_2,
+        "mae_conceptos": mae_conceptos,
+        "mae_rango": mae_rango,
+        "mae_directa": mae_directa,
         "total_menor_2": len(errores_menor_2),
         "total_mayor_2": len(errores_mayor_2),
         "bias": bias,
@@ -1069,17 +1096,24 @@ async def get_resultados_comparacion():
     for c in comparaciones:
         nd = c.get("nota_directa")
         nc = c.get("nota_conceptos")
-        nr = c.get("nota_rango")
-        if nd is not None and nc is not None and nr is not None:
+        if nd is not None and nc is not None:
             d1 = abs(float(nd) - float(nc))
-            d2 = abs(float(nd) - float(nr))
-            if d1 < 2.0 and d2 < 2.0:
+            if d1 < 2.0:
                 errores_menor_2.append(abs(c["diff"]))
             else:
                 errores_mayor_2.append(abs(c["diff"]))
 
     mae_menor_2 = round(sum(errores_menor_2) / len(errores_menor_2), 2) if errores_menor_2 else 0.0
     mae_mayor_2 = round(sum(errores_mayor_2) / len(errores_mayor_2), 2) if errores_mayor_2 else 0.0
+
+    # Calcular MAEs de sub-experimentos
+    valid_conceptos = [abs(float(c["nota_conceptos"]) - float(c["teacher_grade"])) for c in comparaciones if c.get("nota_conceptos") is not None]
+    valid_rango = [abs(float(c["nota_rango"]) - float(c["teacher_grade"])) for c in comparaciones if c.get("nota_rango") is not None and c.get("nota_rango") != 0.0]
+    valid_directa = [abs(float(c["nota_directa"]) - float(c["teacher_grade"])) for c in comparaciones if c.get("nota_directa") is not None]
+    
+    mae_conceptos = round(sum(valid_conceptos) / len(valid_conceptos), 2) if valid_conceptos else 0.0
+    mae_rango = round(sum(valid_rango) / len(valid_rango), 2) if valid_rango else 0.0
+    mae_directa = round(sum(valid_directa) / len(valid_directa), 2) if valid_directa else 0.0
 
     cm = calcular_confusion_matrix_aprobacion([{
         "teacher_grade": c["teacher_grade"],
@@ -1091,6 +1125,9 @@ async def get_resultados_comparacion():
         "mae": mae,
         "mae_menor_2": mae_menor_2,
         "mae_mayor_2": mae_mayor_2,
+        "mae_conceptos": mae_conceptos,
+        "mae_rango": mae_rango,
+        "mae_directa": mae_directa,
         "total_menor_2": len(errores_menor_2),
         "total_mayor_2": len(errores_mayor_2),
         "bias": bias,

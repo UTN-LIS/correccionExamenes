@@ -1035,6 +1035,56 @@ function mostrarMetricasComparacion(data) {
     document.getElementById('metrics-placeholder').style.display = 'none';
     document.getElementById('comparar-metrics-grid').style.display = 'grid';
 
+    // Renderizar Evolución del MAE por Experimento (Pipeline)
+    const pipelineContainer = document.getElementById('pipeline-mae-container');
+    if (pipelineContainer) {
+        const pipelineList = document.getElementById('pipeline-mae-list');
+        pipelineList.innerHTML = '';
+
+        const maeConceptos = data.mae_conceptos !== undefined ? data.mae_conceptos : 0;
+        const maeRango = data.mae_rango !== undefined ? data.mae_rango : 0;
+        const maeDirecta = data.mae_directa !== undefined ? data.mae_directa : 0;
+        const maeEnsemble = data.mae !== undefined ? data.mae : 0;
+
+        const experimentos = [
+            { nombre: "Experimento 1: Conceptos Evaluados", valor: maeConceptos, desc: "Evaluación semántica de conceptos clave.", activo: maeConceptos > 0 },
+            { nombre: "Experimento 2: Clasificación por Rango", valor: maeRango, desc: "Clasificación en categorías de notas.", activo: maeRango > 0 },
+            { nombre: "Experimento 3: Nota Directa por LLM", valor: maeDirecta, desc: "Puntaje directo asignado por el modelo.", activo: maeDirecta > 0 },
+            { nombre: "Ensamble Final Combinado", valor: maeEnsemble, desc: "Nota final combinada por el algoritmo.", activo: true }
+        ];
+
+        experimentos.forEach((exp, idx) => {
+            const item = document.createElement('div');
+            item.style.display = 'flex';
+            item.style.alignItems = 'center';
+            item.style.justifyContent = 'space-between';
+            item.style.padding = '0.75rem 1rem';
+            item.style.background = exp.nombre.includes('Ensamble') ? 'rgba(99, 102, 241, 0.06)' : 'rgba(255, 255, 255, 0.02)';
+            item.style.border = exp.nombre.includes('Ensamble') ? '1px solid rgba(99, 102, 241, 0.2)' : '1px solid var(--border-glass)';
+            item.style.borderRadius = '8px';
+            item.style.gap = '1rem';
+
+            const valueText = exp.activo ? exp.valor.toFixed(2) : 'No Utilizado';
+            const valueStyle = exp.activo ? 'color:#818cf8; font-weight:700;' : 'color:var(--text-secondary); font-style:italic;';
+
+            item.innerHTML = `
+                <div style="display:flex; align-items:center; gap:0.75rem; flex:1;">
+                    <div style="width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; background:rgba(255,255,255,0.05); color:var(--text-secondary);">
+                        ${idx + 1}
+                    </div>
+                    <div>
+                        <div style="font-weight:600; font-size:0.85rem; color:var(--text-primary);">${exp.nombre}</div>
+                        <div style="font-size:0.7rem; color:var(--text-secondary);">${exp.desc}</div>
+                    </div>
+                </div>
+                <div style="font-size:1.1rem; ${valueStyle}">${valueText}</div>
+            `;
+            pipelineList.appendChild(item);
+        });
+
+        pipelineContainer.style.display = 'block';
+    }
+
     // Actualizar Matriz de Confusión de Aprobación
     if (data.confusion_matrix) {
         const cm = data.confusion_matrix;
@@ -1192,10 +1242,17 @@ async function cargarHistorialMAE() {
             // Color para MAE total
             const maeColor = h.mae <= 1.0 ? '#34d399' : (h.mae <= 1.5 ? '#a7f3d0' : (h.mae <= 2.0 ? '#fbbf24' : '#f87171'));
             
+            const maeConceptosText = h.mae_conceptos !== undefined && h.mae_conceptos > 0 ? h.mae_conceptos.toFixed(2) : '-';
+            const maeRangoText = h.mae_rango !== undefined && h.mae_rango > 0 ? h.mae_rango.toFixed(2) : '-';
+            const maeDirectaText = h.mae_directa !== undefined && h.mae_directa > 0 ? h.mae_directa.toFixed(2) : '-';
+
             tr.innerHTML = `
                 <td><small>${h.timestamp}</small></td>
                 <td><span class="badge-grade" style="${badgeStyle}">${labelText}</span></td>
                 <td>${h.total_casos}</td>
+                <td><span style="color:#cbd5e1;">${maeConceptosText}</span></td>
+                <td><span style="color:#cbd5e1;">${maeRangoText}</span></td>
+                <td><span style="color:#cbd5e1;">${maeDirectaText}</span></td>
                 <td><strong style="color: ${maeColor}; font-size:1rem;">${h.mae.toFixed(2)}</strong></td>
                 <td><span style="color:#a7f3d0; font-weight:600;">${h.mae_menor_2 !== undefined ? h.mae_menor_2.toFixed(2) : '-'}</span></td>
                 <td><span style="color:#fca5a5; font-weight:600;">${h.mae_mayor_2 !== undefined ? h.mae_mayor_2.toFixed(2) : '-'}</span></td>
