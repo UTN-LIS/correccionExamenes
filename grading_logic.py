@@ -177,33 +177,29 @@ def evaluar_nota_directa(cliente_llm, pregunta_text: str, respuesta_correcta: st
 
 def ensamblar_nota_final(
     res_conceptos: dict, 
-    res_rango: dict, 
     res_nota_directa: dict, 
-    w1: float = 0.10, 
-    w2: float = 0.05, 
+    w1: float = 0.15, 
     w3: float = 0.85
 ) -> dict:
     """
     Calcula la nota final combinada aplicando una fórmula ponderada:
-    Nota_Final = (w1 * res_exp1) + (w2 * res_exp2) + (w3 * res_exp3)
+    Nota_Final = (w1 * res_exp1) + (w3 * res_exp3)
     
     Retorna la nota final combinada (redondeada al entero más cercano) y el desglose de los experimentos.
     """
     # Validar que los pesos sumen aproximadamente 1
-    suma_pesos = w1 + w2 + w3
+    suma_pesos = w1 + w3
     if not (0.99 <= suma_pesos <= 1.01):
         # Si no están normalizados, normalizar
-        w1, w2, w3 = w1/suma_pesos, w2/suma_pesos, w3/suma_pesos
+        w1, w3 = w1/suma_pesos, w3/suma_pesos
 
     n_conceptos = res_conceptos["nota_conceptos"]
-    n_rango = res_rango["nota_rango"]
     n_directa = res_nota_directa["nota_directa"]
     
     diff_conceptos = abs(n_directa - n_conceptos)
-    diff_rango = abs(n_directa - n_rango)
     
-    if diff_conceptos >= 2.0 or diff_rango >= 2.0:
-        nota_final = (w1 * n_conceptos) + (w2 * n_rango) + (w3 * n_directa)
+    if diff_conceptos >= 2.0:
+        nota_final = (w1 * n_conceptos) + (w3 * n_directa)
         algoritmo_usado = "pesos"
     else:
         # Promedio entre nota directa y conceptos (los dos valores principales de nota)
@@ -225,8 +221,8 @@ def ensamblar_nota_final(
                 "conceptos_evaluados": res_conceptos["conceptos_evaluados"]
             },
             "experimento_rango": {
-                "nota_obtenida": n_rango,
-                "rango_clasificado": res_rango["rango"]
+                "nota_obtenida": 0.0,
+                "rango_clasificado": "<NO USADO>"
             },
             "experimento_nota_directa": {
                 "nota_obtenida": n_directa
@@ -236,7 +232,7 @@ def ensamblar_nota_final(
             "algoritmo_usado": algoritmo_usado,
             "pesos": {
                 "w1_conceptos": round(w1, 3),
-                "w2_rango": round(w2, 3),
+                "w2_rango": 0.0,
                 "w3_nota_directa": round(w3, 3)
             }
         }
@@ -254,12 +250,6 @@ if __name__ == "__main__":
         "tiempo": 0.8
     }
     
-    rango_simulado = {
-        "rango": "<BUENO>",
-        "nota_rango": 7.5,
-        "tiempo": 0.4
-    }
-    
     nota_directa_simulada = {
         "nota_directa": 8.0,
         "tiempo": 0.4
@@ -268,10 +258,8 @@ if __name__ == "__main__":
     # Llamar al ensamble
     resultado = ensamblar_nota_final(
         conceptos_simulados, 
-        rango_simulado, 
         nota_directa_simulada, 
-        w1=0.10, 
-        w2=0.05, 
+        w1=0.15, 
         w3=0.85
     )
     

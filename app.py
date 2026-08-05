@@ -351,12 +351,8 @@ async def corregir_respuesta_individual(
     w3 = pesos.get("w3", 0.85)
 
 
-    # Ejecutar los tres experimentos secuencialmente para evitar congestionar el servidor LLM (Colab/ngrok)
+    # Ejecutar los experimentos secuencialmente para evitar congestionar el servidor LLM (Colab/ngrok)
     res_conceptos = await asyncio.to_thread(evaluar_conceptos, cliente_llm, pregunta_text, conceptos, respuesta_estudiante)
-    if check_cancellation and check_cancellation():
-        return {"estado": "cancelado"}
-
-    res_rango = await asyncio.to_thread(evaluar_rango, cliente_llm, pregunta_text, ideal_answer, respuesta_estudiante)
     if check_cancellation and check_cancellation():
         return {"estado": "cancelado"}
 
@@ -368,14 +364,12 @@ async def corregir_respuesta_individual(
     # Integrar los resultados utilizando el ensamble ponderado
     res_ensemble = ensamblar_nota_final(
         res_conceptos,
-        res_rango,
         res_nota_directa,
         w1=w1,
-        w2=w2,
         w3=w3
     )
 
-    tiempo_total = res_conceptos["tiempo"] + res_rango["tiempo"] + res_nota_directa["tiempo"]
+    tiempo_total = res_conceptos["tiempo"] + res_nota_directa["tiempo"]
 
     return {
         "conceptos_evaluados": res_conceptos["conceptos_evaluados"],
@@ -566,7 +560,6 @@ async def tarea_comparar_correccion_lote():
         n_directa = float(resultado.get("desglose", {}).get("experimento_nota_directa", {}).get("nota_obtenida", 0.0))
         
         d1 = abs(n_directa - n_conceptos)
-        d2 = abs(n_directa - n_rango)
         
         item_comparado = {
             "question_id": q_id,
@@ -580,7 +573,7 @@ async def tarea_comparar_correccion_lote():
             "nota_conceptos": n_conceptos,
             "nota_rango": n_rango,
             "nota_directa": n_directa,
-            "usó_promedio": (d1 < 2.0 and d2 < 2.0)
+            "usó_promedio": d1 < 2.0
         }
 
         
@@ -844,10 +837,9 @@ async def comparar_resultados(file: UploadFile = File(...)):
                 "diff": round(diff, 2)
             }
             
-            if n_directa is not None and n_conceptos is not None and n_rango is not None:
+            if n_directa is not None and n_conceptos is not None:
                 d1 = abs(float(n_directa) - float(n_conceptos))
-                d2 = abs(float(n_directa) - float(n_rango))
-                comp_item["usó_promedio"] = (d1 < 2.0 and d2 < 2.0)
+                comp_item["usó_promedio"] = d1 < 2.0
             else:
                 comp_item["usó_promedio"] = None
                 

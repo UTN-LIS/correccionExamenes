@@ -63,26 +63,23 @@ class Experimento:
 
             # ---- EJECUTAR EXPERIMENTOS INDEPENDIENTES ----
             res_conceptos = evaluar_conceptos(self.cliente_llm, pregunta, conceptos, respuesta)
-            res_rango = evaluar_rango(self.cliente_llm, pregunta, ideal_answer, respuesta)
             res_nota_directa = evaluar_nota_directa(self.cliente_llm, pregunta, ideal_answer, respuesta)
 
             # ---- ENSAMBLE PONDERADO ----
             res_ensemble = ensamblar_nota_final(
                 res_conceptos,
-                res_rango,
                 res_nota_directa,
                 w1=w1,
-                w2=w2,
                 w3=w3
             )
 
             # Llenar la fila del resultado
-            fila_resultado['rango_nota'] = res_rango['rango']
+            fila_resultado['rango_nota'] = "<NO USADO>"
             fila_resultado['nota_conceptos'] = res_conceptos['nota_conceptos']
-            fila_resultado['nota_rango'] = res_rango['nota_rango']
+            fila_resultado['nota_rango'] = 0.0
             fila_resultado['nota_directa'] = res_nota_directa['nota_directa']
             fila_resultado['salida'] = res_ensemble['nota_final']
-            fila_resultado['tiempo'] = round(res_conceptos['tiempo'] + res_rango['tiempo'] + res_nota_directa['tiempo'], 3)
+            fila_resultado['tiempo'] = round(res_conceptos['tiempo'] + res_nota_directa['tiempo'], 3)
 
             # Rellenar los tags correspondientes
             for tag, val in res_conceptos['conceptos_evaluados'].items():
