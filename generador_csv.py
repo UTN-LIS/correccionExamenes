@@ -14,19 +14,36 @@ class GeneradorCSV:
 
     def dataset_batch(self):
         """
-        Yields tuplas (pregunta, conceptos, respuesta, esperado) por cada fila del dataset.
+        Yields tuplas (question_id, pregunta, conceptos, respuesta, esperado, ideal_answer) por cada fila del dataset.
 
         Espera las columnas: question_id, question_text, student_answer, teacher_grade.
         Los conceptos se resuelven desde CONCEPTOS_POR_PREGUNTA usando question_id.
         Si el question_id no tiene conceptos definidos, se retorna lista vacía.
         """
+        import json
+        preguntas_db = {}
+        if os.path.exists("documentacion/web_app_db.json"):
+            try:
+                with open("documentacion/web_app_db.json", "r", encoding="utf-8") as f:
+                    preguntas_db = json.load(f).get("preguntas", {})
+            except Exception:
+                pass
+
         for _, row in self.df.iterrows():
-            question_id = row.get("question_id")
+            question_id = str(row.get("question_id", "")).strip()
             pregunta    = row["question_text"]
             respuesta   = row["student_answer"]
             esperado    = row.get("teacher_grade")
             conceptos   = CONCEPTOS_POR_PREGUNTA.get(question_id, [])
-            yield pregunta, conceptos, respuesta, esperado
+            
+            # Intentar obtener ideal_answer
+            ideal_answer = row.get("ideal_answer")
+            if not ideal_answer or pd.isna(ideal_answer):
+                ideal_answer = preguntas_db.get(question_id, {}).get("ideal_answer", "")
+            if not ideal_answer:
+                ideal_answer = "Respuesta ideal de la cátedra."
+                
+            yield question_id, pregunta, conceptos, respuesta, esperado, ideal_answer
 
     def crear_csv_resultados(self, fieldnames):
         """Crea el archivo CSV de resultados con encabezados."""

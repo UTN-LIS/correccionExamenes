@@ -335,6 +335,7 @@ async def upload_examenes(file: UploadFile = File(...)):
 async def corregir_respuesta_individual(
     cliente_llm: ClienteLLM,
     pregunta_text: str,
+    ideal_answer: str,
     conceptos: List[Dict[str, str]],
     respuesta_estudiante: str,
     check_cancellation: Optional[Callable[[], bool]] = None
@@ -362,7 +363,7 @@ async def corregir_respuesta_individual(
         "nota_rango": 0.0,
         "tiempo": 0.0
     }
-    res_nota_directa = await asyncio.to_thread(evaluar_nota_directa, cliente_llm, pregunta_text, respuesta_estudiante)
+    res_nota_directa = await asyncio.to_thread(evaluar_nota_directa, cliente_llm, pregunta_text, ideal_answer, respuesta_estudiante)
 
     if check_cancellation and check_cancellation():
         return {"estado": "cancelado"}
@@ -431,6 +432,7 @@ async def tarea_correccion_lote():
                     resultado = await corregir_respuesta_individual(
                         cliente_llm,
                         pregunta.get("question_text", f"Pregunta {q_id}"),
+                        pregunta.get("ideal_answer", ""),
                         conceptos,
                         student_ans
                     )
@@ -532,6 +534,7 @@ async def tarea_comparar_correccion_lote():
                     resultado = await corregir_respuesta_individual(
                         cliente_llm,
                         pregunta.get("question_text", f"Pregunta {q_id}"),
+                        pregunta.get("ideal_answer", ""),
                         conceptos,
                         student_ans,
                         check_cancellation=lambda: state_comp.cancel_requested

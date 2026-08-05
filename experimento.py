@@ -40,7 +40,7 @@ class Experimento:
         buffer_salidas = []
         step = 0
 
-        for pregunta, conceptos, respuesta, esperado in self.dataset_cliente.dataset_batch():
+        for q_id, pregunta, conceptos, respuesta, esperado, ideal_answer in self.dataset_cliente.dataset_batch():
 
             if max_items and step >= max_items:
                 break
@@ -74,7 +74,7 @@ class Experimento:
                 "nota_rango": 0.0,
                 "tiempo": 0.0
             }
-            res_nota_directa = evaluar_nota_directa(self.cliente_llm, pregunta, respuesta)
+            res_nota_directa = evaluar_nota_directa(self.cliente_llm, pregunta, ideal_answer, respuesta)
 
             # ---- ENSAMBLE PONDERADO ----
             res_ensemble = ensamblar_nota_final(
