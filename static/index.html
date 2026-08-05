@@ -366,13 +366,14 @@
                             </div>
                         </div>
 
-                        <!-- Evolución de MAE por Experimento (Pipeline) -->
+                        <!-- Evolución de MAE por Respuesta de Alumno -->
                         <div id="pipeline-mae-container" style="display:none; margin-top: 1.5rem; border-top: 1px solid var(--border-glass); padding-top: 1.5rem;">
-                            <h4 style="font-size: 0.95rem; font-weight: 600; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <h4 style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
                                 <i class="fa-solid fa-chart-line" style="color: var(--accent-primary);"></i>
-                                Evolución del MAE por Experimento (Pipeline)
+                                Evolución del MAE por Respuesta de Alumno
                             </h4>
-                            <div style="display: flex; flex-direction: column; gap: 0.75rem;" id="pipeline-mae-list">
+                            <p class="card-desc" style="margin-bottom: 1rem;">Evolución del Error Absoluto Medio (MAE) a medida que se corrigen los exámenes.</p>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 250px; overflow-y: auto; padding-right: 0.5rem;" id="pipeline-mae-list">
                                 <!-- Elementos dinámicos -->
                             </div>
                         </div>
@@ -447,6 +448,7 @@
                                     <th>Nota Agente</th>
                                     <th>Algoritmo</th>
                                     <th>Diferencia</th>
+                                    <th>MAE Acumulado</th>
                                 </tr>
                             </thead>
                             <tbody id="tabla-comparacion-body">
@@ -465,6 +467,7 @@
                                     <th>Nota Agente</th>
                                     <th>Algoritmo</th>
                                     <th>Diferencia</th>
+                                    <th>MAE Acumulado</th>
                                 </tr>
                             </thead>
                             <tbody id="tabla-comparacion-body">

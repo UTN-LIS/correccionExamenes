@@ -562,6 +562,7 @@ async def tarea_comparar_correccion_lote():
         d1 = abs(n_directa - n_conceptos)
         
         item_comparado = {
+            "original_index": idx,
             "question_id": q_id,
             "student_answer": student_ans,
             "student_answer_short": student_ans[:120] + "..." if len(student_ans) > 120 else student_ans,
@@ -589,6 +590,14 @@ async def tarea_comparar_correccion_lote():
     db = cargar_db()
     status_final = "cancelled" if state_comp.cancel_requested else ("completed" if state_comp.errores < state_comp.total else "failed")
     
+    if comparaciones_temp:
+        # Calcular running_mae ordenando por el índice original primero
+        comparaciones_temp.sort(key=lambda x: x.get("original_index", 0))
+        cumulative_abs_error = 0.0
+        for i, c in enumerate(comparaciones_temp):
+            cumulative_abs_error += abs(c["diff"])
+            c["running_mae"] = round(cumulative_abs_error / (i + 1), 4)
+
     db["resultados_comparacion"] = {
         "comparaciones": comparaciones_temp,
         "total_comparados": len(comparaciones_temp),
@@ -846,7 +855,10 @@ async def comparar_resultados(file: UploadFile = File(...)):
                 "student_answer_short": ans[:120] + "..." if len(ans) > 120 else ans,
                 "teacher_grade": teacher_grade,
                 "agent_grade": nota_agente,
-                "diff": round(diff, 2)
+                "diff": round(diff, 2),
+                "nota_conceptos": float(n_conceptos) if n_conceptos is not None else 0.0,
+                "nota_rango": float(n_rango) if n_rango is not None else 0.0,
+                "nota_directa": float(n_directa) if n_directa is not None else 0.0
             }
             
             if n_directa is not None and n_conceptos is not None:
@@ -856,6 +868,12 @@ async def comparar_resultados(file: UploadFile = File(...)):
                 comp_item["usó_promedio"] = None
                 
             comparaciones.append(comp_item)
+
+    # Calcular running_mae para cada comparación subida por CSV
+    cumulative_abs_error = 0.0
+    for i, c in enumerate(comparaciones):
+        cumulative_abs_error += abs(c["diff"])
+        c["running_mae"] = round(cumulative_abs_error / (i + 1), 4)
 
     total_comparados = len(comparaciones)
     if total_comparados == 0:

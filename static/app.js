@@ -1035,54 +1035,44 @@ function mostrarMetricasComparacion(data) {
     document.getElementById('metrics-placeholder').style.display = 'none';
     document.getElementById('comparar-metrics-grid').style.display = 'grid';
 
-    // Renderizar Evolución del MAE por Experimento (Pipeline)
+    // Renderizar Evolución del MAE por Respuesta de Alumno
     const pipelineContainer = document.getElementById('pipeline-mae-container');
     if (pipelineContainer) {
         const pipelineList = document.getElementById('pipeline-mae-list');
         pipelineList.innerHTML = '';
 
-        const maeConceptos = data.mae_conceptos !== undefined ? data.mae_conceptos : 0;
-        const maeRango = data.mae_rango !== undefined ? data.mae_rango : 0;
-        const maeDirecta = data.mae_directa !== undefined ? data.mae_directa : 0;
-        const maeEnsemble = data.mae !== undefined ? data.mae : 0;
+        if (data.comparaciones && data.comparaciones.length > 0) {
+            data.comparaciones.forEach((c, idx) => {
+                const item = document.createElement('div');
+                item.style.display = 'flex';
+                item.style.alignItems = 'center';
+                item.style.justifyContent = 'space-between';
+                item.style.padding = '0.5rem 0.75rem';
+                item.style.background = 'rgba(255, 255, 255, 0.01)';
+                item.style.border = '1px solid var(--border-glass)';
+                item.style.borderRadius = '6px';
+                item.style.gap = '1rem';
+                item.style.fontSize = '0.8rem';
 
-        const experimentos = [
-            { nombre: "Experimento 1: Conceptos Evaluados", valor: maeConceptos, desc: "Evaluación semántica de conceptos clave.", activo: maeConceptos > 0 },
-            { nombre: "Experimento 2: Clasificación por Rango", valor: maeRango, desc: "Clasificación en categorías de notas.", activo: maeRango > 0 },
-            { nombre: "Experimento 3: Nota Directa por LLM", valor: maeDirecta, desc: "Puntaje directo asignado por el modelo.", activo: maeDirecta > 0 },
-            { nombre: "Ensamble Final Combinado", valor: maeEnsemble, desc: "Nota final combinada por el algoritmo.", activo: true }
-        ];
+                const runningMaeVal = c.running_mae !== undefined ? c.running_mae.toFixed(4) : '-';
 
-        experimentos.forEach((exp, idx) => {
-            const item = document.createElement('div');
-            item.style.display = 'flex';
-            item.style.alignItems = 'center';
-            item.style.justifyContent = 'space-between';
-            item.style.padding = '0.75rem 1rem';
-            item.style.background = exp.nombre.includes('Ensamble') ? 'rgba(99, 102, 241, 0.06)' : 'rgba(255, 255, 255, 0.02)';
-            item.style.border = exp.nombre.includes('Ensamble') ? '1px solid rgba(99, 102, 241, 0.2)' : '1px solid var(--border-glass)';
-            item.style.borderRadius = '8px';
-            item.style.gap = '1rem';
-
-            const valueText = exp.activo ? exp.valor.toFixed(2) : 'No Utilizado';
-            const valueStyle = exp.activo ? 'color:#818cf8; font-weight:700;' : 'color:var(--text-secondary); font-style:italic;';
-
-            item.innerHTML = `
-                <div style="display:flex; align-items:center; gap:0.75rem; flex:1;">
-                    <div style="width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; background:rgba(255,255,255,0.05); color:var(--text-secondary);">
-                        ${idx + 1}
+                item.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:0.5rem; flex:1; overflow:hidden;">
+                        <span style="font-weight:600; color:var(--text-secondary);">#${idx + 1}</span>
+                        <span class="badge-grade" style="font-size:0.7rem; background:rgba(99,102,241,0.05); color:#818cf8;">${c.question_id}</span>
+                        <span style="color:var(--text-secondary); text-overflow:ellipsis; overflow:hidden; white-space:nowrap; max-width:250px;">${c.student_answer_short}</span>
                     </div>
-                    <div>
-                        <div style="font-weight:600; font-size:0.85rem; color:var(--text-primary);">${exp.nombre}</div>
-                        <div style="font-size:0.7rem; color:var(--text-secondary);">${exp.desc}</div>
+                    <div style="display:flex; gap:1rem; align-items:center;">
+                        <span style="color:var(--text-secondary);">Dif: <strong style="color:${Math.abs(c.diff) >= 2 ? '#fca5a5' : '#a7f3d0'};">${c.diff > 0 ? '+' : ''}${c.diff}</strong></span>
+                        <span>MAE Acum: <strong style="color:#818cf8; font-weight:700;">${runningMaeVal}</strong></span>
                     </div>
-                </div>
-                <div style="font-size:1.1rem; ${valueStyle}">${valueText}</div>
-            `;
-            pipelineList.appendChild(item);
-        });
-
-        pipelineContainer.style.display = 'block';
+                `;
+                pipelineList.appendChild(item);
+            });
+            pipelineContainer.style.display = 'block';
+        } else {
+            pipelineContainer.style.display = 'none';
+        }
     }
 
     // Actualizar Matriz de Confusión de Aprobación
@@ -1132,11 +1122,12 @@ function mostrarMetricasComparacion(data) {
     });
     
     // Renderizar tabla de detalle
-    const tableBody = document.getElementById('tabla-comparacion-body');
-    tableBody.innerHTML = '';
+    const tableBodies = document.querySelectorAll('#tabla-comparacion-body');
+    tableBodies.forEach(tbody => {
+        tbody.innerHTML = '';
+    });
     
     data.comparaciones.forEach(c => {
-        const tr = document.createElement('tr');
         const diffClass = c.diff === 0 ? 'color: var(--color-excelente); font-weight:700;' 
                          : Math.abs(c.diff) <= 1 ? 'color: var(--color-bueno); font-weight:600;' 
                          : Math.abs(c.diff) <= 2 ? 'color: var(--color-aceptable); font-weight:600;'
@@ -1153,15 +1144,21 @@ function mostrarMetricasComparacion(data) {
             algoStyle = 'background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); color:var(--text-secondary);';
         }
 
-        tr.innerHTML = `
-            <td><strong>${c.question_id}</strong></td>
-            <td style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${c.student_answer_short}</td>
-            <td><span class="badge-grade" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); color:var(--text-primary); font-weight:600;">${c.teacher_grade}</span></td>
-            <td><span class="badge-grade" style="background:rgba(99, 102, 241, 0.08); border:1px solid rgba(99, 102, 241, 0.2); color:#818cf8; font-weight:600;">${c.agent_grade}</span></td>
-            <td><span class="badge-grade" style="${algoStyle} font-weight:600;">${algoText}</span></td>
-            <td><span style="${diffClass}">${c.diff > 0 ? '+' : ''}${c.diff}</span></td>
-        `;
-        tableBody.appendChild(tr);
+        const runningMaeVal = c.running_mae !== undefined ? c.running_mae.toFixed(4) : '-';
+
+        tableBodies.forEach(tbody => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${c.question_id}</strong></td>
+                <td style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${c.student_answer_short}</td>
+                <td><span class="badge-grade" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); color:var(--text-primary); font-weight:600;">${c.teacher_grade}</span></td>
+                <td><span class="badge-grade" style="background:rgba(99, 102, 241, 0.08); border:1px solid rgba(99, 102, 241, 0.2); color:#818cf8; font-weight:600;">${c.agent_grade}</span></td>
+                <td><span class="badge-grade" style="${algoStyle} font-weight:600;">${algoText}</span></td>
+                <td><span style="${diffClass}">${c.diff > 0 ? '+' : ''}${c.diff}</span></td>
+                <td><strong style="color: #818cf8; font-weight:700;">${runningMaeVal}</strong></td>
+            `;
+            tbody.appendChild(tr);
+        });
     });
     
     // Cargar historial de MAEs
