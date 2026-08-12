@@ -15,7 +15,11 @@ async def chat(body = Body(...)):
             system_content = msg.get("content", "")
 
     # Determinar el paso de evaluación
-    if "RANGO DE NOTA SUGERIDO" in user_content or "criterio pedagógico" in system_content or "calificación final" in system_content:
+    if "conceptos clave (entre 3 y 5 conceptos)" in system_content:
+        return {
+            "response": '{"conceptos": [{"tag": "TDD_TESTS", "descripcion": "Menciona la escritura de pruebas unitarias"}, {"tag": "CICLO_RED_GREEN_REFACTOR", "descripcion": "Explica el ciclo Red-Green-Refactor en TDD"}, {"tag": "ERROR", "descripcion": "Plantea algún concepto de forma ambigua o erróneamente"}]}'
+        }
+    elif "RANGO DE NOTA SUGERIDO" in user_content or "criterio pedagógico" in system_content or "calificación final" in system_content:
         # Experimento 3: Nota directa o final
         return {"response": "8"}
     elif "EVALUACIÓN DE CONCEPTOS CLAVE" in user_content or "rango" in system_content.lower():

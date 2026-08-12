@@ -9,7 +9,7 @@ class ClienteLLM:
         load_dotenv()
         self.url = os.getenv("URL_LLM")
 
-    def generar_salida(self, system_prompt: str, user_message: str, max_retries: int = 3, backoff_factor: float = 1.5):
+    def generar_salida(self, system_prompt: str, user_message: str, max_retries: int = 3, backoff_factor: float = 1.5, timeout: float = 180.0):
         """
         Llama al LLM con un system prompt y un user message ya construidos.
         Retorna (respuesta: str, tiempo: float).
@@ -38,7 +38,7 @@ class ClienteLLM:
                         "Content-Type": "application/json",
                         "ngrok-skip-browser-warning": "69420"
                     },
-                    timeout=30.0  # Evita que se cuelgue indefinidamente
+                    timeout=timeout  # Evita que se cuelgue indefinidamente
                 )
                 response.raise_for_status()
                 res_json = response.json()

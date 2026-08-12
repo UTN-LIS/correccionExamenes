@@ -2,6 +2,7 @@ import os
 import csv
 import json
 import asyncio
+import re
 import pandas as pd
 from typing import List, Dict, Any, Optional, Callable
 from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks
@@ -51,6 +52,7 @@ class ComparacionState:
         self.errores = 0
         self.mae = 0.0
         self.cancel_requested = False
+        self.comparaciones = []
 
 state_comp = ComparacionState()
 state_comp_lock = asyncio.Lock()
@@ -145,7 +147,7 @@ async def probar_conexion_llm(url: str) -> bool:
                 "Content-Type": "application/json",
                 "ngrok-skip-browser-warning": "69420"
             },
-            timeout=45.0
+            timeout=180.0
         )
         return res.status_code == 200
     except Exception as e:
@@ -200,6 +202,89 @@ async def get_preguntas():
     db = cargar_db()
     return db.get("preguntas", {})
 
+def generar_conceptos_automatizados(question_text: str, ideal_answer: str) -> list:
+    if not ideal_answer or not question_text:
+        return []
+        
+    cliente_llm = ClienteLLM()
+    system_prompt = """
+Eres un profesor universitario y evaluador académico experto en ingeniería de software.
+Tu tarea es analizar una PREGUNTA de examen y su RESPUESTA CORRECTA ESPERADA (pauta de corrección), y generar una lista de conceptos clave (entre 3 y 5 conceptos) que un estudiante debe mencionar o explicar en su respuesta para ser calificado positivamente.
+
+Para cada concepto clave debes definir:
+1. Un tag: Una palabra corta en mayúsculas, usando guiones bajos si es necesario (ej. "CICLO_ITERATIVO", "CODIGO_MINIMO"). Debe ser conciso y directo.
+2. Una descripción: Una frase clara y corta (máximo 20 palabras) que explique qué aspecto de la respuesta correcta cubre este concepto.
+
+Además, debes incluir siempre al final de la lista un concepto con el tag "ERROR" y la descripción: "Plantea algún concepto de forma ambigua o erróneamente".
+
+Debes responder ÚNICAMENTE con un objeto JSON válido con la estructura exacta:
+{
+  "conceptos": [
+    {
+      "tag": "TAG_1",
+      "descripcion": "Descripción del concepto 1"
+    },
+    ...
+  ]
+}
+
+No agregues explicaciones, notas, ni markdown. Responde solo con el bloque de código JSON limpio.
+""".strip()
+
+    user_msg = f"""## PREGUNTA
+{question_text}
+
+## RESPUESTA CORRECTA ESPERADA
+{ideal_answer}"""
+
+    try:
+        salida, _ = cliente_llm.generar_salida(system_prompt, user_msg)
+        clean_salida = salida.strip()
+        # Eliminar bloques markdown de código si existen
+        if "```json" in clean_salida:
+            match = re.search(r"```json\s*(.*?)\s*```", clean_salida, re.DOTALL)
+            if match:
+                clean_salida = match.group(1)
+        elif "```" in clean_salida:
+            match = re.search(r"```\s*(.*?)\s*```", clean_salida, re.DOTALL)
+            if match:
+                clean_salida = match.group(1)
+                
+        data = json.loads(clean_salida)
+        conceptos = data.get("conceptos", [])
+        
+        validados = []
+        for c in conceptos:
+            tag = str(c.get("tag", "")).strip().upper()
+            desc = str(c.get("descripcion", "")).strip()
+            if tag and desc:
+                validados.append({"tag": tag, "descripcion": desc})
+        
+        # Asegurarnos de que tenga un tag ERROR al final si no lo generó
+        tiene_error = any(c["tag"] == "ERROR" for c in validados)
+        if not tiene_error:
+            validados.append({
+                "tag": "ERROR",
+                "descripcion": "Plantea algún concepto de forma ambigua o erróneamente"
+            })
+            
+        return validados
+    except Exception as e:
+        print(f"Error generando conceptos por IA: {e}")
+        return [
+            {"tag": "CONCEPTO_GENERAL", "descripcion": "Menciona adecuadamente los puntos principales de la respuesta esperada."},
+            {"tag": "ERROR", "descripcion": "Plantea algún concepto de forma ambigua o erróneamente"}
+        ]
+
+class GenerarConceptosPayload(BaseModel):
+    question_text: str
+    ideal_answer: str
+
+@app.post("/api/preguntas/generar-conceptos")
+async def api_generar_conceptos(payload: GenerarConceptosPayload):
+    conceptos = generar_conceptos_automatizados(payload.question_text, payload.ideal_answer)
+    return {"conceptos": conceptos}
+
 @app.post("/api/preguntas")
 async def add_pregunta(pregunta: PreguntaManual):
     db = cargar_db()
@@ -208,13 +293,20 @@ async def add_pregunta(pregunta: PreguntaManual):
     if not q_id:
         raise HTTPException(status_code=400, detail="El identificador de pregunta no puede estar vacío.")
         
+    conceptos = pregunta.conceptos
+    # Solo generar automáticamente si la pregunta es NUEVA y no se enviaron conceptos.
+    # Si la pregunta ya existe en la DB y conceptos es [], respetamos que el usuario
+    # eliminó las etiquetas (ya que si quisiera regenerarlas usaría el botón "Generar con IA" de la interfaz).
+    if not conceptos and pregunta.ideal_answer.strip() and q_id not in db.get("preguntas", {}):
+        conceptos = generar_conceptos_automatizados(pregunta.question_text.strip(), pregunta.ideal_answer.strip())
+        
     db["preguntas"][q_id] = {
         "question_text": pregunta.question_text.strip(),
         "ideal_answer": pregunta.ideal_answer.strip(),
-        "conceptos": pregunta.conceptos
+        "conceptos": conceptos
     }
     guardar_db(db)
-    return {"mensaje": "Pregunta guardada correctamente.", "question_id": q_id}
+    return {"mensaje": "Pregunta guardada correctamente.", "question_id": q_id, "conceptos": conceptos}
 
 @app.post("/api/preguntas/upload")
 async def upload_preguntas(file: UploadFile = File(...)):
@@ -585,10 +677,12 @@ async def tarea_comparar_correccion_lote():
 
         
         async with state_comp_lock:
-            comparaciones_temp.append(item_comparado)
             state_comp.procesado += 1
             mae_acumulado += abs_error
             state_comp.mae = round(mae_acumulado / state_comp.procesado, 2)
+            item_comparado["running_mae"] = state_comp.mae
+            state_comp.comparaciones.append(item_comparado)
+            comparaciones_temp.append(item_comparado)
             
     tareas = [procesar_item(i, r) for i, r in enumerate(respuestas)]
     await asyncio.gather(*tareas)
@@ -833,7 +927,6 @@ async def comparar_resultados(file: UploadFile = File(...)):
             desglose = r_info.get("desglose", {})
             n_directa = desglose.get("experimento_nota_directa", {}).get("nota_obtenida")
             n_conceptos = desglose.get("experimento_conceptos", {}).get("nota_obtenida")
-            n_rango = desglose.get("experimento_rango", {}).get("nota_obtenida")
             
             comp_item = {
                 "question_id": q_id,
@@ -841,17 +934,19 @@ async def comparar_resultados(file: UploadFile = File(...)):
                 "student_answer_short": ans[:120] + "..." if len(ans) > 120 else ans,
                 "teacher_grade": teacher_grade,
                 "agent_grade": nota_agente,
-                "diff": round(diff, 2)
+                "diff": round(diff, 2),
+                "nota_directa": float(n_directa) if n_directa is not None else None,
+                "nota_conceptos": float(n_conceptos) if n_conceptos is not None else None
             }
             
-            if n_directa is not None and n_conceptos is not None and n_rango is not None:
+            if n_directa is not None and n_conceptos is not None:
                 d1 = abs(float(n_directa) - float(n_conceptos))
-                d2 = abs(float(n_directa) - float(n_rango))
-                comp_item["usó_promedio"] = (d1 < 2.0 and d2 < 2.0)
+                comp_item["usó_promedio"] = (d1 < 2.0)
             else:
                 comp_item["usó_promedio"] = None
                 
             comparaciones.append(comp_item)
+            comp_item["running_mae"] = round(mae_acumulado / len(comparaciones), 2)
 
     total_comparados = len(comparaciones)
     if total_comparados == 0:
@@ -982,6 +1077,7 @@ async def iniciar_correccion_comparacion(background_tasks: BackgroundTasks):
         state_comp.errores = 0
         state_comp.mae = 0.0
         state_comp.cancel_requested = False
+        state_comp.comparaciones = []
 
     # Limpiar estado anterior en DB
     db["proceso_comparacion"]["status"] = "running"
@@ -1006,7 +1102,8 @@ async def get_estado_comparacion():
             "total": state_comp.total,
             "procesado": state_comp.procesado,
             "errores": state_comp.errores,
-            "mae": state_comp.mae
+            "mae": state_comp.mae,
+            "comparaciones": state_comp.comparaciones
         }
 
 @app.get("/api/examenes/comparar-resultados")
@@ -1077,14 +1174,14 @@ async def get_resultados_comparacion():
     for c in comparaciones:
         nd = c.get("nota_directa")
         nc = c.get("nota_conceptos")
-        nr = c.get("nota_rango")
-        if nd is not None and nc is not None and nr is not None:
+        if nd is not None and nc is not None:
             d1 = abs(float(nd) - float(nc))
-            d2 = abs(float(nd) - float(nr))
-            if d1 < 2.0 and d2 < 2.0:
+            if d1 < 2.0:
                 errores_menor_2.append(abs(c["diff"]))
             else:
                 errores_mayor_2.append(abs(c["diff"]))
+        else:
+            errores_menor_2.append(abs(c["diff"]))
 
     mae_menor_2 = round(sum(errores_menor_2) / len(errores_menor_2), 2) if errores_menor_2 else 0.0
     mae_mayor_2 = round(sum(errores_mayor_2) / len(errores_mayor_2), 2) if errores_mayor_2 else 0.0

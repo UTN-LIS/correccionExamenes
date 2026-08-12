@@ -4,7 +4,8 @@ let appState = {
     respuestasCargadasCount: 0,
     resultados: {},
     pollingInterval: null,
-    currentTab: 'dashboard'
+    currentTab: 'dashboard',
+    maeChartInstance: null
 };
 
 // --- DOM ELEMENTS ---
@@ -38,6 +39,7 @@ const elements = {
     formPregunta: document.getElementById('form-pregunta'),
     closeModalPregunta: document.getElementById('close-modal-pregunta'),
     btnCancelarPregunta: document.getElementById('btn-cancelar-pregunta'),
+    btnGenerarConceptosIa: document.getElementById('btn-generar-conceptos-ia'),
     btnAddConceptoRow: document.getElementById('btn-add-concepto-row'),
     conceptsRowsContainer: document.getElementById('concepts-rows-container'),
 
@@ -195,6 +197,7 @@ function setupEventListeners() {
     });
 
     elements.btnAddConceptoRow.addEventListener('click', () => addConceptoRow());
+    elements.btnGenerarConceptosIa.addEventListener('click', generarConceptosConIa);
 
     elements.formPregunta.addEventListener('submit', guardarPreguntaManual);
 
@@ -590,6 +593,48 @@ function addConceptoRow(tag = '', desc = '') {
     elements.conceptsRowsContainer.appendChild(row);
 }
 
+async function generarConceptosConIa() {
+    const qText = document.getElementById('form-question-text').value.trim();
+    const ideal = document.getElementById('form-ideal-answer').value.trim();
+
+    if (!qText || !ideal) {
+        showToast('Complete el Enunciado y la Respuesta de Referencia para generar las etiquetas.', 'error');
+        return;
+    }
+
+    const btnGenerar = elements.btnGenerarConceptosIa;
+    const originalText = btnGenerar.innerHTML;
+    btnGenerar.disabled = true;
+    btnGenerar.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generando...`;
+
+    try {
+        const res = await fetch('/api/preguntas/generar-conceptos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question_text: qText, ideal_answer: ideal })
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            if (data.conceptos && data.conceptos.length > 0) {
+                elements.conceptsRowsContainer.innerHTML = '';
+                data.conceptos.forEach(c => addConceptoRow(c.tag, c.descripcion));
+                showToast('Etiquetas generadas con IA exitosamente.', 'success');
+            } else {
+                showToast('No se pudieron generar etiquetas para esta respuesta.', 'error');
+            }
+        } else {
+            showToast('Error al generar etiquetas con IA.', 'error');
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Error de conexión al generar etiquetas.', 'error');
+    } finally {
+        btnGenerar.disabled = false;
+        btnGenerar.innerHTML = originalText;
+    }
+}
+
 async function guardarPreguntaManual(e) {
     e.preventDefault();
 
@@ -622,7 +667,12 @@ async function guardarPreguntaManual(e) {
         });
 
         if (res.ok) {
-            showToast('Pregunta guardada correctamente.', 'success');
+            const data = await res.json();
+            if (conceptos.length === 0 && data.conceptos && data.conceptos.length > 0) {
+                showToast(`Pregunta guardada. Se generaron ${data.conceptos.length} etiquetas con IA.`, 'success');
+            } else {
+                showToast('Pregunta guardada correctamente.', 'success');
+            }
             elements.modalPregunta.classList.remove('active');
             cargarPreguntas();
         } else {
@@ -957,6 +1007,15 @@ function verificarEstadoComparacion() {
             document.getElementById('vivo-progress-fill').style.width = `${percent}%`;
             document.getElementById('vivo-percent').textContent = `${percent}%`;
             
+            // Render chart and table in real-time if comparisons are available
+            if (status.comparaciones && status.comparaciones.length > 0) {
+                document.getElementById('comparar-chart-card').style.display = 'block';
+                renderMaeChart(status.comparaciones);
+                
+                document.getElementById('comparar-table-card').style.display = 'block';
+                renderTablaComparacionBody(status.comparaciones);
+            }
+            
             if (status.status === 'running') {
                 document.getElementById('btn-iniciar-vivo').innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Evaluando (${percent}%)`;
                 document.getElementById('btn-iniciar-vivo').disabled = true;
@@ -1026,6 +1085,115 @@ async function cargarResultadosComparacion() {
     }
 }
 
+// --- MAE EVOLUTION CHART & DETAIL TABLE ---
+function renderMaeChart(comparaciones) {
+    const canvas = document.getElementById('final-mae-chart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    if (appState.maeChartInstance) {
+        appState.maeChartInstance.destroy();
+    }
+    
+    const labels = comparaciones.map((_, index) => `#${index + 1}`);
+    const dataPoints = comparaciones.map(c => c.running_mae !== undefined ? c.running_mae : 0.0);
+    const questionIds = comparaciones.map(c => c.question_id);
+    
+    const gradient = ctx.createLinearGradient(0, 0, 0, 250);
+    gradient.addColorStop(0, 'rgba(99, 102, 241, 0.35)');
+    gradient.addColorStop(1, 'rgba(99, 102, 241, 0.00)');
+    
+    appState.maeChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'MAE Acumulado',
+                data: dataPoints,
+                borderColor: '#818cf8',
+                borderWidth: 3,
+                pointBackgroundColor: '#6366f1',
+                pointBorderColor: '#ffffff',
+                pointHoverRadius: 6,
+                pointRadius: dataPoints.length > 50 ? 0 : 4,
+                fill: true,
+                backgroundColor: gradient,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#cbd5e1',
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    borderWidth: 1,
+                    padding: 10,
+                    callbacks: {
+                        title: function(context) {
+                            const idx = context[0].dataIndex;
+                            return `Caso ${idx + 1}: ${questionIds[idx]}`;
+                        },
+                        label: function(context) {
+                            return `MAE: ${context.parsed.y.toFixed(3)}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(255, 255, 255, 0.05)', borderColor: 'transparent' },
+                    ticks: { color: '#94a3b8', font: { family: 'Outfit, sans-serif' } }
+                },
+                y: {
+                    grid: { color: 'rgba(255, 255, 255, 0.05)', borderColor: 'transparent' },
+                    ticks: { color: '#94a3b8', font: { family: 'Outfit, sans-serif' } },
+                    suggestedMin: 0
+                }
+            }
+        }
+    });
+}
+
+function renderTablaComparacionBody(comparaciones) {
+    const tableBody = document.getElementById('tabla-comparacion-body');
+    if (!tableBody) return;
+    tableBody.innerHTML = '';
+    
+    comparaciones.forEach(c => {
+        const tr = document.createElement('tr');
+        const diffClass = c.diff === 0 ? 'color: var(--color-excelente); font-weight:700;' 
+                         : Math.abs(c.diff) <= 1 ? 'color: var(--color-bueno); font-weight:600;' 
+                         : Math.abs(c.diff) <= 2 ? 'color: var(--color-aceptable); font-weight:600;'
+                         : 'color: var(--color-insuficiente); font-weight:600;';
+        
+        let algoText = 'Pesos';
+        let algoStyle = 'background:rgba(245, 158, 11, 0.08); border:1px solid rgba(245, 158, 11, 0.2); color:#fbbf24;';
+        if (c.usó_promedio === true) {
+            algoText = 'Promedio';
+            algoStyle = 'background:rgba(16, 185, 129, 0.08); border:1px solid rgba(16, 185, 129, 0.2); color:#34d399;';
+        } else if (c.usó_promedio === null) {
+            algoText = 'N/A';
+            algoStyle = 'background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); color:var(--text-secondary);';
+        }
+
+        tr.innerHTML = `
+            <td><strong>${c.question_id}</strong></td>
+            <td style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${c.student_answer_short}</td>
+            <td><span class="badge-grade" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); color:var(--text-primary); font-weight:600;">${c.teacher_grade}</span></td>
+            <td><span class="badge-grade" style="background:rgba(99, 102, 241, 0.08); border:1px solid rgba(99, 102, 241, 0.2); color:#818cf8; font-weight:600;">${c.agent_grade}</span></td>
+            <td><span class="badge-grade" style="${algoStyle} font-weight:600;">${algoText}</span></td>
+            <td><span style="${diffClass}">${c.diff > 0 ? '+' : ''}${c.diff}</span></td>
+            <td><strong style="color: var(--accent-secondary); font-weight:600;">${c.running_mae !== undefined ? c.running_mae.toFixed(2) : '-'}</strong></td>
+        `;
+        tableBody.appendChild(tr);
+    });
+}
+
 function mostrarMetricasComparacion(data) {
     // Actualizar Tarjetas de Métricas
     document.getElementById('metric-mae').textContent = data.mae.toFixed(2);
@@ -1085,37 +1253,11 @@ function mostrarMetricasComparacion(data) {
     });
     
     // Renderizar tabla de detalle
-    const tableBody = document.getElementById('tabla-comparacion-body');
-    tableBody.innerHTML = '';
+    renderTablaComparacionBody(data.comparaciones);
     
-    data.comparaciones.forEach(c => {
-        const tr = document.createElement('tr');
-        const diffClass = c.diff === 0 ? 'color: var(--color-excelente); font-weight:700;' 
-                         : Math.abs(c.diff) <= 1 ? 'color: var(--color-bueno); font-weight:600;' 
-                         : Math.abs(c.diff) <= 2 ? 'color: var(--color-aceptable); font-weight:600;'
-                         : 'color: var(--color-insuficiente); font-weight:600;';
-        
-        // Determinar badge para algoritmo
-        let algoText = 'Pesos';
-        let algoStyle = 'background:rgba(245, 158, 11, 0.08); border:1px solid rgba(245, 158, 11, 0.2); color:#fbbf24;';
-        if (c.usó_promedio === true) {
-            algoText = 'Promedio';
-            algoStyle = 'background:rgba(16, 185, 129, 0.08); border:1px solid rgba(16, 185, 129, 0.2); color:#34d399;';
-        } else if (c.usó_promedio === null) {
-            algoText = 'N/A';
-            algoStyle = 'background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); color:var(--text-secondary);';
-        }
-
-        tr.innerHTML = `
-            <td><strong>${c.question_id}</strong></td>
-            <td style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${c.student_answer_short}</td>
-            <td><span class="badge-grade" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); color:var(--text-primary); font-weight:600;">${c.teacher_grade}</span></td>
-            <td><span class="badge-grade" style="background:rgba(99, 102, 241, 0.08); border:1px solid rgba(99, 102, 241, 0.2); color:#818cf8; font-weight:600;">${c.agent_grade}</span></td>
-            <td><span class="badge-grade" style="${algoStyle} font-weight:600;">${algoText}</span></td>
-            <td><span style="${diffClass}">${c.diff > 0 ? '+' : ''}${c.diff}</span></td>
-        `;
-        tableBody.appendChild(tr);
-    });
+    // Mostrar y renderizar gráfico de evolución
+    document.getElementById('comparar-chart-card').style.display = 'block';
+    renderMaeChart(data.comparaciones);
     
     // Cargar historial de MAEs
     cargarHistorialMAE();
