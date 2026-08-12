@@ -940,9 +940,10 @@ async function iniciarEvaluacionVivo() {
         btnIniciar.disabled = false;
     }
 }
-
 function verificarEstadoComparacion() {
-    const interval = setInterval(async () => {
+    if (appState.pollingIntervalComparacion) clearInterval(appState.pollingIntervalComparacion);
+
+    appState.pollingIntervalComparacion = setInterval(async () => {
         try {
             const res = await fetch('/api/examenes/comparar-estado');
             const status = await res.json();
@@ -968,7 +969,9 @@ function verificarEstadoComparacion() {
                 document.getElementById('btn-cancelar-vivo').disabled = true;
                 document.getElementById('btn-cancelar-vivo').innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Cancelando...`;
             } else {
-                clearInterval(interval);
+                clearInterval(appState.pollingIntervalComparacion);
+                appState.pollingIntervalComparacion = null;
+
                 document.getElementById('btn-iniciar-vivo').innerHTML = `<i class="fa-solid fa-play"></i> Iniciar Evaluación en Vivo`;
                 document.getElementById('btn-iniciar-vivo').disabled = false;
                 document.getElementById('btn-cancelar-vivo').style.display = 'none';

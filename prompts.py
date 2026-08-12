@@ -26,10 +26,32 @@ Considera un concepto presente cuando:
 - Puede tener errores gramaticales menores
 
 No marques un concepto como presente cuando:
-- Aparece solamente una palabra clave sin desarrollar la idea
+- La respuesta menciona un término técnico relacionado (ej: "TDD", "refactor", "test") 
+  pero no explica su función, su propósito o su relación con el concepto evaluado
+- La respuesta podría aplicar igual a un concepto distinto (no es específica del concepto evaluado)
 - La explicación contradice el concepto
-- La mención es ambigua
-- La relación con el concepto es débil o indirecta
+- La mención es ambigua o superficial
+- La relación con el concepto es débil, indirecta o circunstancial
+
+REGLA CLAVE: Para marcar "sí", la respuesta debe explicar la IDEA del concepto, 
+no solo nombrarlo. Pregúntate: "¿si borro los términos técnicos, la explicación 
+sigue transmitiendo la idea del concepto?" Si la respuesta es no, marca "no".
+
+## EJEMPLOS
+
+Concepto: <ciclo_rojo_verde_refactor>: El desarrollo sigue el ciclo TDD de escribir test que falla, hacerlo pasar, y luego refactorizar.
+
+Respuesta: "Se debe usar TDD en el proyecto."
+→ no
+(Menciona la palabra "TDD" pero no describe el ciclo ni sus fases)
+
+Respuesta: "Primero escribo un test que falla, después el código mínimo para que pase, y luego mejoro el código sin romper los tests."
+→ sí
+(Describe el ciclo aunque no use las palabras "rojo/verde/refactor")
+
+Respuesta: "El refactor es una fase importante de TDD."
+→ no
+(Nombra una fase pero no explica en qué consiste ni su relación con el resto del ciclo)
 
 ## SALIDA
 Responde únicamente con una de estas dos opciones:

@@ -356,10 +356,10 @@ async def corregir_respuesta_individual(
     if check_cancellation and check_cancellation():
         return {"estado": "cancelado"}
 
-    res_rango = await asyncio.to_thread(evaluar_rango, cliente_llm, pregunta_text, ideal_answer, respuesta_estudiante)
+    """res_rango = await asyncio.to_thread(evaluar_rango, cliente_llm, pregunta_text, ideal_answer, respuesta_estudiante)
     if check_cancellation and check_cancellation():
         return {"estado": "cancelado"}
-
+"""
     res_nota_directa = await asyncio.to_thread(evaluar_nota_directa, cliente_llm, pregunta_text, ideal_answer, respuesta_estudiante)
 
     if check_cancellation and check_cancellation():
@@ -368,18 +368,18 @@ async def corregir_respuesta_individual(
     # Integrar los resultados utilizando el ensamble ponderado
     res_ensemble = ensamblar_nota_final(
         res_conceptos,
-        res_rango,
+        #res_rango,
         res_nota_directa,
         w1=w1,
         w2=w2,
         w3=w3
     )
 
-    tiempo_total = res_conceptos["tiempo"] + res_rango["tiempo"] + res_nota_directa["tiempo"]
+    tiempo_total = res_conceptos["tiempo"]  + res_nota_directa["tiempo"]
 
     return {
         "conceptos_evaluados": res_conceptos["conceptos_evaluados"],
-        "rango_nota": res_rango["rango"],
+        #"rango_nota": res_rango["rango"],
         "nota_final": res_ensemble["nota_final"],
         "tiempo": round(tiempo_total, 3),
         "estado": "completado",
@@ -562,11 +562,11 @@ async def tarea_comparar_correccion_lote():
         abs_error = abs(diff)
         
         n_conceptos = float(resultado.get("desglose", {}).get("experimento_conceptos", {}).get("nota_obtenida", 0.0))
-        n_rango = float(resultado.get("desglose", {}).get("experimento_rango", {}).get("nota_obtenida", 0.0))
+        # n_rango = float(resultado.get("desglose", {}).get("experimento_rango", {}).get("nota_obtenida", 0.0))
         n_directa = float(resultado.get("desglose", {}).get("experimento_nota_directa", {}).get("nota_obtenida", 0.0))
         
         d1 = abs(n_directa - n_conceptos)
-        d2 = abs(n_directa - n_rango)
+        # d2 = abs(n_directa - n_rango)
         
         item_comparado = {
             "question_id": q_id,
@@ -578,9 +578,9 @@ async def tarea_comparar_correccion_lote():
             "conceptos_evaluados": resultado.get("conceptos_evaluados", {}),
             "rango_nota": resultado.get("rango_nota", ""),
             "nota_conceptos": n_conceptos,
-            "nota_rango": n_rango,
+#            "nota_rango": n_rango,
             "nota_directa": n_directa,
-            "usó_promedio": (d1 < 2.0 and d2 < 2.0)
+            "usó_promedio": (d1 < 2.0 )# and d2 < 2.0)
         }
 
         
