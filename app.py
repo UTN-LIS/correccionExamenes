@@ -684,6 +684,27 @@ async def tarea_comparar_correccion_lote():
             state_comp.comparaciones.append(item_comparado)
             comparaciones_temp.append(item_comparado)
             
+            # Guardado incremental en disco cada 10 preguntas (o al final) para optimizar el rendimiento
+            if state_comp.procesado % 10 == 0 or state_comp.procesado == state_comp.total:
+                try:
+                    db_disk = cargar_db()
+                    db_disk["resultados_comparacion"] = {
+                        "comparaciones": comparaciones_temp,
+                        "total_comparados": len(comparaciones_temp),
+                        "mae": state_comp.mae if comparaciones_temp else 0.0,
+                        "status": "running"
+                    }
+                    db_disk["proceso_comparacion"] = {
+                        "status": "running",
+                        "total": state_comp.total,
+                        "procesado": state_comp.procesado,
+                        "errores": state_comp.errores,
+                        "mae": state_comp.mae if comparaciones_temp else 0.0
+                    }
+                    guardar_db(db_disk)
+                except Exception as write_err:
+                    print(f"Error al guardar comparación de forma incremental: {write_err}")
+            
     tareas = [procesar_item(i, r) for i, r in enumerate(respuestas)]
     await asyncio.gather(*tareas)
     

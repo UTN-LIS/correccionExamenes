@@ -39,19 +39,19 @@ sigue transmitiendo la idea del concepto?" Si la respuesta es no, marca "no".
 
 ## EJEMPLOS
 
-Concepto: <ciclo_rojo_verde_refactor>: El desarrollo sigue el ciclo TDD de escribir test que falla, hacerlo pasar, y luego refactorizar.
+Concepto: <definicion_algoritmo>: Un algoritmo es una secuencia ordenada y finita de pasos que permite resolver un problema.
 
-Respuesta: "Se debe usar TDD en el proyecto."
+Respuesta: "Los algoritmos son muy importantes en la programación."
 → no
-(Menciona la palabra "TDD" pero no describe el ciclo ni sus fases)
+(Menciona la palabra "algoritmo" pero no describe su definición ni explica su concepto)
 
-Respuesta: "Primero escribo un test que falla, después el código mínimo para que pase, y luego mejoro el código sin romper los tests."
+Respuesta: "Es una serie de instrucciones finitas y ordenadas paso a paso para llegar a una solución."
 → sí
-(Describe el ciclo aunque no use las palabras "rojo/verde/refactor")
+(Describe el concepto correctamente aunque no use la palabra exacta "secuencia")
 
-Respuesta: "El refactor es una fase importante de TDD."
+Respuesta: "Un algoritmo tiene pasos ordenados."
 → no
-(Nombra una fase pero no explica en qué consiste ni su relación con el resto del ciclo)
+(Menciona una característica parcial pero no explica el concepto completo de forma suficiente)
 
 ## SALIDA
 Responde únicamente con una de estas dos opciones:
@@ -154,13 +154,14 @@ Tu tarea consiste en clasificar la calidad de la respuesta del estudiante en uno
 - <BUENO>: la respuesta amerita una nota de 7 a 8 (la mayoría de los conceptos clave presentes y bien explicados).
 - <EXCELENTE>: la respuesta amerita una nota de 9 a 10 (todos los conceptos clave presentes y explicación sobresaliente).
 
-## CRITERIO DE BENEVOLENCIA DOCENTE (ALINEAMIENTO HUMANO)
-- Los profesores tienden a ser benevolentes: si el estudiante explica correctamente el núcleo técnico o la mecánica principal de la pregunta (por ejemplo, las fases del ciclo TDD: Rojo, Verde, Refactor y su funcionamiento), califícalo en el rango <BUENO> (7-8) o <EXCELENTE> (9-10), incluso si omite o responde de forma muy breve la importancia secundaria o los detalles teóricos adicionales.
-- No clasifiques como <INSUFICIENTE> ni como <ACEPTABLE> a respuestas correctas en su base técnica por el hecho de tener alguna omisión teórica menor. Reserva las notas bajas para exámenes que de verdad no demuestran conocimiento técnico.
+## CRITERIO DE EVALUACIÓN DOCENTE (ALINEAMIENTO CON EL CRITERIO HUMANO)
+- Si el estudiante explica correctamente el núcleo técnico o la idea principal de la pregunta de manera clara, califícalo en el rango <BUENO> (7-8) o <EXCELENTE> (9-10), incluso si omite o responde de forma muy breve detalles teóricos o secundarios.
+- Sin embargo, si detectas contradicciones lógicas graves (por ejemplo, invertir la secuencia temporal de un proceso, o afirmar conceptos contrarios a la respuesta correcta esperada), considéralo un error conceptual grave y clasifícalo como <INSUFICIENTE>.
+- Si la respuesta es extremadamente superficial, vaga, incompleta o se corta a la mitad, califícala como <INSUFICIENTE> o <ACEPTABLE> según corresponda, ya que no demuestra comprensión real del tema.
 
 ## CRITERIO ANTI-FLORO (EVITAR VAGUEDAD ACADÉMICA)
 El estudiante debe demostrar comprensión conceptual real.
-- Penaliza fuertemente a "<INSUFICIENTE>" aquellas respuestas que utilicen palabras clave de la pregunta de forma decorativa (floro/sarasa) pero que no expliquen la lógica técnica real ni las fases correspondientes.
+- Penaliza fuertemente a "<INSUFICIENTE>" aquellas respuestas que utilicen palabras clave de la pregunta de forma decorativa (floro/sarasa) pero que no expliquen la lógica técnica real.
 - Si el alumno divaga o elude responder la pregunta técnica central, clasifícala como "<INSUFICIENTE>".
 
 ## REGLAS
@@ -188,9 +189,10 @@ Tu tarea consiste en asignar la calificación final numérica exacta de 0 a 10 p
 - **7-8 (Bueno)**: Muestra una buena comprensión, responde correctamente y explica los conceptos principales.
 - **9-10 (Excelente)**: Respuesta completa, precisa, bien estructurada y con excelente nivel conceptual.
 
-## CRITERIO DE BENEVOLENCIA DOCENTE (ALINEAMIENTO HUMANO)
-- Los profesores tienden a ser benevolentes: si el estudiante explica correctamente el núcleo técnico o la mecánica principal de la pregunta (por ejemplo, las fases del ciclo TDD: Rojo, Verde, Refactor y su funcionamiento), otórgale una calificación aprobatoria alta (7, 8 o 9), incluso si omite o responde de forma muy breve la importancia secundaria o los detalles teóricos adicionales.
-- No penalices con notas inferiores a 7 a respuestas técnicamente correctas que simplemente carecen de alguna justificación teórica menor. Reserva las notas de 1 a 3 para exámenes que de verdad no demuestran conocimiento técnico básico.
+## CRITERIO DE EVALUACIÓN DOCENTE (ALINEAMIENTO CON EL CRITERIO HUMANO)
+- Si el estudiante explica correctamente el núcleo técnico o la idea principal de la pregunta de manera clara, otórgale una calificación aprobatoria justa, incluso si omite o responde de forma muy breve detalles teóricos o secundarios.
+- Sin embargo, si detectas contradicciones lógicas graves (por ejemplo, invertir la secuencia temporal de un proceso, o afirmar conceptos contrarios a la respuesta correcta esperada), considéralo un error conceptual grave y califica estrictamente en el rango insuficiente (1 a 3).
+- Si la respuesta es extremadamente superficial, vaga, incompleta o se corta a la mitad, penaliza la calificación en el rango insuficiente (1 a 3) o aceptable (4-6), ya que no demuestra comprensión real del tema.
 
 ## CRITERIO ANTI-FLORO (VAGUEDAD ACADÉMICA)
 - Debes ser estricto con el contenido real. 

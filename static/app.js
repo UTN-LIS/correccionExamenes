@@ -78,6 +78,7 @@ function initApp() {
     cargarPreguntas();
     cargarResultados();
     verificarEstadoCorreccion(); // Por si quedó corriendo
+    verificarEstadoComparacion(); // Por si quedó corriendo la comparación en vivo
 }
 
 // --- NETWORK CALLS & DATA RETRIEVAL ---

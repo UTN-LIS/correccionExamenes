@@ -54,8 +54,8 @@ def evaluar_conceptos(cliente_llm, pregunta_text: str, conceptos: list, respuest
     if not conceptos:
         return {
             "conceptos_evaluados": {},
-            "cobertura": 1.0,
-            "nota_conceptos": 10.0,
+            "cobertura": 0.0,
+            "nota_conceptos": 0.0,
             "tiempo": 0.0
         }
         
@@ -211,6 +211,36 @@ def ensamblar_nota_final(
         # Si no están normalizados, normalizar
         w1, w2, w3 = w1/suma_pesos, w2/suma_pesos, w3/suma_pesos
 
+    # Si no hay conceptos definidos para la pregunta, la nota es 100% la nota directa
+    if not res_conceptos.get("conceptos_evaluados"):
+        nota_final_valor = round(n_directa, 2)
+        nota_final_valor = max(0.0, min(10.0, nota_final_valor))
+        return {
+            "nota_final": nota_final_valor,
+            "desglose": {
+                "experimento_conceptos": {
+                    "nota_obtenida": n_directa,
+                    "cobertura": 0.0,
+                    "conceptos_evaluados": {}
+                },
+                "experimento_rango": {
+                    "nota_obtenida": "nulo",
+                    "rango_clasificado": "nulo"
+                },
+                "experimento_nota_directa": {
+                    "nota_obtenida": n_directa
+                }
+            },
+            "configuracion": {
+                "algoritmo_usado": "nota_directa_exclusiva",
+                "pesos": {
+                    "w1_conceptos": 0.0,
+                    "w2_rango": 0.0,
+                    "w3_nota_directa": 1.0
+                }
+            }
+        }
+
     n_conceptos = res_conceptos["nota_conceptos"]
     #n_rango = res_rango["nota_rango"]
     n_directa = res_nota_directa["nota_directa"]
@@ -226,14 +256,14 @@ def ensamblar_nota_final(
         nota_final = (n_directa + n_conceptos) / 2.0
         algoritmo_usado = "promedio"
         
-    # Redondear al entero más cercano
-    nota_final_redondeada = int(round(nota_final))
+    # Guardar la nota final con decimales, redondeada a 2 dígitos
+    nota_final_valor = round(nota_final, 2)
     
     # Asegurar límites del examen (0 a 10)
-    nota_final_redondeada = max(0, min(10, nota_final_redondeada))
+    nota_final_valor = max(0.0, min(10.0, nota_final_valor))
     
     return {
-        "nota_final": nota_final_redondeada,
+        "nota_final": nota_final_valor,
         "desglose": {
             "experimento_conceptos": {
                 "nota_obtenida": n_conceptos,
