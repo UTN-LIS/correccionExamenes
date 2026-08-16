@@ -76,16 +76,32 @@ def evaluar_conceptos(cliente_llm, pregunta_text: str, conceptos: list, respuest
         salida, tiempo = cliente_llm.generar_salida(SYSTEM_PROMPT_CONCEPTOS, user_msg)
         
         clean_val = salida.strip().lower().rstrip('.')
-        if clean_val not in ("sí", "no"):
+        if clean_val not in ("sí", "no", "sí|", "no|"):
             print(f"Advertencia: Respuesta de conceptos no válida o fallida para concepto '{tag}' ('{salida}'). Usando fallback 'no'.")
             clean_val = "no"  # fallback
             
         conceptos_evaluados[tag] = clean_val
         tiempo_total += tiempo
         
-    # Calcular cobertura
+    # Calcular cobertura, invirtiendo la interpretación para el tag ERROR:
+    # para conceptos normales, "sí" = cumple (suma cobertura);
+    # para ERROR, "no" (no cometió el error) = cumple (suma cobertura),
+    # y "sí" (sí cometió el error) = no cumple (resta cobertura).
     total_conceptos = len(conceptos)
-    conceptos_si = sum(1 for v in conceptos_evaluados.values() if v == "sí")
+    conceptos_si = 0
+    for concepto in conceptos:
+        tag = concepto['tag']
+        val = conceptos_evaluados[tag]
+        es_afirmativo = val in ("sí", "sí|")
+        
+        if tag == "ERROR":
+            # ERROR se invierte: "no" cuenta como positivo, "sí" cuenta como negativo
+            if not es_afirmativo:
+                conceptos_si += 1
+        else:
+            if es_afirmativo:
+                conceptos_si += 1
+    
     cobertura = conceptos_si / total_conceptos
     
     # Mapear linealmente cobertura [0.0, 1.0] a la nota [0.0, 10.0]
@@ -177,6 +193,7 @@ def evaluar_nota_directa(cliente_llm, pregunta_text: str, respuesta_correcta: st
 
 def ensamblar_nota_final(
     res_conceptos: dict, 
+    #res_rango: dict, 
     res_nota_directa: dict, 
     w1: float = 0.15, 
     w3: float = 0.85
@@ -194,12 +211,14 @@ def ensamblar_nota_final(
         w1, w3 = w1/suma_pesos, w3/suma_pesos
 
     n_conceptos = res_conceptos["nota_conceptos"]
+    #n_rango = res_rango["nota_rango"]
     n_directa = res_nota_directa["nota_directa"]
     
     diff_conceptos = abs(n_directa - n_conceptos)
+    #diff_rango = abs(n_directa - n_rango)
     
-    if diff_conceptos >= 2.0:
-        nota_final = (w1 * n_conceptos) + (w3 * n_directa)
+    if diff_conceptos >= 2.0: # or diff_rango >= 2.0:
+        nota_final = (w1 * n_conceptos) +  (w3 * n_directa) # + (w2 * n_rango) 
         algoritmo_usado = "pesos"
     else:
         # Promedio entre nota directa y conceptos (los dos valores principales de nota)
@@ -221,8 +240,8 @@ def ensamblar_nota_final(
                 "conceptos_evaluados": res_conceptos["conceptos_evaluados"]
             },
             "experimento_rango": {
-                "nota_obtenida": 0.0,
-                "rango_clasificado": "<NO USADO>"
+                "nota_obtenida": "nulo", # res_rango
+                "rango_clasificado": "nulo" # res_rango["rango"]
             },
             "experimento_nota_directa": {
                 "nota_obtenida": n_directa
