@@ -1,4 +1,0 @@
-Modelo: gemma-3-12b-mock
-System Prompt:
-Ensamble Ponderado: Nota_Final = (w1 * conceptos) + (w2 * rango) + (w3 * nota_directa)
-Pesos configurados: w1=0.5, w2=0.25, w3=0.25
