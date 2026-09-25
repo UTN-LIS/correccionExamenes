@@ -27,31 +27,17 @@ class ClienteLLM:
         ]
 
         payload = {"messages": messages}
-        
-        for attempt in range(max_retries):
-            inicio = time.time()
-            try:
-                response = requests.post(
-                    self.url + "/chat",
-                    json=payload,
-                    headers={
-                        "Content-Type": "application/json",
-                        "ngrok-skip-browser-warning": "69420"
-                    },
-                    timeout=timeout  # Evita que se cuelgue indefinidamente
-                )
-                response.raise_for_status()
-                res_json = response.json()
-                tiempo = time.time() - inicio
-                return res_json["response"], tiempo
+        inicio = time.time()
+        try:
+            response = requests.post(
+                self.url + "/chat",
+                json=payload,
+                headers={"Content-Type": "application/json"}
+            ).json()
+            tiempo = time.time() - inicio
+            return response, tiempo
 
-            except Exception as e:
-                tiempo = time.time() - inicio
-                print(f"Advertencia: Error al llamar al LLM (Intento {attempt + 1}/{max_retries}): {e}")
-                if attempt < max_retries - 1:
-                    sleep_time = backoff_factor ** attempt
-                    print(f"Aguardando {sleep_time:.2f} segundos antes de realizar el intento {attempt + 2}/{max_retries}...")
-                    time.sleep(sleep_time)
-                else:
-                    print(f"Error crítico: Se agotaron los reintentos para la llamada al LLM: {e}")
-                    return "respuesta no obtenida", tiempo
+        except Exception as e:
+            tiempo = time.time() - inicio
+            print(f"Error al llamar al LLM: {e}")
+            return {"response": "", "metricas": {}, "error": str(e)}, tiempo

@@ -1,5 +1,5 @@
-import time
-from grading_logic import evaluar_conceptos, evaluar_rango, evaluar_nota_directa, ensamblar_nota_final
+import time, json
+from grading_logic import  evaluar_nota_directa
 
 class Experimento:
     def __init__(self, cliente_llm, dataset_cliente, modelo="Modelo_XYZ"):
@@ -7,35 +7,35 @@ class Experimento:
         self.cliente_llm = cliente_llm
         self.modelo = modelo
 
-    def ejecutar_dataset(self, max_items=None, w1=0.10, w2=0.05, w3=0.85):
+    def ejecutar_dataset(self, max_items=None):
         """
-        Itera el dataset y ejecuta la evaluación en 3 experimentos independientes:
-        Experimento 1: Evaluar conceptos clave uno a uno y obtener cobertura.
-        Experimento 2: Evaluar rango de nota de forma independiente.
-        Experimento 3: Obtener la nota final directa.
-        Consolida la nota usando la combinación lineal ponderada.
+        Itera el dataset y ejecuta la evaluación en experimentos independientes:
+        Experimento: Obtener la nota final directa.
+
         """
-        from conceptos import CONCEPTOS_POR_PREGUNTA
 
-        # Obtener todos los conceptos únicos para usarlos como encabezados de columnas
-        unique_tags = []
-        for lista in CONCEPTOS_POR_PREGUNTA.values():
-            for c in lista:
-                if c["tag"] not in unique_tags:
-                    unique_tags.append(c["tag"])
-        unique_tags.sort()
-
-        # Las columnas del CSV incluyen campos principales, rango, salida (nota final) y tags individuales
-        fieldnames = ['step', 'pregunta', 'respuesta', 'rango_nota', 'nota_conceptos', 'nota_rango', 'nota_directa', 'salida', 'esperado', 'tiempo'] + unique_tags
-
+        # Las columnas del CSV incluyen campos principales, rango, salida (nota final) 
+        fieldnames = [
+            'step',
+            'pregunta',
+            'respuesta',
+            'esperado',
+            # ... tus columnas anteriores (id, pregunta, respuesta, etc.)
+            'nota_directa',
+            'tiempo',
+            # Nuevas columnas de métricas
+            'entropia',
+            'perplejidad',
+            'masa_acumulada_top_3',
+            'masa_notas',
+            'masa_no_notas',
+            'margen_logit',
+            'diferencia_probabilidad',
+            'top_3_vocabulario_json',
+            'top_3_notas_json'
+        ]
         self.dataset_cliente.crear_csv_resultados(fieldnames)
-        
-        # Guardar configuración descriptiva con los pesos del ensamble
-        prompt_config_desc = (
-            f"Ensamble Ponderado: Nota_Final = (w1 * conceptos) + (w2 * rango) + (w3 * nota_directa)\n"
-            f"Pesos configurados: w1={w1}, w2={w2}, w3={w3}"
-        )
-        self.dataset_cliente.guardar_configuracion(self.modelo, prompt_config_desc)
+
 
         buffer_salidas = []
         step = 0
@@ -45,53 +45,29 @@ class Experimento:
             if max_items and step >= max_items:
                 break
 
-            # Inicializar la fila del resultado
+
+            # ---- EJECUTAR EXPERIMENTOS INDEPENDIENTES ----
+            res_nota_directa = evaluar_nota_directa(self.cliente_llm, pregunta, ideal_answer, respuesta)
+            metricas = res_nota_directa.get('metricas', {})
+
             fila_resultado = {
                 'step': step,
                 'pregunta': pregunta,
                 'respuesta': respuesta,
                 'esperado': esperado,
-                'rango_nota': "",
-                'nota_conceptos': 0.0,
-                'nota_rango': 0.0,
-                'nota_directa': 0.0,
-                'salida': "",
-                'tiempo': 0.0
+                'nota_directa': res_nota_directa['nota_directa'],
+                'tiempo': round(res_nota_directa['tiempo'], 3),
+                'entropia': metricas.get('entropia'),
+                'perplejidad': metricas.get('perplejidad'),
+                'masa_acumulada_top_3': metricas.get('masa_acumulada_top_x'),
+                'masa_notas': metricas.get('masa_notas'),
+                'masa_no_notas': metricas.get('masa_no_notas'),
+                'margen_logit': metricas.get('margen_logit'),
+                'diferencia_probabilidad': metricas.get('diferencia_probabilidad'),
+                'top_3_vocabulario_json': json.dumps(metricas.get('candidatos_vocabulario', []), ensure_ascii=False),
+                'top_3_notas_json': json.dumps(metricas.get('candidatos_notas_top_x', []), ensure_ascii=False)
             }
-            for tag in unique_tags:
-                fila_resultado[tag] = ""
-
-            # ---- EJECUTAR EXPERIMENTOS INDEPENDIENTES ----
-            res_conceptos = evaluar_conceptos(self.cliente_llm, pregunta, conceptos, respuesta)
-            res_rango = evaluar_rango(self.cliente_llm, pregunta, ideal_answer, respuesta)
-            res_nota_directa = evaluar_nota_directa(self.cliente_llm, pregunta, ideal_answer, respuesta)
-
-            # ---- ENSAMBLE PONDERADO ----
-            res_ensemble = ensamblar_nota_final(
-                res_conceptos,
-                res_rango,
-                res_nota_directa,
-                w1=w1,
-                w2=w2,
-                w3=w3
-            )
-
-            # Llenar la fila del resultado
-            fila_resultado['rango_nota'] = res_rango['rango']
-            fila_resultado['nota_conceptos'] = res_conceptos['nota_conceptos']
-            fila_resultado['nota_rango'] = res_rango['nota_rango']
-            fila_resultado['nota_directa'] = res_nota_directa['nota_directa']
-            fila_resultado['salida'] = res_ensemble['nota_final']
-            fila_resultado['tiempo'] = round(res_conceptos['tiempo'] + res_rango['tiempo'] + res_nota_directa['tiempo'], 3)
-
-            # Rellenar los tags correspondientes
-            for tag, val in res_conceptos['conceptos_evaluados'].items():
-                if tag in unique_tags:
-                    fila_resultado[tag] = val
-
-
             buffer_salidas.append(fila_resultado)
-
             # Flush cada 20 elementos
             if len(buffer_salidas) >= 20:
                 self.dataset_cliente.guardar_buffer_csv(buffer_salidas, fieldnames)

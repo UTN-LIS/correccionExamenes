@@ -35,13 +35,8 @@ class GeneradorCSV:
             respuesta   = row["student_answer"]
             esperado    = row.get("teacher_grade")
             conceptos   = CONCEPTOS_POR_PREGUNTA.get(question_id, [])
-            
-            # Intentar obtener ideal_answer
+
             ideal_answer = row.get("ideal_answer")
-            if not ideal_answer or pd.isna(ideal_answer):
-                ideal_answer = preguntas_db.get(question_id, {}).get("ideal_answer", "")
-            if not ideal_answer:
-                ideal_answer = "Respuesta ideal de la cátedra."
                 
             yield question_id, pregunta, conceptos, respuesta, esperado, ideal_answer
 
