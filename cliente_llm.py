@@ -3,6 +3,10 @@ import requests
 import os
 from dotenv import load_dotenv
 
+CRITERIO_DOCENTE = """La respuesta debe explicar correctamente el nucleo tecnico de la pregunta segun la respuesta correcta esperada.
+No debe contener contradicciones graves con la respuesta correcta.
+No debe ser vaga, repetir los terminos de la pregunta ni usar lenguaje academico sin contenido real.
+No debe estar incompleta ni cortarse a la mitad."""
 
 class ClienteLLM:
     def __init__(self):
@@ -41,3 +45,18 @@ class ClienteLLM:
             tiempo = time.time() - inicio
             print(f"Error al llamar al LLM: {e}")
             return {"response": "", "metricas": {}, "error": str(e)}, tiempo
+
+
+    def puntuar(self, pregunta, respuesta_correcta, respuesta_estudiante, criterio=CRITERIO_DOCENTE):
+        payload = {
+            "instruction": criterio,
+            "query": f"Pregunta: {pregunta}\n\nRespuesta correcta esperada: {respuesta_correcta}",
+            "document": respuesta_estudiante,
+        }
+        inicio = time.time()
+        try:
+            response = requests.post(self.url + "/rerank", json=payload).json()
+            return response, time.time() - inicio   # response["logit"] para ordenar
+        except Exception as e:
+            print(f"Error al llamar al reranker: {e}")
+            return {"score": None, "logit": None, "error": str(e)}, time.time() - inicio

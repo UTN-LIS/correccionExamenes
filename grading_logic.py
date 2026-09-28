@@ -41,33 +41,14 @@ def evaluar_nota_directa(cliente_llm, pregunta_text, respuesta_correcta, respues
     user_msg = construir_user_message_nota_directa(pregunta_text, respuesta_correcta, respuesta_estudiante)
     
     # cliente_llm.generar_salida devuelve ahora el dict {"response": ..., "metricas": ...} y el tiempo
-    salida_dict, tiempo = cliente_llm.generar_salida(SYSTEM_PROMPT_NOTA_DIRECTA, user_msg)
+    salida_dict, tiempo = cliente_llm.puntuar(pregunta_text, respuesta_correcta, respuesta_estudiante )
     
-    salida_texto = salida_dict.get("response", "")
-    metricas = salida_dict.get("metricas", {})
+    salida_texto = salida_dict.get("logit", "")
     
-    clean_n = salida_texto.strip().replace("\n", "").strip()
-    
-    try:
-        nota_directa = float(clean_n)
-        if nota_directa < 0.0 or nota_directa > 10.0:
-            print(f"Advertencia: Nota directa '{nota_directa}' fuera de rango [0.0, 10.0]. Usando fallback 0.0.")
-            nota_directa = 0.0
-    except ValueError:
-        numeros = re.findall(r'\d+', clean_n)
-        if numeros:
-            nota_directa = float(numeros[0])
-            if nota_directa < 0.0 or nota_directa > 10.0:
-                print(f"Advertencia: Nota directa extraída '{nota_directa}' fuera de rango. Usando fallback 0.0.")
-                nota_directa = 0.0
-        else:
-            print(f"Advertencia: No se pudo extraer número de nota directa ('{salida_texto}'). Usando fallback 0.0.")
-            nota_directa = 0.0
         
     return {
-        "nota_directa": nota_directa,
+        "nota_directa": salida_texto,
         "tiempo": round(tiempo, 3),
-        "metricas": metricas  # Contiene perplejidad, entropia, masa_acumulada_top_x, etc.
     }
 
 

@@ -34,11 +34,10 @@ class GeneradorCSV:
             pregunta    = row["question_text"]
             respuesta   = row["student_answer"]
             esperado    = row.get("teacher_grade")
-            conceptos   = CONCEPTOS_POR_PREGUNTA.get(question_id, [])
 
             ideal_answer = row.get("ideal_answer")
                 
-            yield question_id, pregunta, conceptos, respuesta, esperado, ideal_answer
+            yield question_id, pregunta, respuesta, esperado, ideal_answer
 
     def crear_csv_resultados(self, fieldnames):
         """Crea el archivo CSV de resultados con encabezados."""
