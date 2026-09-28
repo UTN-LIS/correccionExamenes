@@ -19,6 +19,9 @@ async def chat(body = Body(...)):
         return {
             "response": "8"
         }
+    elif "CÓMO DECIDIR" in user_content:
+            # Experimento 3: Nota directa o final
+            return {"response": "no"}
     elif "RANGO DE NOTA SUGERIDO" in user_content or "criterio pedagógico" in system_content or "calificación final" in system_content:
         # Experimento 3: Nota directa o final
         return {"response": "8"}

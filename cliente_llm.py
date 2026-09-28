@@ -9,11 +9,10 @@ class ClienteLLM:
         load_dotenv()
         self.url = os.getenv("URL_LLM")
 
-    def generar_salida(self, system_prompt: str, user_message: str, max_retries: int = 3, backoff_factor: float = 1.5, timeout: float = 180.0):
+    def generar_salida(self, system_prompt: str, user_message: str):
         """
         Llama al LLM con un system prompt y un user message ya construidos.
         Retorna (respuesta: str, tiempo: float).
-        Con reintentos y retroceso exponencial ante fallos de conexión o timeout.
         """
         messages = [
             {

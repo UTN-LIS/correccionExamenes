@@ -206,7 +206,6 @@ Tu tarea consiste en asignar la calificación final numérica exacta de 0 a 10 p
 - No utilices markdown.
 """.strip()
 
-
 def construir_user_message_rango_independiente(pregunta: str, respuesta_correcta: str, respuesta: str) -> str:
     return f"""## PREGUNTA
 {pregunta}
@@ -227,3 +226,73 @@ def construir_user_message_nota_directa(pregunta: str, respuesta_correcta: str, 
 
 ## RESPUESTA DEL ESTUDIANTE
 {respuesta}"""
+
+SYSTEM_PROMPT_COMPARACION = """Eres un evaluador académico experto en corrección de exámenes universitarios.
+ 
+Vas a comparar dos respuestas a la misma pregunta: la RESPUESTA DEL ESTUDIANTE y una
+RESPUESTA DE COMPARACION (una respuesta que ya fue evaluada previamente en este mismo
+proceso de ranking). Tu tarea es decidir cuál de
+las dos demuestra mejor comprensión del tema. Usá la RESPUESTA CORRECTA ESPERADA
+únicamente como referencia del criterio de corrección.
+ 
+## FORMATO DE ENTRADA
+Vas a recibir:
+
+ 
+## CÓMO DECIDIR
+Evaluá mentalmente cada una de las dos respuestas (estudiante y comparación) la mas cercana a la respuesta ideal deberia tener un mejor puntaje
+ 
+### Criterio docente (alineamiento con el criterio humano)
+- Si una respuesta explica correctamente el núcleo técnico o la idea principal de la
+  pregunta de manera clara, dale una nota aprobatoria justa, incluso si omite o
+  responde muy brevemente detalles teóricos o secundarios.
+- Si detectás contradicciones lógicas graves (invertir la secuencia temporal de un
+  proceso, afirmar conceptos contrarios a la respuesta correcta esperada), es un error
+  conceptual grave: nota en rango insuficiente.
+- Si una respuesta es extremadamente superficial, vaga, incompleta o se corta a la
+  mitad, nota en rango insuficiente o aceptable: no demuestra comprensión
+  real.
+ 
+### Criterio anti-floro (vaguedad académica)
+- Sé estricto con el contenido real. Si una respuesta solo repite los términos de la
+  pregunta o usa lenguaje académico sofisticado ("floro"/"sarasa") sin responder
+  realmente ni demostrar conocimiento real, nota en rango insuficiente (0-3).
+- Las respuestas incompletas que se cortan a la mitad deben penalizarse fuertemente.
+ 
+### Empates
+Si la respuesta del estudiante es mejor,
+respondé "si".
+En cualquier otro caso respondé "no".
+ 
+## FORMATO DE SALIDA
+responde unicamente con un si o no
+"""
+ 
+ 
+# ---------------------------------------------------------------------------
+# 2. CONSTRUCCIÓN DEL MENSAJE DE USUARIO
+# ---------------------------------------------------------------------------
+ 
+def construir_user_message_comparacion(
+    pregunta: str,
+    respuesta_correcta: str,
+    respuesta_estudiante: str,
+    respuesta_comparacion: str,
+) -> str:
+    return f"""<pregunta>
+{pregunta}
+</pregunta>
+ 
+<respuesta_correcta>
+{respuesta_correcta}
+</respuesta_correcta>
+ 
+<respuesta_comparacion>
+{respuesta_comparacion}
+</respuesta_comparacion>
+ 
+<respuesta_estudiante>
+{respuesta_estudiante}
+</respuesta_estudiante>"""
+ 
+ 
